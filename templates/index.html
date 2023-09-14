@@ -6,5 +6,20 @@
 </head>
 <body>
   <h1 align="center">Childcare Enrollment Management System</h1>
+  <button style="display: block; margin: 0 auto;" id="aboutUs">About Us</button>
+  <br />
+  <div style="display: none; text-align: center;" id="aboutUsInfo">CSCE 606 Software Engineering Project. <br/>Tanmai Harish, Atharva Phand, Bharath, Chidambaram, Noah, Daehee</div>
+  <script>
+    const aboutUsButton = document.getElementById('aboutUs');
+    const aboutUsInfo = document.getElementById('aboutUsInfo');
+
+    aboutUsButton.addEventListener('click', () => {
+      if (aboutUsInfo.style.display === 'none') {
+        aboutUsInfo.style.display = 'block';
+      } else {
+        aboutUsInfo.style.display = 'none';
+      }
+    });
+  </script>
 </body>
-</html>
+</html> 
