@@ -1,10 +1,10 @@
 ## Childcare Enrollment Management System
 
-`Deployed App`: [https://childcare-d71b0285d615.herokuapp.com/](CCEEMS)
+`Deployed App`: [CCEEMS](https://childcare-d71b0285d615.herokuapp.com/)
 
 * This is developed using Flask as the backend and HTML, CSS and JavaScript as the frontend. 
 * Python version `3.10.12` is required to build and run this application. 
-* If you plan to deploy this in heroku, please see Heroku's suppoted python runtimes and stacks [https://devcenter.heroku.com/articles/python-support](Heroku\'s Stacks & Python Support). Check the same for `AWS` as well.
+* If you plan to deploy this in heroku, please see Heroku's suppoted python runtimes and stacks [Heroku\'s Stacks & Python Support](https://devcenter.heroku.com/articles/python-support). Check the same for `AWS` as well.
 
 ### Steps to Deploy (Heroku)
 1. Clone this repo using `git clone`
