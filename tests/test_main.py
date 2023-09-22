@@ -1,10 +1,10 @@
 import unittest
-from main import CCEEMS
+from main import CCEMS
 
 class TestApp(unittest.TestCase):
 
     def setUp(self):
-        self.app = CCEEMS.test_client()
+        self.app = CCEMS.test_client()
 
     def test_landing_route(self):
         response = self.app.get('/')
