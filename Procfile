@@ -1,1 +1,2 @@
-web: gunicorn main:CCEEMS
+web: gunicorn main:CCEMS
+release: python post_deploy.py
