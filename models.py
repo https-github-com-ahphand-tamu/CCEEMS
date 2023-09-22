@@ -9,11 +9,11 @@ create_users_table = """
         first_name VARCHAR(255),
         last_name VARCHAR(255)
     ); 
-        INSERT INTO users (username, first_name, last_name)
-        VALUES
-            ('dummyuser1@example.com', 'John', 'Doe'),
-            ('dummyuser2@example.com', 'Jane', 'Smith')
-            ;
+    INSERT INTO users (username, first_name, last_name)
+    VALUES
+        ('dummyuser1@example.com', 'John', 'Doe'),
+        ('dummyuser2@example.com', 'Jane', 'Smith')
+    ON CONFLICT (username) DO NOTHING;
 """
 cursor = conn.cursor()
 cursor.execute(create_users_table)
