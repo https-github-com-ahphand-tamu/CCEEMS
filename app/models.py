@@ -1,3 +1,7 @@
+from datetime import datetime
+from sqlalchemy import DateTime
+from werkzeug.security import generate_password_hash, check_password_hash
+
 from app import db
 
 
@@ -7,8 +11,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), unique=False, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
+    password = db.Column(db.String(128), nullable=True)
+    created_on = db.Column(DateTime, default=datetime.utcnow)
+    modified_on = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    verified_on = db.Column(DateTime)
+    last_login = db.Column(DateTime)
+
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
 
     def __init__(self, name, email, role):
@@ -18,6 +27,12 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.name}>'
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
 
 
 class Role(db.Model):
