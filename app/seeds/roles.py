@@ -1,11 +1,14 @@
 from app import db
-from app.models.role import Role
+from app.models import Role
 
 
 def seed():
     roles = [
-        Role(name='admin'),
-        Role(name='user'),
+        Role(name='Admin'),
+        Role(name='Eligibility Manager'),
+        Role(name='Eligibility Supervisor'),
+        Role(name='Eligibility Specialist'),
+        Role(name='Senior Leader')
     ]
 
     for role in roles:
