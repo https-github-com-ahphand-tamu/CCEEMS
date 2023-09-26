@@ -1,16 +1,13 @@
-from flask import Flask, render_template
-from users import get_all_users
+from app import create_app, db
+from flask import render_template
+from flask_migrate import Migrate
 
-CCEMS = Flask(__name__)
+app = create_app()
+migrate = Migrate(app, db)
 
-@CCEMS.route('/')
-def landingRoute():
-   return render_template('index.html')
-
-@CCEMS.route('/users')
-def users():
-    users_data = get_all_users()
-    return render_template('users.html', users=users_data)
+@app.route('/')
+def home():
+    return render_template('index.html')
 
 if __name__ == '__main__':
-    CCEMS.run()
+    app.run(debug=True)
