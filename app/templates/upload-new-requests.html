@@ -3,3 +3,13 @@
     <input type="file" name="new-requests" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
     <button type="submit">Submit</button>
 </form>
+{% if data_inserted %}
+    <div>Data inserted succesfully</div>
+{% endif %}
+    
+    <!-- JavaScript to hide the selected filename if it is set in the Flask context -->
+<!-- <script>
+    {% if selected_filename %}
+    document.querySelector('input[type="file"]').style.display = 'none';
+    {% endif %}
+</script> -->
