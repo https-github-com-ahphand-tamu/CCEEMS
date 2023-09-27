@@ -49,16 +49,18 @@ class Role(db.Model):
 
 
 class Request(db.Model):
-    __tablename__ = 'new-requests'
+    __tablename__ = 'new_requests'
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.String(80), unique=False, nullable=False)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     num_of_children = db.Column(db.Integer, nullable=False)
+    outreach_date = db.Column(db.Date, nullable=False)
 
-    def __init__(self, customer_id, first_name, last_name, num_of_children):
+    def __init__(self, customer_id, first_name, last_name, num_of_children, outreach_date):
         self.customer_id = customer_id
         self.first_name = first_name
         self.last_name = last_name
         self.num_of_children = num_of_children
+        self.outreach_date = outreach_date
