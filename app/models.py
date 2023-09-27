@@ -34,7 +34,7 @@ class Role(db.Model):
 
 
 class Request(db.Model):
-    __tablename__ = 'requests'
+    __tablename__ = 'new-requests'
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.String(80), unique=False, nullable=False)

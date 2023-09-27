@@ -12,6 +12,8 @@ def create_app():
     db.init_app(app)
 
     from app.controllers.user_controller import user_bp
+    from app.controllers.new_requests_controller import upload_new_req_bp
     app.register_blueprint(user_bp)
+    app.register_blueprint(upload_new_req_bp)
 
     return app
