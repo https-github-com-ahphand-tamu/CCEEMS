@@ -1,6 +1,6 @@
 import logging
 from app import db
-from flask import Blueprint, render_template, request, current_app, jsonify
+from flask import Blueprint, render_template, request, jsonify, abort
 from app.models import Request
 import os
 from werkzeug.utils import secure_filename
@@ -11,43 +11,38 @@ upload_new_req_bp = Blueprint('new-requests', __name__)
 
 
 @upload_new_req_bp.route('/upload-new-requests', methods=['GET','POST'])
-def upload_new_requests():
-    try:
-        if request.method == 'POST':
+def upload_new_requests():  
+    if request.method == 'POST':
+        try:
             upload_file = request.files['new-requests']
             upload_file.save(os.path.join(Config.UPLOAD_LOCATION, secure_filename(upload_file.filename)))
             return populateDatabase(upload_file)
-    except Exception as e:
-        data_inserted = False
-        logging.info("No file selected")
-        return jsonify({'message': 'No file selected', 'error': str(e)}), 404
-
+        except Exception as e:
+            logging.info("No file selected")
+            return jsonify({'message': 'No file selected', 'error': str(e)}), 404
     return render_template('upload-new-requests.html')
 
 def populateDatabase(upload_file):
-    # if not upload_file:
-    #     logging.info("No file uploaded")
-    #     return "No file uploaded"
     try:
         if upload_file.filename.endswith('.csv'):
             df = pd.read_csv(upload_file)
         elif upload_file.filename.endswith(('.xls', '.xlsx')):
             df = pd.read_excel(upload_file)
         else:
-            logging.info("Unsupported file format")
-            return "Unsupported file format"
+            try:
+                logging.info("Unsupported file format")
+                abort(501, "Unsupported file format")
+            except Exception as e:
+                return jsonify({'message': 'Unsupported file format', 'error': str(e)}), 501
         df.rename(columns={'Outreach_Date': 'outreach_date'}, inplace=True)
-        df = df.iloc[:, :5]  # Selects all rows and the first 5 columns
+        df = df.iloc[:, :5]
         logging.debug(f"POST to /upload-new-requests: {df}")
     
         df.to_sql(Request.__tablename__, db.engine, if_exists='append', index=False)
         db.session.commit()
-        data_inserted = True
-
-        #return "Data inserted successfully"
-        return render_template('upload-new-requests.html', data_inserted=data_inserted)
+        return render_template('upload-new-requests.html', data_inserted=True)
+        
     except Exception as e:
-        data_inserted = False
         db.session.rollback()
         return jsonify({'message': 'Failed to add new requests', 'error': str(e)}), 500
     finally:
