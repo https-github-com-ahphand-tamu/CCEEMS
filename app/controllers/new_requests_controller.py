@@ -6,7 +6,7 @@ import os
 from werkzeug.utils import secure_filename
 from config import Config
 import pandas as pd
-
+            
 upload_new_req_bp = Blueprint('new-requests', __name__)
 
 
@@ -15,17 +15,21 @@ def upload_new_requests():
     if request.method == 'POST':
         try:
             upload_file = request.files['new-requests']
-            upload_file.save(os.path.join(Config.UPLOAD_LOCATION, secure_filename(upload_file.filename)))
-            return populateDatabase(upload_file)
+            if len(upload_file.filename) > 0:
+                file_path = os.path.join(Config.UPLOAD_LOCATION, secure_filename(upload_file.filename))
+                return populateDatabase(upload_file, file_path)
+            else:
+                abort(404, "No file selected")
         except Exception as e:
             logging.info("No file selected")
             return jsonify({'message': 'No file selected', 'error': str(e)}), 404
     return render_template('upload-new-requests.html')
 
-def populateDatabase(upload_file):
+def populateDatabase(upload_file, file_path):
     try:
         if upload_file.filename.endswith('.csv'):
-            df = pd.read_csv(upload_file)
+            upload_file.save(file_path)
+            df = pd.read_csv(file_path,sep=",")
         elif upload_file.filename.endswith(('.xls', '.xlsx')):
             df = pd.read_excel(upload_file)
         else:
