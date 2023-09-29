@@ -1,0 +1,11 @@
+Name                                         Stmts   Miss  Cover
+----------------------------------------------------------------
+app/__init__.py                                 27      4    85%
+app/controllers/new_requests_controller.py      44     12    73%
+app/controllers/user_controller.py              96     26    73%
+app/models.py                                   48     10    79%
+config.py                                       17      1    94%
+----------------------------------------------------------------
+TOTAL                                          232     53    77%
+
+1 empty file skipped.
