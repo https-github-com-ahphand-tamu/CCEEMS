@@ -31,3 +31,15 @@
 4. Run the migrations in flask using this command `heroku run flask --app main db upgrade --app yourHerokuAppName`
 5. Perform the seeding with this command `heroku run python seed.py --app yourHerokuAppName`.
 6. Type `heroku open` to open your app's homepage.
+
+### Steps to run unit tests
+1. python -m unittest tests
+
+### Steps to run behave tests
+1. cd into the repository
+2. pip install -r requirements.txt // (This will ensure behave is installed as a command)
+3. behave // (this will run the behave test and show the above output in your console)
+
+### Steps to get coverage
+1. To get the coverage for the behave tests : coverage run -m behave
+2. To get the coverage for the unit tests : coverage run -m unittest discover -s tests
