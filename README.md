@@ -11,8 +11,8 @@
 1. Clone this repo using `git clone`
 1. Install postgres in your local
 1. Configure environment and configuration files:
-   1. Copy file and change values in config.py - `cp config.example.py config.py`
-   2. Copy file and change values in .env - `cp .env.example .env`
+   1. Set database url - `export DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"`
+   1. Copy file and change values in .env - `cp .env.example .env`
 1. Install the dependencies - `pip install -r requirements.txt`
 1. Run migrations - `flask --app main db upgrade`
 1. Run seeds - `python seed.py`
@@ -33,13 +33,11 @@
 6. Type `heroku open` to open your app's homepage.
 
 ### Steps to run unit tests
-1. python -m unittest tests
+1. Setup the project following the steps in [steps-to-setup-in-local](#steps-to-setup-in-local)
+1. Run tests - `python -m unittest tests`
+1. Get coverage - `coverage run -m unittest discover -s tests`
 
 ### Steps to run behave tests
-1. cd into the repository
-2. pip install -r requirements.txt // (This will ensure behave is installed as a command)
-3. behave // (this will run the behave test and show the above output in your console)
-
-### Steps to get coverage
-1. To get the coverage for the behave tests : coverage run -m behave
-2. To get the coverage for the unit tests : coverage run -m unittest discover -s tests
+1. Setup the project following the steps in [steps-to-setup-in-local](#steps-to-setup-in-local)
+1. Run tests - `behave`
+1. Get coverage - `coverage run -m behave`
