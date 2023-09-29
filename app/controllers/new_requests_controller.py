@@ -4,9 +4,9 @@ from flask import Blueprint, render_template, request, jsonify, abort
 from app.models import Request
 import os
 from werkzeug.utils import secure_filename
-from config import Config
 import pandas as pd
-            
+import app
+
 upload_new_req_bp = Blueprint('new-requests', __name__)
 
 
@@ -15,21 +15,17 @@ def upload_new_requests():
     if request.method == 'POST':
         try:
             upload_file = request.files['new-requests']
-            if len(upload_file.filename) > 0:
-                file_path = os.path.join(Config.UPLOAD_LOCATION, secure_filename(upload_file.filename))
-                return populateDatabase(upload_file, file_path)
-            else:
-                abort(404, "No file selected")
+            upload_file.save(os.path.join(app['UPLOAD_LOCATION'], secure_filename(upload_file.filename)))
+            return populateDatabase(upload_file)
         except Exception as e:
             logging.info("No file selected")
             return jsonify({'message': 'No file selected', 'error': str(e)}), 404
     return render_template('upload-new-requests.html')
 
-def populateDatabase(upload_file, file_path):
+def populateDatabase(upload_file):
     try:
         if upload_file.filename.endswith('.csv'):
-            upload_file.save(file_path)
-            df = pd.read_csv(file_path,sep=",")
+            df = pd.read_csv(upload_file)
         elif upload_file.filename.endswith(('.xls', '.xlsx')):
             df = pd.read_excel(upload_file)
         else:
