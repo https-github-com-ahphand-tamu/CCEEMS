@@ -20,3 +20,4 @@ class TestConfig():
     uri = "sqlite:///default.db"
     SQLALCHEMY_DATABASE_URI = uri
     TESTING = True
+    UPLOAD_LOCATION = r'features/testUploadFiles/'

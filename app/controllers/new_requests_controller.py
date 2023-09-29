@@ -5,7 +5,7 @@ from app.models import Request
 import os
 from werkzeug.utils import secure_filename
 import pandas as pd
-import app
+from flask import current_app
 
 upload_new_req_bp = Blueprint('new-requests', __name__)
 
@@ -15,7 +15,8 @@ def upload_new_requests():
     if request.method == 'POST':
         try:
             upload_file = request.files['new-requests']
-            upload_file.save(os.path.join(app['UPLOAD_LOCATION'], secure_filename(upload_file.filename)))
+            saved_file_name = os.path.join(current_app.config['UPLOAD_LOCATION'], secure_filename(upload_file.filename))
+            upload_file.save(saved_file_name)
             return populateDatabase(upload_file)
         except Exception as e:
             logging.info("No file selected")
