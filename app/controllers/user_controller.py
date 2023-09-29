@@ -2,12 +2,26 @@ import logging
 import re
 
 from datetime import datetime
-from flask import Blueprint, request, jsonify, render_template
+from flask import Blueprint, flash, redirect, request, jsonify, render_template
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 from app.models import User, Role
 
 user_bp = Blueprint('user', __name__)
+
+
+@user_bp.route('/users/login', methods = ['POST'])
+def login_auth():
+    if request.method == 'POST':
+        emailid = request.form['email']
+        user_password = request.form['password']
+        user = User.query.filter_by(email=emailid).first()
+        if check_password_hash(user.password, user_password):
+            return redirect('/index')
+        else:
+            return render_template('Login.html', incorrect_password = True)
+
 
 
 @user_bp.route('/users', methods=['GET'])
