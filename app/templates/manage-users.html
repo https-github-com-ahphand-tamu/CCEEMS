@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <div style="display: block; text-align: center; font-size: 20px">
+        <h1>Manage Users</h1>
+    </div>
+</head>
+<body style="background-color:lightsteelblue; text-align: center">
+    <table border="2" style="margin-left:auto; margin-right:auto">
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Edit User</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.role.name }}</td>
+            <td>
+                <button onclick="window.location.href='./edit-users'">Edit</button>
+            </td>
+        </tr>
+        {% endfor %} 
+    </table>
+    <div style="margin-top: 20px">
+        <button onclick="window.location.href='./add-users'">Add User</button>  
+    </div>
+</body>
+</html>
