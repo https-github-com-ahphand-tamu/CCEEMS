@@ -43,18 +43,12 @@ def populateDatabase(upload_file, file_path):
         df = df.iloc[:, :5]
         df.rename(columns={'Outreach_Date': 'outreach_date'}, inplace=True)
         valid_data, invalid_data = validateData(df)
-        print("v",valid_data)
-        print("i",invalid_data)
-        print("i",invalid_data.empty)
         
         logging.debug(f"POST to /upload-new-requests: {df}")
     
         valid_data.to_sql(Newrequest.__tablename__, db.engine, if_exists='append', index=False)
         db.session.commit()
         if(invalid_data.empty):
-            print("POKAYYY")
-            print(valid_data)
-            print(invalid_data)
             return render_template('upload-new-requests.html', valid_present=True, valid_data=valid_data, invalid_present=False, invalid_data=invalid_data)
         elif(valid_data.empty):
             return render_template('upload-new-requests.html', valid_present=False, valid_data=[], invalid_present=True, invalid_data=invalid_data)
@@ -69,13 +63,10 @@ def populateDatabase(upload_file, file_path):
 def validateData(data):
     invalid_rows = []
     valid_rows = []
-    print("JooooUJUJUJUJU")
-    print(data)
     
-        # Check if all required columns are present in the DataFrame
+    # Check if all required columns are present in the DataFrame
     required_columns = ['customer_id', 'first_name', 'last_name', 'num_of_children', 'outreach_date']
     if not set(required_columns).issubset(data.columns):
-        print("kkkkkkkkk")
         invalid_rows.append(data)
         invalid_df = pd.DataFrame(invalid_rows)
         invalid_df = invalid_df.reset_index(drop=True)
@@ -83,17 +74,16 @@ def validateData(data):
 
     # Check each row for validation
     for index, row in data.iterrows():
-        print(index,row)
         validation_errors = []
 
         # Check if 'customer_id' contains digits only and does not start from 0
         if not str(row['customer_id']).isdigit() or str(row['customer_id'])[0] == '0':
             validation_errors.append("Invalid value in 'customer_id'. Must contain digits only and not start from 0.")
-        print("1")
+        
         # Check if 'num_of_children' is a non-negative integer
         if not str(row['num_of_children']).isdigit() or int(row['num_of_children']) < 0:
             validation_errors.append("Invalid value in 'num_of_children'. Must be a non-negative integer.")
-        print("11")
+        
         # Check if 'Outreach_Date' is a valid date and not in the future
         try:
             outreach_date = pd.to_datetime(row['outreach_date'])
@@ -101,19 +91,14 @@ def validateData(data):
                 validation_errors.append("Invalid date in 'Outreach_Date'. Cannot be in the future.")
         except ValueError:
             validation_errors.append("Invalid date format in 'Outreach_Date'.")
-        print("12")
+        
         if validation_errors:
-            print("33")
             row_with_error = row.copy()
             row_with_error['validation_error'] = ', '.join(validation_errors)
             invalid_rows.append(row_with_error)
         else:
-            print("234")
             valid_rows.append(row)
     
-    print("JUJUJUJUJU")
-    print(valid_rows)
-    print(invalid_rows)
     # Convert rows to DataFrames
     valid_df = pd.DataFrame(valid_rows)
     # Use reset_index to ignore the original index
@@ -125,8 +110,4 @@ def validateData(data):
     else:
         invalid_df = pd.DataFrame()
 
-    print("1223r343433")
-    print(valid_df)
-    print("099999999993")
-    print(invalid_df)
     return valid_df, invalid_df
