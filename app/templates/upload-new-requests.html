@@ -1,13 +1,202 @@
-<h2>Upload new requests</h2>
-<form method="post" enctype="multipart/form-data">
-    <input type="file" name="new-requests" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-    <button type="submit">Submit</button>
-</form>
-{% if data_inserted %}
-    <div>Data inserted succesfully</div>
-{% endif %}
+<!DOCTYPE html>
+<html lang="en">
     
-    <!-- JavaScript to hide the selected filename if it is set in the Flask context -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload New Requests</title>
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+    
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+    
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+    
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Upload new requests</h2>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="new-requests"
+            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+        <button type="submit">Submit</button>
+    </form>
+    {% if valid_present %}
+    <!-- <p>valid_data</p> -->
+    <h3>Valid Data</h3>
+    <table border="1">
+        <tr>
+            <th>customer_id</th>
+            <th>first_name</th>
+            <th>last_name</th>
+            <th>num_of_children</th>
+            <th>Outreach_Date</th>
+        </tr>
+        {% for index, row in valid_data.iterrows() %}
+        <tr>
+            <td>{{ row['customer_id'] }}</td>
+            <td>{{ row['first_name'] }}</td>
+            <td>{{ row['last_name'] }}</td>
+            <td>{{ row['num_of_children'] }}</td>
+            <td>{{ row['outreach_date'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if invalid_present %}
+    <h3>Invalid Data</h3>
+    <table border="1">
+        <tr>
+            <th>customer_id</th>
+            <th>first_name</th>
+            <th>last_name</th>
+            <th>num_of_children</th>
+            <th>outreach_date</th>
+            <th>Validation Error</th>
+        </tr>
+        {% for index, row in invalid_data.iterrows() %}
+        <tr>
+            <td>{{ row['customer_id'] }}</td>
+            <td>{{ row['first_name'] }}</td>
+            <td>{{ row['last_name'] }}</td>
+            <td>{{ row['num_of_children'] }}</td>
+            <td>{{ row['outreach_date'] }}</td>
+            <td>{{ row['validation_error'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+
+    <button id="viewValidDataBtn">View Valid Data</button>
+
+    
+
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Valid Data</h3>
+            <table border="1">
+                <!-- Display valid_data content here -->
+                {% for index, row in valid_data.iterrows() %}
+                <tr>
+                    <td>{{ row['customer_id'] }}</td>
+                    <td>{{ row['first_name'] }}</td>
+                    <td>{{ row['last_name'] }}</td>
+                    <td>{{ row['num_of_children'] }}</td>
+                    <td>{{ row['outreach_date'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <button id="viewInvalidDataBtn">View Invalid Data</button>
+
+    <!-- Add a new modal for displaying invalid data -->
+    <div id="invalidDataModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeInvalidDataModal()">&times;</span>
+            <h3>Invalid Data</h3>
+            <table border="1">
+                <!-- Display invalid_data content here -->
+                {% for index, row in invalid_data.iterrows() %}
+                <tr>
+                    <td>{{ row['customer_id'] }}</td>
+                    <td>{{ row['first_name'] }}</td>
+                    <td>{{ row['last_name'] }}</td>
+                    <td>{{ row['num_of_children'] }}</td>
+                    <td>{{ row['outreach_date'] }}</td>
+                    <td>{{ row['validation_error'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Get the new button and modal for invalid data
+        var invalidDataBtn = document.getElementById("viewInvalidDataBtn");
+        var invalidDataModal = document.getElementById("invalidDataModal");
+
+        // Add a click event listener for the invalid data button
+        invalidDataBtn.onclick = function () {
+            invalidDataModal.style.display = "block";
+        };
+
+        // Function to close the invalid data modal
+        function closeInvalidDataModal() {
+            invalidDataModal.style.display = "none";
+        }
+        // Get the modal
+        var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("viewValidDataBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal
+        btn.onclick = function () {
+            modal.style.display = "block";
+        };
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function () {
+            closeModal();
+        };
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        };
+
+        // Function to close the modal
+        function closeModal() {
+            modal.style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
+<!-- {% if data_inserted %}
+    <div>Data inserted succesfully</div>
+{% endif %} -->
+
+<!-- JavaScript to hide the selected filename if it is set in the Flask context -->
 <!-- <script>
     {% if selected_filename %}
     document.querySelector('input[type="file"]').style.display = 'none';
