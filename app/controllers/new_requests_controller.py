@@ -1,7 +1,7 @@
 import logging
 from app import db
 from flask import Blueprint, render_template, request, jsonify, abort
-from app.models import Request
+from app.models import Newrequest
 import os
 from werkzeug.utils import secure_filename
 import pandas as pd
@@ -49,7 +49,7 @@ def populateDatabase(upload_file, file_path):
         
         logging.debug(f"POST to /upload-new-requests: {df}")
     
-        valid_data.to_sql(Request.__tablename__, db.engine, if_exists='append', index=False)
+        valid_data.to_sql(Newrequest.__tablename__, db.engine, if_exists='append', index=False)
         db.session.commit()
         if(invalid_data.empty):
             print("POKAYYY")
