@@ -161,3 +161,27 @@ def sanitize_email(email):
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+$'
     return bool(re.match(pattern, email))
+
+@user_bp.route('/manage-users', methods=['GET'])
+def manage_users():
+    users = User.query.all()
+    user_list = []
+    for user in users:
+        user_data = {
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'role': user.role
+        }
+        user_list.append(user_data)
+
+    logging.debug(user_list)
+    return render_template('manage-users.html', users=user_list)
+
+@user_bp.route('/edit-users', methods=['GET'])
+def edit_users():
+    return render_template('edit-users.html')
+
+@user_bp.route('/add-users', methods=['GET'])
+def add_users():
+    return render_template('add-users.html')
