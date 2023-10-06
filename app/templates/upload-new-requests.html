@@ -41,109 +41,164 @@
             text-decoration: none;
             cursor: pointer;
         }
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        body {
+            font-family: arial, sans-serif;
+        }
+        .sidenav {
+            width: 130px;
+            position: fixed;
+            z-index: 1;
+            top: 20px;
+            left: 10px;
+            background: #a137d8;
+            overflow-x: hidden;
+            padding: 8px 0;
+            margin-top: 140px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #FFFFFF;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f3e419;
+        }
+        .movebody {
+            margin-left: 140px;
+            padding: 0px 10px;
+        }
     </style>
 </head>
 
 <body>
-    <h2>Upload new requests</h2>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="new-requests"
-            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-        <button type="submit">Submit</button>
-    </form>
-    {% if valid_present %}
-    <!-- <p>valid_data</p> -->
-    <h3>Valid Data</h3>
-    <table border="1">
-        <tr>
-            <th>customer_id</th>
-            <th>first_name</th>
-            <th>last_name</th>
-            <th>num_of_children</th>
-            <th>Outreach_Date</th>
-        </tr>
-        {% for index, row in valid_data.iterrows() %}
-        <tr>
-            <td>{{ row['customer_id'] }}</td>
-            <td>{{ row['first_name'] }}</td>
-            <td>{{ row['last_name'] }}</td>
-            <td>{{ row['num_of_children'] }}</td>
-            <td>{{ row['outreach_date'] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
+    <img src="ccgrouplogo.png" width="250">
+    <hr>
+    <div class="sidenav">
+        <a href="./index">Home</a>
+        <a href="./users">Users</a>
+        <a href="./manage-users">Manage Users</a>
+        <a href="./upload-new-requests.html">Upload File</a>
+    </div>
+    <div class="movebody">
+        <h2>Upload new requests</h2>
+        <form method="post" enctype="multipart/form-data">
+            <input type="file" name="new-requests"
+                accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+            <button type="submit">Submit</button>
+        </form>
+        
+        {% if valid_present %}
+        <!-- <p>valid_data</p> -->
+        <h3>Valid Data</h3>
+        <table>
+            <tr>
+                <th>Customer ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Number of Children</th>
+                <th>Outreach Date</th>
+            </tr>
+            {% for index, row in valid_data.iterrows() %}
+            <tr>
+                <td>{{ row['customer_id'] }}</td>
+                <td>{{ row['first_name'] }}</td>
+                <td>{{ row['last_name'] }}</td>
+                <td>{{ row['num_of_children'] }}</td>
+                <td>{{ row['outreach_date'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
 
-    {% if invalid_present %}
-    <h3>Invalid Data</h3>
-    <table border="1">
-        <tr>
-            <th>customer_id</th>
-            <th>first_name</th>
-            <th>last_name</th>
-            <th>num_of_children</th>
-            <th>outreach_date</th>
-            <th>Validation Error</th>
-        </tr>
-        {% for index, row in invalid_data.iterrows() %}
-        <tr>
-            <td>{{ row['customer_id'] }}</td>
-            <td>{{ row['first_name'] }}</td>
-            <td>{{ row['last_name'] }}</td>
-            <td>{{ row['num_of_children'] }}</td>
-            <td>{{ row['outreach_date'] }}</td>
-            <td>{{ row['validation_error'] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
+        {% if invalid_present %}
+        <h3>Invalid Data</h3>
+        <table>
+            <tr>
+                <th>Customer ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Number of Children</th>
+                <th>Outreach Date</th>
+                <th>Validation Error</th>
+            </tr>
+            {% for index, row in invalid_data.iterrows() %}
+            <tr>
+                <td>{{ row['customer_id'] }}</td>
+                <td>{{ row['first_name'] }}</td>
+                <td>{{ row['last_name'] }}</td>
+                <td>{{ row['num_of_children'] }}</td>
+                <td>{{ row['outreach_date'] }}</td>
+                <td>{{ row['validation_error'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
 
-    <button id="viewValidDataBtn">View Valid Data</button>
-
+        <button id="viewValidDataBtn">View Valid Data</button>
+    
     
 
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Valid Data</h3>
-            <table border="1">
-                <!-- Display valid_data content here -->
-                {% for index, row in valid_data.iterrows() %}
-                <tr>
-                    <td>{{ row['customer_id'] }}</td>
-                    <td>{{ row['first_name'] }}</td>
-                    <td>{{ row['last_name'] }}</td>
-                    <td>{{ row['num_of_children'] }}</td>
-                    <td>{{ row['outreach_date'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h3>Valid Data</h3>
+                <table border="1">
+                    <!-- Display valid_data content here -->
+                    {% for index, row in valid_data.iterrows() %}
+                    <tr>
+                        <td>{{ row['customer_id'] }}</td>
+                        <td>{{ row['first_name'] }}</td>
+                        <td>{{ row['last_name'] }}</td>
+                        <td>{{ row['num_of_children'] }}</td>
+                        <td>{{ row['outreach_date'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <button id="viewInvalidDataBtn">View Invalid Data</button>
+
+        <!-- Add a new modal for displaying invalid data -->
+        <div id="invalidDataModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeInvalidDataModal()">&times;</span>
+                <h3>Invalid Data</h3>
+                <table border="1">
+                    <!-- Display invalid_data content here -->
+                    {% for index, row in invalid_data.iterrows() %}
+                    <tr>
+                        <td>{{ row['customer_id'] }}</td>
+                        <td>{{ row['first_name'] }}</td>
+                        <td>{{ row['last_name'] }}</td>
+                        <td>{{ row['num_of_children'] }}</td>
+                        <td>{{ row['outreach_date'] }}</td>
+                        <td>{{ row['validation_error'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </div>
-
-    <button id="viewInvalidDataBtn">View Invalid Data</button>
-
-    <!-- Add a new modal for displaying invalid data -->
-    <div id="invalidDataModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeInvalidDataModal()">&times;</span>
-            <h3>Invalid Data</h3>
-            <table border="1">
-                <!-- Display invalid_data content here -->
-                {% for index, row in invalid_data.iterrows() %}
-                <tr>
-                    <td>{{ row['customer_id'] }}</td>
-                    <td>{{ row['first_name'] }}</td>
-                    <td>{{ row['last_name'] }}</td>
-                    <td>{{ row['num_of_children'] }}</td>
-                    <td>{{ row['outreach_date'] }}</td>
-                    <td>{{ row['validation_error'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
-
     <script>
         // Get the new button and modal for invalid data
         var invalidDataBtn = document.getElementById("viewInvalidDataBtn");
