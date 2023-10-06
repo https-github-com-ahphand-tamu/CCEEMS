@@ -1,7 +1,6 @@
 from flask import Blueprint, redirect, request, jsonify, render_template, current_app
 from flask_login import login_user, logout_user, current_user
-from werkzeug.security import check_password_hash, generate_password_hash
-from app.helpers.user_helper import send_mail
+from werkzeug.security import check_password_hash
 
 from app import db
 from app.decorators.login_decorator import requires_login
@@ -11,11 +10,8 @@ from app.models import User
 
 user_bp = Blueprint('user', __name__)
 
-@user_bp.route('/users/setpassword')
-def setPassword():
-    return render_template('password.html')
 
-@user_bp.route('/users/login', methods=['POST'])
+@user_bp.route('/user/login', methods=['POST'])
 def login_auth():
     data = request.form
     if 'email' not in data or 'password' not in data:
@@ -35,36 +31,6 @@ def login_auth():
         current_app.logger.error(f"Invalid credentials for user: {email_id}")
         return render_template('Login.html', incorrect_password=True)
 
-@user_bp.route('/users/updatePassword', methods=['POST'])
-def update_password():
-    if request.method == 'POST':
-        emailid = request.args.get('email')
-        user_password = request.form['password']
-        user_repassword = request.form['re-password']
-        user = User.query.filter_by(email=emailid).first()
-        if(user.password != ""):
-            return render_template('password.html', password_exists=True, incorrect_password=False, mismatch_password =False)
-        if(len(user_password) < 8):
-            return render_template('password.html', password_exists=False, incorrect_password=True, mismatch_password =False)
-        if(user_password != user_repassword):
-            return render_template('password.html', password_exists=False, incorrect_password=False, mismatch_password =True)
-        user1 = User.query.filter_by(email=emailid).first()
-
-        user = db.session.get(User, user1.id)
-        if user is None:
-            return jsonify({'message': 'User not found'}), 404
-
-        user.password = generate_password_hash(user_password)
-
-        try:
-            db.session.commit()
-            return redirect('/')
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({'message': 'Failed to update Password', 'error': str(e)}), 500
-        finally:
-            db.session.close()
-
 
 @user_bp.route('/user/logout', methods=['POST'])
 @requires_login
@@ -73,32 +39,6 @@ def logout():
     logout_user()
     return
 
-@user_bp.route('/users', methods=['POST'])
-def add_user():
-    try:
-        data = request.get_json()
-        current_app.logger.debug(f"POST to /users: {data}")
-        validate_add_user_payload(data)
-        email = validate_user_email(data["email"])
-        role = validate_role(data["role"])
-        user_exists = db.session.query(User).filter(User.email == email).first()
-        if user_exists:
-            return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
-        new_user = User(name=data.get('name'), email=email, role=role)
-        new_user.created_on = datetime.utcnow()
-        try:
-            db.session.add(new_user)
-            db.session.commit()
-            send_mail(request.base_url,email)
-            return jsonify({'message': 'User added successfully'}), 201
-        except Exception as e:
-            db.session.rollback()
-            return jsonify({'message': 'Failed to add user', 'error': str(e)}), 500
-        finally:
-            db.session.close()
-    except ValidationException as ve:
-        return jsonify({'message': str(ve)}), ve.status_code
-    
 
 @user_bp.route('/user/<int:user_id>', methods=['GET'])
 @requires_login
