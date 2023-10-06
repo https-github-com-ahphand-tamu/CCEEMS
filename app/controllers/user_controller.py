@@ -1,13 +1,13 @@
 import logging
 import re
-
 from datetime import datetime
-from flask import Blueprint, flash, redirect, request, jsonify, render_template
-from werkzeug.security import check_password_hash, generate_password_hash
+
+from flask import Blueprint, redirect, request, jsonify, render_template
+from werkzeug.security import check_password_hash
 
 from app import db
-from app.models import User, Role
 from app.exceptions.validation import ValidationException
+from app.models import User, Role
 
 user_bp = Blueprint('user', __name__)
 
@@ -67,6 +67,10 @@ def add_user():
         validate_user_payload(data)
         email = validate_user_email(data["email"])
         role = validate_role(data["role"])
+
+        user_exists = db.session.query(User).filter(User.email == email).first()
+        if user_exists:
+            return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
 
         new_user = User(name=data.get('name'), email=email, role=role)
         new_user.created_on = datetime.utcnow()

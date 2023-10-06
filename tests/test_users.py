@@ -10,7 +10,7 @@ class TestUserRoutes(unittest.TestCase):
         self.app.testing = True
         self.app_context = app.app_context()
         self.app_context.push()
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'  # Use a separate test database
+
         db.create_all()
 
         # Create a test user and role
@@ -61,6 +61,15 @@ class TestUserRoutes(unittest.TestCase):
         data = {
             'name': 'New User',
             'email': 'invalid-email',
+            'role': 'test_role'
+        }
+        response = self.app.post('/users', json=data)
+        self.assertEqual(response.status_code, 400)
+
+    def test_add_user_with_duplicate_email(self):
+        data = {
+            'name': 'Test User',
+            'email': 'test@example.com',
             'role': 'test_role'
         }
         response = self.app.post('/users', json=data)
