@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    <h1>New Requests</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Customer ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in new_requests %}
+                <tr>
+                    <td>{{ request.customer_id }}</td>
+                    <td>{{ request.first_name }}</td>
+                    <td>{{ request.last_name }}</td>
+                    <!-- Add more table data cells for other columns -->
+                    <td>
+                        <button class="assign-button" data-request-id="{{ request.id }}">Assign</button>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
