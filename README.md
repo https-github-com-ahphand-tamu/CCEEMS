@@ -4,12 +4,16 @@
 
 * This is developed using Flask as the backend and HTML, CSS and JavaScript as the frontend. 
 * Python version `3.10.12` is required to build and run this application. 
-* If you plan to deploy this in heroku, please see Heroku's suppoted python runtimes and stacks [Heroku\'s Stacks & Python Support](https://devcenter.heroku.com/articles/python-support). Check the same for `AWS` as well.
+* If you plan to deploy this in heroku, please see Heroku's supported python runtimes and stacks [Heroku\'s Stacks & Python Support](https://devcenter.heroku.com/articles/python-support). Check the same for `AWS` as well.
 
+
+### Install postgres in your local
+- Installing PostgreSQL on macOS
+    - ```brew install postgresql@16```
 
 ### Steps to setup in local
 1. Clone this repo using `git clone`
-1. Install postgres in your local
+1. Install postgres in your local machine following [install-postgres-in-your-local](#install-postgres-in-your-local)
 1. Configure environment and configuration files:
    1. Set database url - `export DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"`
    1. Copy file and change values in .env - `cp .env.example .env`
