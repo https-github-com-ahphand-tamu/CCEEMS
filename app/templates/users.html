@@ -2,22 +2,80 @@
 <html>
 <head>
     <title>User List</title>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        body {
+            font-family: arial, sans-serif;
+        }
+        .sidenav {
+            width: 140px;
+            position: fixed;
+            z-index: 1;
+            top: 20px;
+            left: 10px;
+            background: #662484;
+            overflow-x: hidden;
+            padding: 8px 0;
+            margin-top: 140px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #FFFFFF;
+            display: block;
+            font-family: arial, sans-serif;
+        }
+
+        .sidenav a:hover {
+            color: #f3e419;
+        }
+        .movebody {
+            margin-left: 160px;
+            padding: 0px 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>User List</h1>
-    <table border="1">
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role.name }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <a href="./index"><img src="ccgrouplogo.png" width="250"></a>
+    <hr>
+    <div class="movebody">
+        <h2>User List</h2>
+        <!-- <div class="sidenav">
+            <a href="./index">Home</a>
+            <a href="./users">Users</a>
+            <a href="./manage-users">Manage Users</a>
+            <a href="./upload-new-requests">Upload File</a>
+            <a href="https://www.childcaregroup.org/" target="_blank">Website</a>
+        </div> -->
+        <table border="1">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role.name }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>
