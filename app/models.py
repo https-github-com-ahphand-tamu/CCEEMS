@@ -1,12 +1,14 @@
 from datetime import datetime
-from sqlalchemy import DateTime, Column, Integer, ForeignKey
-from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.orm import relationship
-from app import db
 from enum import Enum
 
+from flask_login import UserMixin
+from sqlalchemy import DateTime
+from werkzeug.security import generate_password_hash, check_password_hash
 
-class User(db.Model):
+from app import db
+
+
+class User(db.Model, UserMixin):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -30,6 +32,15 @@ class User(db.Model):
 
     def __repr__(self):
         return f'<User {self.name}>'
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
 
     def set_password(self, password):
         self.password = generate_password_hash(password)
@@ -99,7 +110,9 @@ class Currentrequest(db.Model):
     decision_date = db.Column(db.Date, unique=False, nullable=True)
     not_enrolled_reason = db.Column(db.String(80), unique=False, nullable=True)
 
-    def __init__(self, customer_id, first_name, last_name, num_of_children, outreach_date, packet_return_status, packet_received_date, staff_initials, decision, num_children_enrolled, decision_date, not_enrolled_reason):
+    def __init__(self, customer_id, first_name, last_name, num_of_children, outreach_date, packet_return_status,
+                 packet_received_date, staff_initials, decision, num_children_enrolled, decision_date,
+                 not_enrolled_reason):
         self.customer_id = customer_id
         self.first_name = first_name
         self.last_name = last_name
