@@ -41,3 +41,18 @@ Feature: User Controller
     When I send a DELETE request to "/users/1"
     Then the response status code should be 404
     Then the response should contain "User not found"
+
+  Scenario: Update password for a new User
+    Given the application is running
+    When I enter a valid password "abcd@1234567"
+    Then the password should be updated in the database
+
+  Scenario: User enters a password of invalid length
+    Give the application is running
+    When I enter an invalid password "abcd"
+    Then I should see the message that password should be at least 8 characters long
+
+  Scenario: User enters a passwords that do not match
+    Given the application is running
+    When I enter password "abcd#123456" and "abc#123456"
+    Then I should see the message that both passwords should be the same.

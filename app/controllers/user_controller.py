@@ -1,8 +1,9 @@
 import re
+from app.controllers.user_helper import send_mail
 from datetime import datetime
 
 from flask import Blueprint, redirect, request, jsonify, render_template, current_app
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 from app.exceptions.validation import ValidationException
@@ -21,6 +22,36 @@ def login_auth():
             return redirect('/index')
         else:
             return render_template('Login.html', incorrect_password=True)
+
+@user_bp.route('/users/updatePassword', methods=['POST'])
+def update_password():
+    if request.method == 'POST':
+        emailid = request.args.get('email')
+        user_password = request.form['password']
+        user_repassword = request.form['re-password']
+        user = User.query.filter_by(email=emailid).first()
+        if(user.password != ""):
+            return render_template('password.html', password_exists=True, incorrect_password=False, mismatch_password =False)
+        if(len(user_password) < 8):
+            return render_template('password.html', password_exists=False, incorrect_password=True, mismatch_password =False)
+        if(user_password != user_repassword):
+            return render_template('password.html', password_exists=False, incorrect_password=False, mismatch_password =True)
+        user1 = User.query.filter_by(email=emailid).first()
+
+        user = db.session.get(User, user1.id)
+        if user is None:
+            return jsonify({'message': 'User not found'}), 404
+
+        user.password = generate_password_hash(user_password)
+
+        try:
+            db.session.commit()
+            return redirect('/')
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'message': 'Failed to update Password', 'error': str(e)}), 500
+        finally:
+            db.session.close()
 
 
 @user_bp.route('/users', methods=['GET'])
@@ -77,6 +108,8 @@ def add_user():
         try:
             db.session.add(new_user)
             db.session.commit()
+            print(request.base_url)
+            send_mail(request.base_url,email)
             return jsonify({'message': 'User added successfully'}), 201
         except Exception as e:
             db.session.rollback()
