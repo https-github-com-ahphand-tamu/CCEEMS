@@ -1,17 +1,17 @@
-import logging
 import re
-
 from datetime import datetime
-from flask import Blueprint, flash, redirect, request, jsonify, render_template
-from werkzeug.security import check_password_hash, generate_password_hash
+
+from flask import Blueprint, redirect, request, jsonify, render_template, current_app
+from werkzeug.security import check_password_hash
 
 from app import db
+from app.exceptions.validation import ValidationException
 from app.models import User, Role
 
 user_bp = Blueprint('user', __name__)
 
 
-@user_bp.route('/users/login', methods = ['POST'])
+@user_bp.route('/users/login', methods=['POST'])
 def login_auth():
     if request.method == 'POST':
         emailid = request.form['email']
@@ -20,8 +20,7 @@ def login_auth():
         if check_password_hash(user.password, user_password):
             return redirect('/index')
         else:
-            return render_template('Login.html', incorrect_password = True)
-
+            return render_template('Login.html', incorrect_password=True)
 
 
 @user_bp.route('/users', methods=['GET'])
@@ -37,13 +36,13 @@ def get_users():
         }
         user_list.append(user_data)
 
-    logging.debug(user_list)
+    current_app.logger.debug(user_list)
     return render_template('users.html', users=user_list)
 
 
 @user_bp.route('/users/<int:user_id>', methods=['GET'])
 def get_user_by_id(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if user is None:
         return jsonify({'message': 'User not found'}), 404
@@ -60,78 +59,67 @@ def get_user_by_id(user_id):
 
 @user_bp.route('/users', methods=['POST'])
 def add_user():
-    data = request.get_json()
-    logging.debug(f"POST to /users: {data}")
-
-    if 'name' not in data or 'email' not in data or 'role' not in data:
-        return jsonify({'message': 'Missing required fields (name, email, role)'}), 400
-
-    email = sanitize_email(data['email'])
-    if not is_valid_email(email):
-        return jsonify({'message': f'Invalid email address: {data["email"]}'}), 400
-
-    # Check if the role already exists in the database
-    role_name = data.get('role')
-    role = Role.query.filter_by(name=role_name).first()
-    if not role:
-        message = f"Role '{role_name}' does not exist"
-        logging.info(message)
-        return jsonify({'message': message}), 400
-
-    new_user = User(name=data.get('name'), email=email, role=role)
-    new_user.created_on = datetime.utcnow()
-
     try:
-        db.session.add(new_user)
-        db.session.commit()
-        return jsonify({'message': 'User added successfully'}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'message': 'Failed to add user', 'error': str(e)}), 500
-    finally:
-        db.session.close()
+        data = request.get_json()
+        current_app.logger.debug(f"POST to /users: {data}")
+
+        validate_user_payload(data)
+        email = validate_user_email(data["email"])
+        role = validate_role(data["role"])
+
+        user_exists = db.session.query(User).filter(User.email == email).first()
+        if user_exists:
+            return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
+
+        new_user = User(name=data.get('name'), email=email, role=role)
+        new_user.created_on = datetime.utcnow()
+
+        try:
+            db.session.add(new_user)
+            db.session.commit()
+            return jsonify({'message': 'User added successfully'}), 201
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'message': 'Failed to add user', 'error': str(e)}), 500
+        finally:
+            db.session.close()
+    except ValidationException as ve:
+        return jsonify({'message': str(ve)}), ve.status_code
 
 
 @user_bp.route('/users/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
-    data = request.get_json()
-    logging.debug(f"PUT to /users with user id: {user_id} and data: {data}")
+    try:
+        data = request.get_json()
+        current_app.logger.debug(f"PUT to /users with user id: {user_id} and data: {data}")
 
-    if 'name' not in data or 'email' not in data or 'role' not in data:
-        return jsonify({'message': 'Missing required fields (name, email, role)'}), 400
+        validate_user_payload(data)
+        email = validate_user_email(data["email"])
+        role = validate_role(data["role"])
 
-    email = sanitize_email(data['email'])
-    if not is_valid_email(email):
-        return jsonify({'message': f'Invalid email address: {data["email"]}'}), 400
+        user = db.session.get(User, user_id)
+        if user is None:
+            return jsonify({'message': 'User not found'}), 404
 
-    user = User.query.get(user_id)
-    if user is None:
-        return jsonify({'message': 'User not found'}), 404
-
-    user.name = data.get('name')
-    user.email = email
-    role_name = data.get('role')
-    if role_name:
-        role = Role.query.filter_by(name=role_name).first()
-        if not role:
-            message = f"Role '{role_name}' does not exist"
-            logging.info(message)
-            return jsonify({'message': message}), 400
+        user.name = data.get('name')
+        user.email = email
         user.role = role
 
-    try:
-        db.session.commit()
-        return jsonify({'message': 'User updated successfully'}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'message': 'Failed to update user', 'error': str(e)}), 500
-    finally:
-        db.session.close()
+        try:
+            db.session.commit()
+            return jsonify({'message': 'User updated successfully'}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'message': 'Failed to update user', 'error': str(e)}), 500
+        finally:
+            db.session.close()
+    except ValidationException as ve:
+        return jsonify({'message': str(ve)}), ve.status_code
 
 
 @user_bp.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if user is None:
         return jsonify({'message': 'User not found'}), 404
@@ -147,6 +135,27 @@ def delete_user(user_id):
         db.session.close()
 
 
+def validate_user_payload(data):
+    if 'name' not in data or 'email' not in data or 'role' not in data:
+        raise ValidationException('Missing required fields (name, email, role)', 400)
+
+
+def validate_role(role_name):
+    role = Role.query.filter_by(name=role_name).first()
+    if not role:
+        message = f"Role '{role_name}' does not exist"
+        current_app.logger.info(message)
+        raise ValidationException(message, 400)
+    return role
+
+
+def validate_user_email(email):
+    sanitized_email = sanitize_email(email)
+    if not is_valid_email(sanitized_email):
+        raise ValidationException(f'Invalid email address: {sanitized_email}', 400)
+    return sanitized_email
+
+
 def sanitize_email(email):
     sanitized_email = email.strip()
     return sanitized_email
@@ -155,3 +164,27 @@ def sanitize_email(email):
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+$'
     return bool(re.match(pattern, email))
+
+@user_bp.route('/manage-users', methods=['GET'])
+def manage_users():
+    users = User.query.all()
+    user_list = []
+    for user in users:
+        user_data = {
+            'id': user.id,
+            'name': user.name,
+            'email': user.email,
+            'role': user.role
+        }
+        user_list.append(user_data)
+
+    logging.debug(user_list)
+    return render_template('manage-users.html', users=user_list)
+
+@user_bp.route('/edit-users', methods=['GET'])
+def edit_users():
+    return render_template('edit-users.html')
+
+@user_bp.route('/add-users', methods=['GET'])
+def add_users():
+    return render_template('add-users.html')

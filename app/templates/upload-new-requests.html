@@ -41,109 +41,210 @@
             text-decoration: none;
             cursor: pointer;
         }
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        body {
+            font-family: arial, sans-serif;
+        }
+        .sidenav {
+            width: 140px;
+            position: fixed;
+            z-index: 1;
+            top: 20px;
+            left: 10px;
+            background: #662484;
+            overflow-x: hidden;
+            padding: 8px 0;
+            margin-top: 140px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #FFFFFF;
+            display: block;
+            font-family: arial, sans-serif;
+        }
+
+        .sidenav a:hover {
+            color: #f3e419;
+        }
+        .movebody {
+            margin-left: 160px;
+            padding: 0px 10px;
+        }
+        .wrapborder{
+            border: 1px solid rgba(0, 0, 0, 0.16);
+            background-color: transparent;
+            border-radius: 4px;
+            padding: 32px;
+            width: 300px;
+        }
+        .purplebutton{
+            background-color: #662484;
+            border: none;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            padding: 8px 15px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+        .purplebutton:hover{
+            color: #f3e419;
+        }
+
+        input[type="file"]::file-selector-button {
+            border-radius: 4px;
+            padding: 0 16px;
+            height: 40px;
+            cursor: pointer;
+            background-color: white;
+            border: 1px solid rgba(0, 0, 0, 0.16);
+            margin-right: 16px;
+            transition: background-color 200ms;
+                
+        }
+        input[type="file"]::file-selector-button:hover {
+            background-color: #f3f4f6;
+        }
+        
+        input[type="file"]::file-selector-button:active {
+            background-color: #e5e7eb;
+        }
     </style>
 </head>
 
 <body>
-    <h2>Upload new requests</h2>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="new-requests"
-            accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
-        <button type="submit">Submit</button>
-    </form>
-    {% if valid_present %}
-    <!-- <p>valid_data</p> -->
-    <h3>Valid Data</h3>
-    <table border="1">
-        <tr>
-            <th>customer_id</th>
-            <th>first_name</th>
-            <th>last_name</th>
-            <th>num_of_children</th>
-            <th>Outreach_Date</th>
-        </tr>
-        {% for index, row in valid_data.iterrows() %}
-        <tr>
-            <td>{{ row['customer_id'] }}</td>
-            <td>{{ row['first_name'] }}</td>
-            <td>{{ row['last_name'] }}</td>
-            <td>{{ row['num_of_children'] }}</td>
-            <td>{{ row['outreach_date'] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
+    <a href="./index"><img src="ccgrouplogo.png" width="250"></a>
+    <hr>
+    <div class="sidenav">
+        <a href="./index">Home</a>
+        <a href="./users">Users</a>
+        <a href="./manage-users">Manage Users</a>
+        <a href="./upload-new-requests">Upload File</a>
+        <a href="https://www.childcaregroup.org/" target="_blank">Website</a>
+    </div>
+    <div class="movebody">
+        <h2>Upload new requests</h2>
+        <div class="wrapborder">
+            <p>Upload new waitlist file to the database.<br>
+                Accepted file formats are .csv or .xlsx.</p>
+            <form method="post" enctype="multipart/form-data">
+                
+                <input type="file" id="file-input" name="new-requests" value="Upload File"
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel">
+                <br>
+                <button class="purplebutton" type="submit">Submit</button>
+            </form>
+        </div>
+        {% if valid_present %}
+        <!-- <p>valid_data</p> -->
+        <h3>Valid Data</h3>
+        <table>
+            <tr>
+                <th>Customer ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Number of Children</th>
+                <th>Outreach Date</th>
+            </tr>
+            {% for index, row in valid_data.iterrows() %}
+            <tr>
+                <td>{{ row['customer_id'] }}</td>
+                <td>{{ row['first_name'] }}</td>
+                <td>{{ row['last_name'] }}</td>
+                <td>{{ row['num_of_children'] }}</td>
+                <td>{{ row['outreach_date'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
 
-    {% if invalid_present %}
-    <h3>Invalid Data</h3>
-    <table border="1">
-        <tr>
-            <th>customer_id</th>
-            <th>first_name</th>
-            <th>last_name</th>
-            <th>num_of_children</th>
-            <th>outreach_date</th>
-            <th>Validation Error</th>
-        </tr>
-        {% for index, row in invalid_data.iterrows() %}
-        <tr>
-            <td>{{ row['customer_id'] }}</td>
-            <td>{{ row['first_name'] }}</td>
-            <td>{{ row['last_name'] }}</td>
-            <td>{{ row['num_of_children'] }}</td>
-            <td>{{ row['outreach_date'] }}</td>
-            <td>{{ row['validation_error'] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% endif %}
+        {% if invalid_present %}
+        <h3>Invalid Data</h3>
+        <table>
+            <tr>
+                <th>Customer ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Number of Children</th>
+                <th>Outreach Date</th>
+                <th>Validation Error</th>
+            </tr>
+            {% for index, row in invalid_data.iterrows() %}
+            <tr>
+                <td>{{ row['customer_id'] }}</td>
+                <td>{{ row['first_name'] }}</td>
+                <td>{{ row['last_name'] }}</td>
+                <td>{{ row['num_of_children'] }}</td>
+                <td>{{ row['outreach_date'] }}</td>
+                <td>{{ row['validation_error'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% endif %}
 
-    <button id="viewValidDataBtn">View Valid Data</button>
-
+        <button id="viewValidDataBtn" class="purplebutton">View Valid Data</button>
+    
     
 
-    <div id="myModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Valid Data</h3>
-            <table border="1">
-                <!-- Display valid_data content here -->
-                {% for index, row in valid_data.iterrows() %}
-                <tr>
-                    <td>{{ row['customer_id'] }}</td>
-                    <td>{{ row['first_name'] }}</td>
-                    <td>{{ row['last_name'] }}</td>
-                    <td>{{ row['num_of_children'] }}</td>
-                    <td>{{ row['outreach_date'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+        <div id="myModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h3>Valid Data</h3>
+                <table border="1">
+                    <!-- Display valid_data content here -->
+                    {% for index, row in valid_data.iterrows() %}
+                    <tr>
+                        <td>{{ row['customer_id'] }}</td>
+                        <td>{{ row['first_name'] }}</td>
+                        <td>{{ row['last_name'] }}</td>
+                        <td>{{ row['num_of_children'] }}</td>
+                        <td>{{ row['outreach_date'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+
+        <button id="viewInvalidDataBtn" class="purplebutton">View Invalid Data</button>
+
+        <!-- Add a new modal for displaying invalid data -->
+        <div id="invalidDataModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeInvalidDataModal()">&times;</span>
+                <h3>Invalid Data</h3>
+                <table border="1">
+                    <!-- Display invalid_data content here -->
+                    {% for index, row in invalid_data.iterrows() %}
+                    <tr>
+                        <td>{{ row['customer_id'] }}</td>
+                        <td>{{ row['first_name'] }}</td>
+                        <td>{{ row['last_name'] }}</td>
+                        <td>{{ row['num_of_children'] }}</td>
+                        <td>{{ row['outreach_date'] }}</td>
+                        <td>{{ row['validation_error'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
         </div>
     </div>
-
-    <button id="viewInvalidDataBtn">View Invalid Data</button>
-
-    <!-- Add a new modal for displaying invalid data -->
-    <div id="invalidDataModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeInvalidDataModal()">&times;</span>
-            <h3>Invalid Data</h3>
-            <table border="1">
-                <!-- Display invalid_data content here -->
-                {% for index, row in invalid_data.iterrows() %}
-                <tr>
-                    <td>{{ row['customer_id'] }}</td>
-                    <td>{{ row['first_name'] }}</td>
-                    <td>{{ row['last_name'] }}</td>
-                    <td>{{ row['num_of_children'] }}</td>
-                    <td>{{ row['outreach_date'] }}</td>
-                    <td>{{ row['validation_error'] }}</td>
-                </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
-
     <script>
         // Get the new button and modal for invalid data
         var invalidDataBtn = document.getElementById("viewInvalidDataBtn");

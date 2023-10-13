@@ -1,29 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <div style="display: block; text-align: center; font-size: 20px">
-        <h1>Add Users</h1>
-    </div>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+        }
+
+        td, tr {
+            padding: 8px;
+            margin: 15px;
+        }
+
+        body {
+            font-family: arial, sans-serif;
+        }
+        .sidenav {
+            width: 140px;
+            position: fixed;
+            z-index: 1;
+            top: 20px;
+            left: 10px;
+            background: #662484;
+            overflow-x: hidden;
+            padding: 8px 0;
+            margin-top: 140px;
+        }
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #FFFFFF;
+            display: block;
+            font-family: arial, sans-serif;
+        }
+        .sidenav a:hover {
+            color: #f3e419;
+        }
+        .movebody {
+            margin-left: 160px;
+            padding: 0px 10px;
+        }
+        .purplebutton{
+            background-color: #662484;
+            border: none;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .purplebutton:hover{
+            color: #f3e419;
+        }
+        .wrapborder{
+            border: 1px solid rgba(0, 0, 0, 0.16);
+            background-color: transparent;
+            border-radius: 4px;
+            padding: 32px;
+            width: 300px;
+            text-align: center
+        }
+    </style>
 </head>
-<body style="background-color:lightsteelblue">
-    <div>
-        <div style="display: block; text-align: center; margin-bottom: 20px; margin-left: 2px">
-            <label>Name: </label>
-            <input type="text"/>
-        </div>
-        <div style="display: block; text-align: center; margin-bottom: 20px">
-            <label>Email: </label>
-            <input type="text"/>
-        </div>
-        <div style="display: block; text-align: center; margin-bottom: 20px; margin-left: 8px">
-            <label>Role: </label>
-            <input type="text"/>
-        </div>
-        <div style="display: inline-block; margin-bottom: 20px; margin-right: 25px; margin-left: 715px">
-            <button onclick="window.location.href='./manage-users'">Save</button>
-        </div>
-        <div style="display: inline-block">
-            <button onclick="window.location.href='./manage-users'">Cancel</button>
+
+<body>
+    <a href="./index"><img src="ccgrouplogo.png" width="250"></a>
+    <hr>
+    <!-- <div class="sidenav">
+        <a href="./index">Home</a>
+        <a href="./users">Users</a>
+        <a href="./manage-users">Manage Users</a>
+        <a href="./upload-new-requests">Upload File</a>
+        <a href="https://www.childcaregroup.org/" target="_blank">Website</a>
+    </div> -->
+    <div class="movebody">
+        <h2>Add User Information</h2>
+        <div class="wrapborder">
+            <table>
+                <div style="display: block; margin-bottom: 20px">
+                    <tr><td><label>Name: </label></td>
+                    <td><input type="text"/></td>
+                    </tr>
+                </div>
+                <div style="display: block; margin-bottom: 20px">
+                    <tr><td><label>Email: </label></td>
+                    <td><input type="text"/></td>
+                    </tr>
+                </div>
+                <div style="display: block; margin-bottom: 20px">
+                    <tr><td><label for="role">Role: </label></td>
+                    <td><select name="role" id="role"> 
+                        <option value="Admin">Admin</option> 
+                        <option value="Eligibility Manager">Eligibility Manager</option> 
+                        <option value="Eligibility Supervisor">Eligibility Supervisor</option> 
+                        <option value="Eligibility Specialist">Eligibility Specialist</option>
+                        <option value="Senior Leader">Senior Leader</option> 
+                    </select></td>
+                    </tr>
+                </div>
+            </table>
+            <div style="display: inline-block">
+                <button class="purplebutton" onclick="window.location.href='./manage-users'">Save</button>
+            </div>
+            <div style="display: inline-block">
+                <button class="purplebutton" onclick="window.location.href='./manage-users'">Cancel</button>
+            </div>
         </div>
     </div>
 </body>

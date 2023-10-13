@@ -1,7 +1,6 @@
 from flask import Blueprint, redirect, request, render_template, jsonify
 from app.models import Newrequest, Currentrequest, User, PacketReturnStatus, Decision
 from app import db
-import logging
 
 assign = Blueprint('assign', __name__)
 
