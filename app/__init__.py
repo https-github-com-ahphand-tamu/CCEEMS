@@ -1,15 +1,21 @@
+import os
+import config
 import logging
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-import config
-import os
 
 db = SQLAlchemy()
+
 
 def create_app():
     app = Flask(__name__)
     load_dotenv()
+
+    app.config['SECRET_KEY'] = os.environ['FLASK_SECRET_KEY']
+
+    configure_logging(app)
     create_config(app)
 
     app.logger.setLevel(logging.INFO)
@@ -24,8 +30,10 @@ def create_app():
 
     return app
 
+
 def create_config(app):
     env = os.environ.get("FLASK_ENV")
+    app.logger.info(f"Application environment: {env}")
 
     if env == 'development':
         app.config.from_object(config.DevelopmentConfig)
@@ -35,3 +43,14 @@ def create_config(app):
         app.config.from_object(config.ProductionConfig)
     else:
         raise ValueError('Invalid configuration name')
+
+
+def configure_logging(app):
+    app.logger.setLevel(logging.INFO)
+
+    file_handler = logging.FileHandler('app.log')
+    file_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    file_handler.setFormatter(formatter)
+
+    app.logger.addHandler(file_handler)
