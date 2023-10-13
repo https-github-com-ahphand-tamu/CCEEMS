@@ -2,6 +2,7 @@ from flask import Blueprint, redirect, request, jsonify, render_template, curren
 from flask_login import login_user, logout_user, current_user
 from werkzeug.security import check_password_hash
 
+from app.helpers.user_helper import send_mail
 from app import db
 from app.decorators.login_decorator import requires_login
 from app.exceptions.validation import ValidationException
