@@ -1,8 +1,12 @@
 import os
 
+def getUri(databaseUrl):
+    if databaseUrl and databaseUrl.startswith("postgres://"):
+        databaseUrl = databaseUrl.replace("postgres://", "postgresql://", 1)
+    return databaseUrl
 
 class BaseConfig:
-    uri = os.getenv("DATABASE_URL")
+    uri = getUri(os.getenv("DATABASE_URL"))
     # For compatibility with Heroku
     if uri and uri.startswith("postgres://"):
         uri = uri.replace("postgres://", "postgresql://", 1)
@@ -21,7 +25,7 @@ class ProductionConfig(BaseConfig):
 
 
 class TestConfig:
-    uri = "sqlite:///default.db"
+    uri = getUri(os.getenv("DATABASE_URL_TEST"))
     SQLALCHEMY_DATABASE_URI = uri
     TESTING = True
     UPLOAD_LOCATION = r'features/testUploadFiles/'
