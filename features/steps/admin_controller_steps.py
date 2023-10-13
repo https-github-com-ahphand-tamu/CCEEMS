@@ -102,32 +102,32 @@ def step_when_send_delete_request(context, endpoint):
 
 @when(u'I enter a valid password "abcd@1234567"')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I enter a valid password "abcd@1234567"')
+    raise NotImplementedError('STEP: When I enter a valid password "abcd@1234567"')
 
 
 @then(u'the password should be updated in the database')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then the password should be updated in the database')
+    raise NotImplementedError('STEP: Then the password should be updated in the database')
 
 
 @when(u'I enter an invalid password "abcd"')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I enter an invalid password "abcd"')
+    raise NotImplementedError('STEP: When I enter an invalid password "abcd"')
 
 
 @then(u'I should see the message that password should be at least 8 characters long')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see the message that password should be at least 8 characters long')
+    raise NotImplementedError('STEP: Then I should see the message that password should be at least 8 characters long')
 
 
 @when(u'I enter password "abcd#123456" and "abc#123456"')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: When I enter password "abcd#123456" and "abc#123456"')
+    raise NotImplementedError('STEP: When I enter password "abcd#123456" and "abc#123456"')
 
 
 @then(u'I should see the message that both passwords should be the same.')
 def step_impl(context):
-    raise NotImplementedError(u'STEP: Then I should see the message that both passwords should be the same.')
+    raise NotImplementedError('STEP: Then I should see the message that both passwords should be the same.')
 
 # Hooks to set up and tear down the test database
 def before_scenario(context, scenario):
