@@ -12,6 +12,10 @@ from app.models import User, Role
 user_bp = Blueprint('user', __name__)
 
 
+@user_bp.route('/users/setpassword')
+def setPassword():
+    return render_template('password.html')
+
 @user_bp.route('/users/login', methods=['POST'])
 def login_auth():
     if request.method == 'POST':
@@ -108,6 +112,7 @@ def add_user():
         try:
             db.session.add(new_user)
             db.session.commit()
+            send_mail(request.base_url,email)
             return jsonify({'message': 'User added successfully'}), 201
         except Exception as e:
             db.session.rollback()
