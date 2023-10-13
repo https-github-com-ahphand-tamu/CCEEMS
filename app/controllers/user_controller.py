@@ -1,10 +1,10 @@
 import re
-from app.controllers.user_helper import send_mail
 from datetime import datetime
 
 from flask import Blueprint, redirect, request, jsonify, render_template, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 
+from app.controllers.user_helper import send_mail
 from app import db
 from app.exceptions.validation import ValidationException
 from app.models import User, Role
@@ -108,8 +108,6 @@ def add_user():
         try:
             db.session.add(new_user)
             db.session.commit()
-            print(request.base_url)
-            send_mail(request.base_url,email)
             return jsonify({'message': 'User added successfully'}), 201
         except Exception as e:
             db.session.rollback()
@@ -140,6 +138,7 @@ def update_user(user_id):
 
         try:
             db.session.commit()
+            send_mail(request.base_url,email)
             return jsonify({'message': 'User updated successfully'}), 200
         except Exception as e:
             db.session.rollback()
@@ -211,7 +210,7 @@ def manage_users():
         }
         user_list.append(user_data)
 
-    logging.debug(user_list)
+    current_app.logger.debug(user_list)
     return render_template('manage-users.html', users=user_list)
 
 @user_bp.route('/edit-users', methods=['GET'])
