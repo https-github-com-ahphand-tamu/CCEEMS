@@ -1,31 +1,98 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <div style="display: block; text-align: center; font-size: 20px">
-        <h1>Manage Users</h1>
-    </div>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+        body {
+            font-family: arial, sans-serif;
+        }
+        .sidenav {
+            width: 140px;
+            position: fixed;
+            z-index: 1;
+            top: 20px;
+            left: 10px;
+            background: #662484;
+            overflow-x: hidden;
+            padding: 8px 0;
+            margin-top: 140px;
+        }
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #FFFFFF;
+            display: block;
+            font-family: arial, sans-serif;
+        }
+        .sidenav a:hover {
+            color: #f3e419;
+        }
+        .movebody {
+            margin-left: 160px;
+            padding: 0px 10px;
+        }
+        .purplebutton{
+            background-color: #662484;
+            border: none;
+            color: white;
+            text-align: center;
+            cursor: pointer;
+            padding: 8px 15px;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        .purplebutton:hover{
+            color: #f3e419;
+        }
+    </style>
 </head>
-<body style="text-align: center">
-    <table border="2" style="margin-left:auto; margin-right:auto">
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Edit User</th>
-        </tr>
-        {% for user in users %}
-        <tr>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.role.name }}</td>
-            <td>
-                <button onclick="window.location.href='./edit-users'">Edit</button>
-            </td>
-        </tr>
-        {% endfor %} 
-    </table>
-    <div style="margin-top: 20px">
-        <button onclick="window.location.href='./add-users'">Add User</button>  
+<body>
+    <a href="./index"><img src="ccgrouplogo.png" width="250"></a>
+    <hr>
+    <div class="sidenav">
+        <a href="./index">Home</a>
+        <a href="./users">Users</a>
+        <a href="./manage-users">Manage Users</a>
+        <a href="./upload-new-requests">Upload File</a>
+        <a href="https://www.childcaregroup.org/" target="_blank">Website</a>
+    </div>
+    <div class="movebody">
+        <h2>Manage Users</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <!-- <th>Edit User</th> -->
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.name }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.role.name }}</td>
+                <td>
+                    <button class="purplebutton" onclick="window.location.href='./edit-users'">Edit</button>
+                </td>
+            </tr>
+            {% endfor %} 
+        </table>
+        <div style="margin-top: 20px">
+            <button class="purplebutton" onclick="window.location.href='./add-users'">Add User</button>  
+        </div>
     </div>
 </body>
 </html>
