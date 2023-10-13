@@ -83,20 +83,20 @@ def validateData(data):
 
         # Check if 'customer_id' contains digits only and does not start from 0
         if not str(row['customer_id']).isdigit() or str(row['customer_id'])[0] == '0':
-            validation_errors.append("Invalid value in 'customer_id'. Must contain digits only and not start from 0.")
-
+            validation_errors.append("Invalid value in customer_id. Must contain digits only and not start from 0.")
+        
         # Check if 'num_of_children' is a non-negative integer
         if not str(row['num_of_children']).isdigit() or int(row['num_of_children']) < 0:
-            validation_errors.append("Invalid value in 'num_of_children'. Must be a non-negative integer.")
-
+            validation_errors.append("Invalid value in num_of_children. Must be a non-negative integer.")
+        
         # Check if 'Outreach_Date' is a valid date and not in the future
         try:
             outreach_date = pd.to_datetime(row['outreach_date'])
             if outreach_date > datetime.now():
-                validation_errors.append("Invalid date in 'Outreach_Date'. Cannot be in the future.")
+                validation_errors.append("Invalid date in Outreach_Date. Cannot be in the future.")
         except ValueError:
-            validation_errors.append("Invalid date format in 'Outreach_Date'.")
-
+            validation_errors.append("Invalid date format in Outreach_Date.")
+        
         if validation_errors:
             row_with_error = row.copy()
             row_with_error['validation_error'] = ', '.join(validation_errors)
