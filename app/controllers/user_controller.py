@@ -178,7 +178,7 @@ def manage_users():
         }
         user_list.append(user_data)
 
-    logging.debug(user_list)
+    current_app.logger.debug(user_list)
     return render_template('manage-users.html', users=user_list)
 
 @user_bp.route('/edit-users', methods=['GET'])
