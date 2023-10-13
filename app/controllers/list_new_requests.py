@@ -1,7 +1,6 @@
-from flask import Blueprint, redirect, request, render_template
+from flask import Blueprint, current_app
 from app.models import Newrequest, Currentrequest
 from app import db
-import logging
 
 assign = Blueprint('assign', __name__)
 
@@ -14,7 +13,7 @@ def list_new_requests():
     # per_page = 50
     # new_requests = Newrequest.query.paginate(page, per_page, error_out=False)
     new_requests = Newrequest.query.all()
-    logging.info(new_requests)
+    current_app.logger.info(new_requests)
     print(new_requests)
     return render_template('new-requests.html', new_requests=new_requests)
 

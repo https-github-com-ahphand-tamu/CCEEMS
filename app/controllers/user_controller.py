@@ -1,8 +1,7 @@
-import logging
 import re
 from datetime import datetime
 
-from flask import Blueprint, redirect, request, jsonify, render_template
+from flask import Blueprint, redirect, request, jsonify, render_template, current_app
 from werkzeug.security import check_password_hash
 
 from app import db
@@ -37,7 +36,7 @@ def get_users():
         }
         user_list.append(user_data)
 
-    logging.debug(user_list)
+    current_app.logger.debug(user_list)
     return render_template('users.html', users=user_list)
 
 
@@ -62,7 +61,7 @@ def get_user_by_id(user_id):
 def add_user():
     try:
         data = request.get_json()
-        logging.debug(f"POST to /users: {data}")
+        current_app.logger.debug(f"POST to /users: {data}")
 
         validate_user_payload(data)
         email = validate_user_email(data["email"])
@@ -92,7 +91,7 @@ def add_user():
 def update_user(user_id):
     try:
         data = request.get_json()
-        logging.debug(f"PUT to /users with user id: {user_id} and data: {data}")
+        current_app.logger.debug(f"PUT to /users with user id: {user_id} and data: {data}")
 
         validate_user_payload(data)
         email = validate_user_email(data["email"])
@@ -145,7 +144,7 @@ def validate_role(role_name):
     role = Role.query.filter_by(name=role_name).first()
     if not role:
         message = f"Role '{role_name}' does not exist"
-        logging.info(message)
+        current_app.logger.info(message)
         raise ValidationException(message, 400)
     return role
 
