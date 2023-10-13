@@ -28,7 +28,7 @@ class User(db.Model, UserMixin):
         self.name = name
         self.email = email
         self.role = role
-        self.password = None
+        self.password = ""
 
     def __repr__(self):
         return f'<User {self.name}>'

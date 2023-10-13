@@ -45,15 +45,15 @@ Feature: Admin Controller
 
   Scenario: Update password for a new User
     Given the application is running
-    When I enter a valid password "abcd@1234567"
-    Then the password should be updated in the database
+    When I access endpoint "/users/setpassword?email=chidambaramg5@gmail.com" and enter a valid password "abcd@1234567"
+    Then the login page should be displayed
 
   Scenario: User enters a password of invalid length
     Give the application is running
-    When I enter an invalid password "abcd"
+    When I enter an invalid password "abcd" at "/users/setpassword?email=chidambaramg5@gmail.com"
     Then I should see the message that password should be at least 8 characters long
 
   Scenario: User enters a passwords that do not match
     Given the application is running
-    When I enter password "abcd#123456" and "abc#123456"
+    When I enter password "abcd#123456" and "abc#123456" at "/users/setpassword?email=chidambaramg5@gmail.com"
     Then I should see the message that both passwords should be the same.
