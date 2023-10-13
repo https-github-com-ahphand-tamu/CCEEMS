@@ -53,7 +53,7 @@ class Newrequest(db.Model):
     __tablename__ = 'new_requests'
 
     id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.String(80), unique=False, nullable=False)
+    customer_id = db.Column(db.String(80), unique=True, nullable=False)
     first_name = db.Column(db.String(80), unique=False, nullable=False)
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     num_of_children = db.Column(db.Integer, nullable=False)

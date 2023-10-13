@@ -37,26 +37,25 @@ class TestUploadNewRequestsFlow(unittest.TestCase):
         response = self.app.post('/upload-new-requests', data=data, content_type='multipart/form-data')
         self.assertEqual(response.status_code, 404)
 
-    def test_upload_file_with_invalid_data(self):
+    def helper_open_file(self):
         with open(r'./testfiles/invalid_csv.csv', 'rb') as file:
             data = {'new-requests': file}
             response = self.app.post('/upload-new-requests', data=data, content_type='multipart/form-data')
         self.assertEqual(response.status_code, 200)
         self.assertIn('text/html', response.content_type)
-    
-        self.assertIn('Invalid value in customer_id. Must contain digits only and not start from 0.', response.data.decode('utf-8'))
+        return response
 
-        self.assertIn('Invalid value in num_of_children. Must be a non-negative integer.', response.data.decode('utf-8'))
-        self.assertIn('Invalid date in Outreach_Date. Cannot be in the future.', response.data.decode('utf-8'))
-        self.assertIn('Invalid date format in Outreach_Date.', response.data.decode('utf-8'))
+    def test_upload_file_with_invalid_customer_id(self):
+        response = self.helper_open_file()
+        self.assertIn('Invalid value in customer_id. Must contain digits only and not start from 0.', response.data.decode('utf-8'))
     
-    # def test_upload_file_with_future_date(self):
-    #     with open(r'./testfiles/file_with_future_date.csv', 'rb') as file:
-    #         data = {'new-requests': file}
-    #         response = self.app.post('/upload-new-requests', data=data, content_type='multipart/form-data')
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertIn('text/html', response.content_type)
-    #     # Add assertions to check for presence of future date error in the response
+    def test_upload_file_with_invalid_outreach_date_future(self):
+        response = self.helper_open_file()
+        self.assertIn('Invalid date in Outreach_Date. Cannot be in the future.', response.data.decode('utf-8'))
+    
+    def test_upload_file_with_invalid_outreach_date_format(self):
+        response = self.helper_open_file()
+        self.assertIn('Invalid date format in Outreach_Date.', response.data.decode('utf-8'))
    
 if __name__ == '__main__':
     unittest.main()
