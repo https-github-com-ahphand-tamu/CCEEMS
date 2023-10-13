@@ -95,34 +95,49 @@ def step_when_send_delete_request(context, endpoint):
     context.response = client.delete(endpoint)
     context.data = json.loads(context.response.data.decode())
 
-@when(u'I enter a valid password "abcd@1234567"')
+@when(u'I access endpoint "{endpoint}" and enter a valid password "{Password}"')
+def step_when_access_endpoint(context, endpoint, Password):
+    context.response = client.get(endpoint)
+    context.data = context.response.data.decode()
+
+@then(u'the login page should be displayed')
 def step_impl(context):
-    raise NotImplementedError('STEP: When I enter a valid password "abcd@1234567"')
+    soup = BeautifulSoup(context.response.data, 'html.parser')
+    titles = soup.find_all('title')
+    expected_headers = ['Login Page']
+    for title in titles:
+        assert title.text in expected_headers
 
 
-@then(u'the password should be updated in the database')
-def step_impl(context):
-    raise NotImplementedError('STEP: Then the password should be updated in the database')
 
-
-@when(u'I enter an invalid password "abcd"')
-def step_impl(context):
-    raise NotImplementedError('STEP: When I enter an invalid password "abcd"')
+@when(u'I enter an invalid password "{password}" at "{endpoint}"')
+def step_impl(context,endpoint,Password):
+    context.response = client.get(endpoint)
+    context.data = context.response.data.decode()
 
 
 @then(u'I should see the message that password should be at least 8 characters long')
 def step_impl(context):
-    raise NotImplementedError('STEP: Then I should see the message that password should be at least 8 characters long')
+    soup = BeautifulSoup(context.response.data, 'html.parser')
+    titles = soup.find_all('div')
+    expected_headers = ['8 characters']
+    for title in titles:
+        assert title.text in expected_headers
 
 
-@when(u'I enter password "abcd#123456" and "abc#123456"')
-def step_impl(context):
-    raise NotImplementedError('STEP: When I enter password "abcd#123456" and "abc#123456"')
+@when(u'I enter password "{password1}" and "{password2}" at "{endpoint}"')
+def step_impl(context,endpoint):
+    context.response = client.get(endpoint)
+    context.data = context.response.data.decode()
 
 
 @then(u'I should see the message that both passwords should be the same.')
 def step_impl(context):
-    raise NotImplementedError('STEP: Then I should see the message that both passwords should be the same.')
+    soup = BeautifulSoup(context.response.data, 'html.parser')
+    titles = soup.find_all('div')
+    expected_headers = ['both passwords']
+    for title in titles:
+        assert title.text in expected_headers
 
 # Hooks to set up and tear down the test database
 def before_scenario(context, scenario):
@@ -133,3 +148,4 @@ def after_scenario(context, scenario):
     with app.app_context():
         db.session.remove()
         db.drop_all()
+
