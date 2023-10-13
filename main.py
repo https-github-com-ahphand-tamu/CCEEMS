@@ -27,9 +27,5 @@ def login():
 def home():
     return render_template('index.html')
 
-@app.route('/users/setpassword')
-def setPassword():
-    return render_template('password.html')
-
 if __name__ == '__main__':
     app.run(debug=True)
