@@ -18,7 +18,7 @@ def login_auth():
         user_password = request.form['password']
         user = User.query.filter_by(email=email_id).first()
         if not user:
-            current_app.logger.error(f"Invalid credentials for user: {email_id}")
+            current_app.logger.error(f"User with email {email_id} does not exists")
             return render_template('Login.html', incorrect_password=True)
         elif check_password_hash(user.password, user_password):
             login_user(user)

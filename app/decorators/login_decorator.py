@@ -27,7 +27,7 @@ def requires_login(func):
         user_id = kwargs.get('user_id')
         if user_id and current_user.id != user_id:
             flash('You do not have permission to view this user\'s profile.', 'danger')
-            return redirect(url_for('index'))
+            return redirect('/index')
 
         current_app.logger.debug(f"User {user_id} is trying to login")
         return func(*args, **kwargs)
