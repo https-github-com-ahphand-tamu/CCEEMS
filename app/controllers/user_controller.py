@@ -4,7 +4,7 @@ from datetime import datetime
 from flask import Blueprint, redirect, request, jsonify, render_template, current_app
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.controllers.user_helper import send_mail
+from app.helpers.user_helper import send_mail
 from app import db
 from app.exceptions.validation import ValidationException
 from app.models import User, Role
