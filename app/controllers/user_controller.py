@@ -195,11 +195,3 @@ def edit_users():
 @user_bp.route('/add-users', methods=['GET'])
 def add_users():
     return render_template('add-users.html')
-
-@user_bp.route('/dashboard', methods=['GET'])
-def dashboard():
-    return render_template('dashboard.html')
-
-@user_bp.route('/analytics', methods=['GET'])
-def analytics():
-    return render_template('analytics.html')
