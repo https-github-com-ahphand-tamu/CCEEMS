@@ -1,3 +1,4 @@
+from flask import render_template, request
 from flask import Blueprint, redirect, request, render_template, jsonify
 from app.models import Newrequest, Currentrequest, User, PacketReturnStatus, Decision
 from app import db
@@ -5,7 +6,6 @@ import logging
 
 assign = Blueprint('assign', __name__)
 
-from flask import render_template, request
 
 @assign.route('/new-requests', methods=['GET'])
 def list_new_requests():
@@ -17,6 +17,7 @@ def list_new_requests():
     users = User.query.all()
     logging.info("USERS: ", users)
     return render_template('new-requests.html', new_requests=new_requests, users=users)
+
 
 @assign.route('/assign_request/<int:request_id>', methods=['POST'])
 def assign_request(request_id):
@@ -48,4 +49,5 @@ def assign_request(request_id):
             db.session.commit()
             return jsonify({'message': 'Request assigned successfully'})
         except:
-            return jsonify({'error': 'Error assigning request'}), 500  # Return an error response with an appropriate status code
+            # Return an error response with an appropriate status code
+            return jsonify({'error': 'Error assigning request'}), 500

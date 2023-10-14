@@ -50,7 +50,8 @@ def configure_logging(app):
 
     file_handler = logging.FileHandler('app.log')
     file_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     file_handler.setFormatter(formatter)
 
     app.logger.addHandler(file_handler)

@@ -83,7 +83,8 @@ def populateDatabase(upload_file, file_path):
 
         # ALTER SEQUENCE new_requests_id_seq RESTART WITH 1;
         # """
-        insert_stmt = insert(Newrequest).values(valid_data.to_dict(orient='records'))
+        insert_stmt = insert(Newrequest).values(
+            valid_data.to_dict(orient='records'))
         on_conflict_stmt = insert_stmt.on_conflict_do_update(
             index_elements=['customer_id'],
             set_={
