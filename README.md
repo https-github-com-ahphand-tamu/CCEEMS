@@ -2,8 +2,8 @@
 
 `Deployed App`: [CCEEMS](https://childcare-d71b0285d615.herokuapp.com/)
 
-* This is developed using Flask as the backend and HTML, CSS and JavaScript as the frontend. 
-* Python version `3.10.12` is required to build and run this application. 
+* This is developed using Flask as the backend and HTML, CSS and JavaScript as the frontend.
+* Python version `3.10.12` is required to build and run this application.
 * If you plan to deploy this in heroku, please see Heroku's supported python runtimes and stacks [Heroku\'s Stacks & Python Support](https://devcenter.heroku.com/articles/python-support). Check the same for `AWS` as well.
 
 
@@ -21,6 +21,7 @@
 1. Run migrations - `flask --app main db upgrade`
 1. Run seeds - `python seed.py`
 1. Run the application using `flask --app main run` or `gunicorn main:app`
+1. Before you push your code, please format the code to follow the [pep8 standards](#code-formatting) and check your [code quality](#code-quality-check-pylint).
 
 ### Steps to Deploy (Heroku)
 1. Clone this repo using `git clone`
@@ -48,3 +49,16 @@
 1. In `.env` file, set `FLASK_ENV=test`
 1. Run tests - `behave`
 1. Get coverage - `coverage run -m behave`
+
+
+### Code formatting
+To automatically format the code to follow the pep8 style guide, run the following command:
+```
+autopep8 --in-place --recursive app main.py seed.py
+```
+
+### Code Quality Check (Pylint)
+To check the code quality using pylint, run the following command:
+```
+pylint app
+```

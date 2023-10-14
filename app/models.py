@@ -5,6 +5,7 @@ from sqlalchemy.orm import relationship
 from app import db
 from enum import Enum
 
+
 class User(db.Model):
     __tablename__ = 'users'
 
@@ -14,7 +15,8 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
     password = db.Column(db.String(128), nullable=True)
     created_on = db.Column(DateTime, default=datetime.utcnow)
-    modified_on = db.Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    modified_on = db.Column(
+        DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     verified_on = db.Column(DateTime)
     last_login = db.Column(DateTime)
 
@@ -66,15 +68,18 @@ class Newrequest(db.Model):
         self.num_of_children = num_of_children
         self.outreach_date = outreach_date
 
+
 class PacketReturnStatus(Enum):
     RETURNED = "Returned"
     NOT_RETURNED = "Not Returned"
     WAITING = "Waiting for Response"
 
+
 class Decision(Enum):
     ENROLLED = "Enrolled"
     NOT_ENROLLED = "Not Enrolled"
     WAITING = "Waiting for Response"
+
 
 class Currentrequest(db.Model):
     __tablename__ = 'current_requests'
@@ -85,7 +90,8 @@ class Currentrequest(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     num_of_children = db.Column(db.Integer, unique=False, nullable=False)
     outreach_date = db.Column(db.Date, unique=False, nullable=False)
-    packet_return_status = db.Column(db.Enum(PacketReturnStatus), nullable=False)
+    packet_return_status = db.Column(
+        db.Enum(PacketReturnStatus), nullable=False)
     packet_received_date = db.Column(db.Date, unique=False, nullable=True)
     staff_initials = db.Column(db.String(80), unique=False, nullable=False)
     decision = db.Column(db.Enum(Decision), nullable=False)

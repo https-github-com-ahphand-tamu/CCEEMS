@@ -67,7 +67,8 @@ def add_user():
         email = validate_user_email(data["email"])
         role = validate_role(data["role"])
 
-        user_exists = db.session.query(User).filter(User.email == email).first()
+        user_exists = db.session.query(User).filter(
+            User.email == email).first()
         if user_exists:
             return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
 
@@ -91,7 +92,8 @@ def add_user():
 def update_user(user_id):
     try:
         data = request.get_json()
-        current_app.logger.debug(f"PUT to /users with user id: {user_id} and data: {data}")
+        current_app.logger.debug(
+            f"PUT to /users with user id: {user_id} and data: {data}")
 
         validate_user_payload(data)
         email = validate_user_email(data["email"])
@@ -137,7 +139,8 @@ def delete_user(user_id):
 
 def validate_user_payload(data):
     if 'name' not in data or 'email' not in data or 'role' not in data:
-        raise ValidationException('Missing required fields (name, email, role)', 400)
+        raise ValidationException(
+            'Missing required fields (name, email, role)', 400)
 
 
 def validate_role(role_name):
@@ -152,7 +155,8 @@ def validate_role(role_name):
 def validate_user_email(email):
     sanitized_email = sanitize_email(email)
     if not is_valid_email(sanitized_email):
-        raise ValidationException(f'Invalid email address: {sanitized_email}', 400)
+        raise ValidationException(
+            f'Invalid email address: {sanitized_email}', 400)
     return sanitized_email
 
 
@@ -164,6 +168,7 @@ def sanitize_email(email):
 def is_valid_email(email):
     pattern = r'^[\w\.-]+@[\w\.-]+$'
     return bool(re.match(pattern, email))
+
 
 @user_bp.route('/manage-users', methods=['GET'])
 def manage_users():
@@ -181,9 +186,11 @@ def manage_users():
     current_app.logger.debug(user_list)
     return render_template('manage-users.html', users=user_list)
 
+
 @user_bp.route('/edit-users', methods=['GET'])
 def edit_users():
     return render_template('edit-users.html')
+
 
 @user_bp.route('/add-users', methods=['GET'])
 def add_users():
