@@ -4,31 +4,85 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        /* Custom CSS for the purple table and button */
+        .purple-table  {
+            background-color: purple;
+            color: white;
+        }
+
+        .purple-button {
+            background-color: purple;
+            color: white;
+            border: none;
+        }
+
+        .purple-button:hover {
+            background-color: darkpurple;
+        }
+
+        .sidenav {
+            width: 140px;
+            position: fixed;
+            z-index: 1;
+            top: 20px;
+            left: 10px;
+            background: #662484;
+            overflow-x: hidden;
+            padding: 8px 0;
+            margin-top: 140px;
+        }
+
+        .sidenav a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #FFFFFF;
+            display: block;
+            font-family: arial, sans-serif;
+        }
+
+        .sidenav a:hover {
+            color: #f3e419;
+        }
+    </style>
 </head>
 <body>
-    <h1>New Requests</h1>
-    <table>
-        <tbody>
-            <tr>
-                <td>ID</td>
-                <td>First Name</td>
-                <td>Last Name</td>
-            </tr>
-            {% for request in new_requests %}
+    <div class="sidenav">
+        <a href="./index">Home</a>
+        <a href="./users">Users</a>
+        <a href="./manage-users">Manage Users</a>
+        <a href="./upload-new-requests">Upload File</a>
+        <a href="https://www.childcaregroup.org/" target="_blank">Website</a>
+    </div>
+    <div class="container">
+        <h1>New Requests</h1>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark purple-table">
                 <tr>
-                    <td>{{ request.customer_id }}</td>
-                    <td>{{ request.first_name }}</td>
-                    <td>{{ request.last_name }}</td>
-                    <td>
-                        <!-- Button to trigger the modal -->
-                        <button class="assign-button" data-toggle="modal" data-target="#assignModal{{ request.id }}" data-request-id="{{ request.id }}">
-                            Assign
-                        </button>
-                    </td>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Actions</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for request in new_requests %}
+                    <tr>
+                        <td>{{ request.customer_id }}</td>
+                        <td>{{ request.first_name }}</td>
+                        <td>{{ request.last_name }}</td>
+                        <td>
+                            <!-- Button to trigger the modal -->
+                            <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ request.id }}" data-request-id="{{ request.id }}">
+                                Assign
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
 
     <!-- Modal for assignment -->
     <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
