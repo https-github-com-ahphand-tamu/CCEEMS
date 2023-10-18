@@ -1,30 +1,23 @@
 from flask import render_template, request
-from flask import Blueprint, redirect, request, render_template, jsonify
+from flask import Blueprint, request, render_template, jsonify
 from app.models import Newrequest, Currentrequest, User, PacketReturnStatus, Decision
 from app import db
 import logging
 
 assign = Blueprint('assign', __name__)
 
-
 @assign.route('/new-requests', methods=['GET'])
 def list_new_requests():
     # Query the new requests from the database, limiting to 50 per page
-    # page = request.args.get('page', 1, type=int)
-    # per_page = 50
-    # new_requests = Newrequest.query.paginate(page, per_page, error_out=False)
     new_requests = Newrequest.query.all()
     users = User.query.all()
     logging.info("USERS: ", users)
     return render_template('new-requests.html', new_requests=new_requests, users=users)
 
-
 @assign.route('/assign_request/<int:request_id>', methods=['POST'])
 def assign_request(request_id):
     # Get the user ID and other assignment details from the form
     user_id = request.form['user_id']
-    # Add more assignment logic here
-
     # Move the request from new_requests to current_requests
     new_request = Newrequest.query.get(request_id)
     if new_request:
