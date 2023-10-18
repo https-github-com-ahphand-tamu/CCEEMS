@@ -1,9 +1,21 @@
-from app import create_app, db
 from flask import render_template
+from flask_login import LoginManager
 from flask_migrate import Migrate
+
+from app import create_app, db
+from app.models import User
 
 app = create_app()
 migrate = Migrate(app, db)
+
+login_manager = LoginManager()
+login_manager.login_view = "login"
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 
 @app.route('/')
