@@ -44,3 +44,4 @@ def assign_request(request_id):
         except:
             # Return an error response with an appropriate status code
             return jsonify({'error': 'Error assigning request'}), 500
+    return jsonify({'message': 'No new request found with id: '+ str(request_id)})

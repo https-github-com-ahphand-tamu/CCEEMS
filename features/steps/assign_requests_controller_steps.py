@@ -3,6 +3,7 @@ from flask import Flask
 from app import create_app, db
 from app.seeds import roles, users
 import os
+from app.models import Newrequest
 
 os.environ['FLASK_ENV'] = 'test'
 app = create_app()
@@ -37,7 +38,6 @@ def step_when_i_click_assign_button(context):
 @when('I select a user from the dropdown')
 def step_when_i_select_user(context):
     context.data = {'user_id': '1'}  # Change '1' to a valid user ID
-    context.response = context.client.post(f'/assign_request/{context.request_id}', data=context.data)
 
 @when('I submit the assignment form')
 def step_when_i_submit_assignment_form(context):
@@ -54,6 +54,23 @@ def step(context):
         db.create_all()
         roles.seed()
         users.seed()
+        new_request_1 = Newrequest(
+                customer_id="12345",
+                first_name="John",
+                last_name="Doe",
+                num_of_children=2,
+                outreach_date="2023-10-20"
+            )
+        new_request_2 = Newrequest(
+            customer_id="67890",
+            first_name="Jane",
+            last_name="Smith",
+            num_of_children=1,
+            outreach_date="2023-10-21"
+        )
+        db.session.add(new_request_1)
+        db.session.add(new_request_2)
+        db.session.commit()
 
 @given('purge db')
 def step(context):
