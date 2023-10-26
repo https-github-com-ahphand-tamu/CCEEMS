@@ -14,4 +14,4 @@ Feature: Assign Requests Controller
     Then I should see a success message
 
   Scenario: Purge DB
-    Given: purge db
+    Given purge db

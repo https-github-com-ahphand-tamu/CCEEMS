@@ -1,6 +1,6 @@
 import os
 import logging
-from behave import given, when, then
+from behave import when, then
 from flask import Flask
 from app import create_app, db
 from werkzeug.datastructures import FileStorage
@@ -17,8 +17,8 @@ def simulate_form_submission(filename):
 
 @when('I attach a file named "{filename}"')
 def step_when_attach_file(context, filename):
-    # Assuming the files are located in the "features/files" directory
-    file_path = os.path.join(os.getcwd(), 'features', 'files', filename)
+    # Assuming the files are located in the "features/ENV[UPLOAD_LOCATION]" directory
+    file_path = os.path.join(os.getcwd(), app.config["UPLOAD_LOCATION"], filename)
     context.file_path = file_path
 
 @when('I submit the form')
@@ -30,15 +30,22 @@ def step_when_submit_form(context):
 def step_then_data_inserted_successfully(context):
     assert 'Data inserted successfully' in context.response.data.decode()
 
-@then('the rendered html should contain "{expected_text}"')
-def step_then_rendered_html_contains(context, expected_text):
+@then('the rendered html should contain "{expected_text}" in the valid table and "{invalid_text}" in invalid table')
+def step_then_rendered_html_contains(context, expected_text, invalid_text):
     response = context.response
-    logging.info(response)
-    # Check if the response is HTML
-    assert response.content_type == 'text/html; charset=utf-8'
-    # Parse the rendered HTML from the response
-    soup = BeautifulSoup(response.data, 'html.parser')
-    # Find all occurrences of the expected text
-    found_text = soup.find(text=expected_text)
-    # Check if the expected text is found in the HTML
-    assert found_text is not None
+    page_content = response.data.decode('utf-8')
+    
+    # Check if the expected_text is present in the valid table
+    assert expected_text in page_content
+    
+    # Check if the name is not in the valid table
+    valid_table_start = page_content.find('Valid Data')
+    valid_table_end = page_content.find('Invalid Data')
+
+    if invalid_text != "NONE":
+        # Check if the invalid_text is present in the invalid table
+        invalid_table_start = page_content.find('Invalid Data')
+        assert invalid_table_start != -1  # Check if the "Invalid Data" header exists in the page
+        invalid_table_content = page_content[invalid_table_start:]
+        logging.info(invalid_table_content)
+        assert invalid_text in invalid_table_content

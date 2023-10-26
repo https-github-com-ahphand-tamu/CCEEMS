@@ -2,11 +2,11 @@ from werkzeug.security import generate_password_hash
 
 from app import db
 from app.models import User, Role
-
+import logging
 
 def seed():
     admin_role = Role.query.filter_by(name="Admin").first()
-
+    logging.info("ADMIN ROLE: " + str(admin_role))
     user1 = User(name='Test1', email="test1@tamu.edu", role=admin_role)
     user1.password = generate_password_hash("Password@123")
     db.session.add(user1)

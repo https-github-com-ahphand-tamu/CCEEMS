@@ -1,5 +1,6 @@
 Feature: User Controller
-
+  Scenario: Setup DB
+    Given create db
   Scenario: Get a list of users
     Given the application is running
     When I access the "/users" endpoint
@@ -41,3 +42,5 @@ Feature: User Controller
     When I send a DELETE request to "/users/1"
     Then the response status code should be 404
     Then the response should contain "User not found"
+  Scenario: Purge DB
+    Given purge db

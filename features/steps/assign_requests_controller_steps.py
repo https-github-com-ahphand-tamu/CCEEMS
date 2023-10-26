@@ -3,7 +3,7 @@ from flask import Flask
 from app import create_app, db
 from app.seeds import roles, users
 import os
-from app.models import Newrequest
+from app.models import Newrequest, Role
 
 os.environ['FLASK_ENV'] = 'test'
 app = create_app()

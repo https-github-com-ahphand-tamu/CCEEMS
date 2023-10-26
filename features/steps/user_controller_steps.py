@@ -94,13 +94,3 @@ def step_when_send_put_request(context, endpoint):
 def step_when_send_delete_request(context, endpoint):
     context.response = client.delete(endpoint)
     context.data = json.loads(context.response.data.decode())
-
-# Hooks to set up and tear down the test database
-def before_scenario(context, scenario):
-    with app.app_context():
-        db.create_all()
-
-def after_scenario(context, scenario):
-    with app.app_context():
-        db.session.remove()
-        db.drop_all()
