@@ -38,11 +38,13 @@ def requires_admin(func):
     @wraps(func)
     @login_required
     def decorated_view(*args, **kwargs):
-        current_app.logger.debug(f"User {current_user.email} is trying to access an admin route")
+        current_app.logger.debug(
+            f"User {current_user.email} is trying to access an admin route")
         role = get_role_from_user(current_user)
         if role.name == "Admin":
             return func(*args, **kwargs)
         else:
-            current_app.logger.debug(f"User {current_user.email} is not an admin, so forbidden from accessing the route")
+            current_app.logger.debug(
+                f"User {current_user.email} is not an admin, so forbidden from accessing the route")
             abort(403)
     return decorated_view

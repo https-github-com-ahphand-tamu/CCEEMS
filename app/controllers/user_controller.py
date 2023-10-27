@@ -26,7 +26,8 @@ def login_auth():
         return render_template('Login.html', incorrect_password=True)
     elif check_password_hash(user.password, user_password):
         login_user(user)
-        current_app.logger.info(f"User with email: {email_id} and role: {user.role.name} is successfully logged in!")
+        current_app.logger.info(
+            f"User with email: {email_id} and role: {user.role.name} is successfully logged in!")
         current_app.logger.debug(f"Current user: {current_user}")
         return redirect('/index')
     else:
@@ -41,31 +42,31 @@ def logout():
     logout_user()
     return
 
+
 @user_bp.route('/users/updatePassword', methods=['POST'])
 def update_password():
 
     # print ("Check 0")
     if request.method == 'POST':
-        
+
         emailid = request.args.get('email')
-        
+
         user_password = request.form['password']
-        
+
         user_repassword = request.form['re-password']
-        
+
         user = User.query.filter_by(email=emailid).first()
         if user is None:
             return jsonify({'message': 'User not found'}), 404
-        if(user.password != ""):
-            return render_template('password.html', password_exists=True, incorrect_password=False, mismatch_password =False)
-        if(len(user_password) < 8):
-            return render_template('password.html', password_exists=False, incorrect_password=True, mismatch_password =False)
-        if(user_password != user_repassword):
-            return render_template('password.html', password_exists=False, incorrect_password=False, mismatch_password =True)
+        if (user.password != ""):
+            return render_template('password.html', password_exists=True, incorrect_password=False, mismatch_password=False)
+        if (len(user_password) < 8):
+            return render_template('password.html', password_exists=False, incorrect_password=True, mismatch_password=False)
+        if (user_password != user_repassword):
+            return render_template('password.html', password_exists=False, incorrect_password=False, mismatch_password=True)
         # user1 = User.query.filter_by(email=emailid).first()
         # print ("Check 1")
         # user = db.session.get(User, user1.id)
-        
 
         user.password = generate_password_hash(user_password)
 
@@ -77,6 +78,7 @@ def update_password():
             return jsonify({'message': 'Failed to update Password', 'error': str(e)}), 500
         finally:
             db.session.close()
+
 
 @user_bp.route('/user/<int:user_id>', methods=['GET'])
 @requires_login

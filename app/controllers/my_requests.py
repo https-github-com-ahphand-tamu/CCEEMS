@@ -10,6 +10,7 @@ from flask import redirect, url_for
 
 my_req_bp = Blueprint('my-requests', __name__)
 
+
 class RequestForm(FlaskForm):
     id = IntegerField('ID')
     customer_id = StringField('Customer ID')
@@ -26,6 +27,7 @@ class RequestForm(FlaskForm):
     not_enrolled_reason = StringField('Not Enrolled Reason')
     submit = SubmitField('Save Changes')
 
+
 @my_req_bp.route('/my-requests', methods=['GET', 'POST'])
 def view_requests():
     requests_data = Currentrequest.query.order_by(Currentrequest.id).all()
@@ -37,6 +39,7 @@ def view_requests():
         forms.append((request_data.id, form))
 
     return render_template('my_requests.html', forms=forms)
+
 
 @my_req_bp.route('/my-requests/<int:request_id>', methods=['POST'])
 def update_request(request_id):
@@ -50,4 +53,3 @@ def update_request(request_id):
 
     # Redirect to avoid form resubmission on page refresh
     return redirect(url_for('my-requests.view_requests'))
-

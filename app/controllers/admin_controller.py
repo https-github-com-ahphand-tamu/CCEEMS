@@ -57,11 +57,10 @@ def add_user():
         validate_add_user_payload(data)
         email = validate_user_email(data["email"])
         role = validate_role(data["role"])
-        user_exists = db.session.query(User).filter(User.email == email).first()
+        user_exists = db.session.query(User).filter(
+            User.email == email).first()
         if user_exists:
             return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
-
-        
 
         new_user = User(name=data.get('name'), email=email, role=role)
         new_user.created_on = datetime.utcnow()
@@ -69,7 +68,7 @@ def add_user():
         try:
             db.session.add(new_user)
             db.session.commit()
-            send_mail(request.base_url,email)
+            send_mail(request.base_url, email)
             return jsonify({'message': 'User added successfully'}), 201
         except Exception as e:
             db.session.rollback()
@@ -85,7 +84,8 @@ def add_user():
 def update_user(user_id):
     try:
         data = request.get_json()
-        current_app.logger.debug(f"PUT to /users with user id: {user_id} and data: {data}")
+        current_app.logger.debug(
+            f"PUT to /users with user id: {user_id} and data: {data}")
 
         validate_add_user_payload(data)
         email = validate_user_email(data["email"])
@@ -128,4 +128,3 @@ def delete_user(user_id):
         return jsonify({'message': 'Failed to delete user', 'error': str(e)}), 500
     finally:
         db.session.close()
-
