@@ -100,34 +100,41 @@ def step_when_send_delete_request(context, endpoint):
     context.app.logger.info(f"{context.response.status_code}, {context.response.text}")
     context.data = json.loads(context.response.data.decode())
 
-@when(u'I enter a valid password "abcd@1234567"')
-def step_impl(context):
-    raise NotImplementedError('STEP: When I enter a valid password "abcd@1234567"')
+@when('I access endpoint "{endpoint}" and enter a valid email "{email}"("{name}"), password "{password}" and re-password "{repassword}"')
+def step_when_access_password_endpoint(context, endpoint, email, password, repassword, name):
+    dict = {}
+    dict['email'] = email
+    dict['password'] = password
+    dict['re-password'] = repassword
+
+    json_data = json.dumps(dict, indent = 4)
+    print(json_data)
+    context.response = context.client.post(endpoint, json=json_data)
+    # context.data = json.loads(context.response.data.decode())
+    # logging.info(context.data)
 
 
-@then(u'the password should be updated in the database')
-def step_impl(context):
-    raise NotImplementedError('STEP: Then the password should be updated in the database')
+@then('the Login Page should be displayed')
+def step_assert_login_page(context):
+    soup = BeautifulSoup(context.response.data, 'html.parser')
+    headers = soup.find_all('title')
+    
+    print("Check", headers)
+
+    expected_headers = ['400 Bad Request']
+    for header in headers:
+        assert header.text in expected_headers
 
 
-@when(u'I enter an invalid password "abcd"')
-def step_impl(context):
-    raise NotImplementedError('STEP: When I enter an invalid password "abcd"')
+@when(u'I access the endpoint "{endpoint}" with JSON')
+def step_when_access_login(context, endpoint):
+    json_data = json.loads(context.text)
+    context.response = context.client.post(endpoint, json=json_data)
 
-
-@then(u'I should see the message that password should be at least 8 characters long')
-def step_impl(context):
-    raise NotImplementedError('STEP: Then I should see the message that password should be at least 8 characters long')
-
-
-@when(u'I enter password "abcd#123456" and "abc#123456"')
-def step_impl(context):
-    raise NotImplementedError('STEP: When I enter password "abcd#123456" and "abc#123456"')
-
-
-@then(u'I should see the message that both passwords should be the same.')
-def step_impl(context):
-    raise NotImplementedError('STEP: Then I should see the message that both passwords should be the same.')
+@then('the login response status code should be {status_code:d}')
+def step_then_login_response_status_code(context, status_code):
+    print("Check", context.response.status_code)
+    assert context.response.status_code == status_code
 
 # Hooks to set up and tear down the test database
 def before_scenario(context, scenario):

@@ -2,6 +2,7 @@ import os
 
 from app import db
 from features.service import admin_controller_service
+from features.service import update_password_service
 from main import app, login_manager
 
 client = app.test_client()
@@ -18,6 +19,10 @@ def before_feature(context, feature):
     if 'admin-controller' in context.feature.tags:
         admin_controller_service.setup_feature(context, app)
 
+    if 'update-password' in context.feature.tags:
+        update_password_service.setup_feature(context, app)
+
+
 
 def after_feature(context, feature):
     app.logger.info(f"----- Feature executed: {feature.name} -----")
@@ -25,6 +30,9 @@ def after_feature(context, feature):
     # feature-specific code in service files
     if 'admin-controller' in context.feature.tags:
         admin_controller_service.teardown_feature(context, app)
+
+    if 'update-password' in context.feature.tags:
+        update_password_service.teardown_feature(context, app)
 
     # If tables are not dropped in above individual teardown, dropping tables here
     with context.app.app_context():

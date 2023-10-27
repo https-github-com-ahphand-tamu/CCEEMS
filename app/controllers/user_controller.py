@@ -1,8 +1,8 @@
+import datetime
 from flask import Blueprint, redirect, request, jsonify, render_template, current_app
 from flask_login import login_user, logout_user, current_user
-from werkzeug.security import check_password_hash
+from werkzeug.security import check_password_hash, generate_password_hash
 
-from app.helpers.user_helper import send_mail
 from app import db
 from app.decorators.login_decorator import requires_login
 from app.exceptions.validation import ValidationException
@@ -15,6 +15,7 @@ user_bp = Blueprint('user', __name__)
 @user_bp.route('/user/login', methods=['POST'])
 def login_auth():
     data = request.form
+
     if 'email' not in data or 'password' not in data:
         return jsonify({'message': 'Missing required fields (email, password)'}), 400
     email_id = data["email"]
@@ -40,6 +41,42 @@ def logout():
     logout_user()
     return
 
+@user_bp.route('/users/updatePassword', methods=['POST'])
+def update_password():
+
+    # print ("Check 0")
+    if request.method == 'POST':
+        
+        emailid = request.args.get('email')
+        
+        user_password = request.form['password']
+        
+        user_repassword = request.form['re-password']
+        
+        user = User.query.filter_by(email=emailid).first()
+        if user is None:
+            return jsonify({'message': 'User not found'}), 404
+        if(user.password != ""):
+            return render_template('password.html', password_exists=True, incorrect_password=False, mismatch_password =False)
+        if(len(user_password) < 8):
+            return render_template('password.html', password_exists=False, incorrect_password=True, mismatch_password =False)
+        if(user_password != user_repassword):
+            return render_template('password.html', password_exists=False, incorrect_password=False, mismatch_password =True)
+        # user1 = User.query.filter_by(email=emailid).first()
+        # print ("Check 1")
+        # user = db.session.get(User, user1.id)
+        
+
+        user.password = generate_password_hash(user_password)
+
+        try:
+            db.session.commit()
+            return redirect('/')
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'message': 'Failed to update Password', 'error': str(e)}), 500
+        finally:
+            db.session.close()
 
 @user_bp.route('/user/<int:user_id>', methods=['GET'])
 @requires_login

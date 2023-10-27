@@ -35,6 +35,15 @@ class TestUserRoutes(unittest.TestCase):
         ))
         return response
 
+    def set_password(self, email, password, repassword):
+        response = self.client.post('/users/updatePassword', data=dict(
+            email=email,
+            password=password
+        ))
+        return response
+    
+
+
     def test_login_auth_with_correct_credentials(self):
         response = self.login_user("test@example.com", "test123")
         self.assertEqual(response.status_code, 302)
@@ -127,6 +136,66 @@ class TestUserRoutes(unittest.TestCase):
         }
         response = self.client.put('/user/1', json=data)
         self.assertEqual(response.status_code, 400)
+
+    def test_update_password_with_invalid_user(self):
+        self.login_user("test@example.com", "test123")
+
+        response = self.client.post("/users/updatePassword?email=test3@tamu.edu", data={
+            "email":"test3@tamu.edu",
+            "password":"password",
+            "re-password":"password"
+        })
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_password_with_existing_user(self):
+        self.login_user("test@example.com", "test123")
+
+        response = self.client.post("/users/updatePassword?email=test@example.com", data={
+            "email":"test@example.com",
+            "password":"password",
+            "re-password":"password"
+        })
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("User already verified", response.text)
+
+    def test_update_password_with_invalid_string_length(self):
+        self.login_user("test@example.com", "test123")
+
+        response = self.client.post('/admin/users', json={
+        "name": "Test User3",
+        "email": "test3@tamu.edu",
+        "role": "Admin"
+        })
+
+        response = self.client.post("/users/updatePassword?email=test3@tamu.edu", data={
+            "email":"test3@tamu.edu",
+            "password":"abcd",
+            "re-password":"abcd"
+        })
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Password Must be at least 8 characters long", response.text)
+
+    def test_update_password_with_password_mismatch(self):
+        self.login_user("test@example.com", "test123")
+
+        response = self.client.post('/admin/users', json={
+        "name": "Test User3",
+        "email": "test3@tamu.edu",
+        "role": "Admin"
+        })
+
+        response = self.client.post("/users/updatePassword?email=test3@tamu.edu", data={
+            "email":"test3@tamu.edu",
+            "password":"abcd1234567",
+            "re-password":"abcdsdsdvdsd"
+        })
+        
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Both the passwords should match", response.text)
+
+        
 
 
 if __name__ == '__main__':
