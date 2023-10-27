@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <title>Analytics</title>
-  <link rel="stylesheet" type="text/css" href="analytics.css" />
+  <link rel="stylesheet" type="text/css" href="../static/css/analytics.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet"> 
-  <link rel="stylesheet" type="text/css" href="fontawesome-free-6.4.2-web/css/all.min.css" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fontawesome-free-6.4.2-web/css/all.min.css') }}" />
 </head>
 <body>
   <div class="container">
@@ -52,7 +52,7 @@
 
     <section class="main">
       <div class="main-top">
-        <a href="./index"><img src="ccgrouplogo.png" width="250"></a>
+        <a href="./index"><img src="{{ url_for('static', filename='images/ccgrouplogo.png') }}" width="250"></a>
       </div>
       <div class="main-body">
         <h1>ChildCareGroup Analytics</h1>
@@ -61,7 +61,7 @@
         <div class="card_container" id="sent">
           <div class="text">
             <h2>Packets Sent</h2>
-            <div style="display: none; text-align: left;" id="sentInfo"><img src="graph.png" width="250"></div>
+            <div style="display: none; text-align: left;" id="sentInfo"><img src="../static/images/graph.png" width="250"></div>
           </div>
         </div>
       </div>
@@ -70,7 +70,7 @@
         <div class="card_container">
           <div class="text" id="status">
             <h2>Packets Status</h2>
-            <div style="display: none; text-align: left;" id="statusInfo"><img src="graph.png" width="250"></div>
+            <div style="display: none; text-align: left;" id="statusInfo"><img src="../static/images/graph.png" width="250"></div>
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@
         <div class="card_container">
           <div class="text" id="enrolled">
             <h2>Families and Children Enrolled</h2>
-            <div style="display: none; text-align: left;" id="enrolledInfo"><img src="graph.png" width="250"></div>
+            <div style="display: none; text-align: left;" id="enrolledInfo"><img src="../static/images/graph.png" width="250"></div>
           </div>
         </div>
       </div>
@@ -88,7 +88,7 @@
         <div class="card_container" id="notEnrolled">
           <div class="text">
             <h2>Families and Children Not Enrolled</h2>
-            <div style="display: none; text-align: left;" id="notEnrolledInfo"><img src="graph.png" width="250"></div>
+            <div style="display: none; text-align: left;" id="notEnrolledInfo"><img src="../static/images/graph.png" width="250"></div>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@
         <div class="card_container" id="reasons">
           <div class="text">
             <h2>Not Enrolled Reasons</h2>
-            <div style="display: none; text-align: left;" id="reasonsInfo"><img src="graph.png" width="250"></div>
+            <div style="display: none; text-align: left;" id="reasonsInfo"><img src="../static/images/graph.png" width="250"></div>
           </div>
         </div>
       </div>
@@ -106,7 +106,7 @@
         <div class="card_container" id="start">
           <div class="text">
             <h2>Processing Time</h2>
-            <div style="display: none; text-align: left;" id="startInfo"><img src="graph.png" width="250"></div>
+            <div style="display: none; text-align: left;" id="startInfo"><img src="../static/images/graph.png" width="250"></div>
           </div>
         </div>
       </div>

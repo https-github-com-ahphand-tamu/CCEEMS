@@ -6,8 +6,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet"> 
-  <link rel="stylesheet" type="text/css" href="fontawesome-free-6.4.2-web/css/all.min.css" />
-  <link rel="stylesheet" type="text/css" href="home-page.css" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fontawesome-free-6.4.2-web/css/all.min.css') }}" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}"  />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
@@ -55,7 +55,7 @@
 
     <section class="main">
       <div class="main-top">
-        <a href="./home-page"><img src="ccgrouplogo.png" width="250"></a>
+        <a href="./home-page"><img src="{{ url_for('static', filename='images/ccgrouplogo.png') }}" width="250"></a>
       </div>
       <style>
         /* Custom CSS for the purple table and button */
