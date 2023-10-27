@@ -6,6 +6,7 @@ import logging
 
 assign = Blueprint('assign', __name__)
 
+
 @assign.route('/new-requests', methods=['GET'])
 def list_new_requests():
     # Query the new requests from the database, limiting to 50 per page
@@ -13,6 +14,7 @@ def list_new_requests():
     users = User.query.all()
     logging.info("USERS: ", users)
     return render_template('new-requests-page.html', new_requests=new_requests, users=users)
+
 
 @assign.route('/assign_request/<int:request_id>', methods=['POST'])
 def assign_request(request_id):
@@ -44,4 +46,4 @@ def assign_request(request_id):
         except:
             # Return an error response with an appropriate status code
             return jsonify({'error': 'Error assigning request'}), 500
-    return jsonify({'message': 'No new request found with id: '+ str(request_id)})
+    return jsonify({'message': 'No new request found with id: ' + str(request_id)})

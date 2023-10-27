@@ -8,10 +8,10 @@ from app.exceptions.validation import ValidationException
 from app.models import Role, User
 
 
-
 def validate_add_user_payload(data):
     if 'name' not in data or 'email' not in data or 'role' not in data:
-        raise ValidationException('Missing required fields (name, email, role)', 400)
+        raise ValidationException(
+            'Missing required fields (name, email, role)', 400)
 
 
 def validate_role(role_name):
@@ -31,7 +31,8 @@ def get_role_from_user(user: User):
 def validate_user_email(email):
     sanitized_email = sanitize_email(email)
     if not is_valid_email(sanitized_email):
-        raise ValidationException(f'Invalid email address: {sanitized_email}', 400)
+        raise ValidationException(
+            f'Invalid email address: {sanitized_email}', 400)
     return sanitized_email
 
 
@@ -47,7 +48,8 @@ def is_valid_email(email):
 
 def send_mail(path, mailid):
     subject = "Set password for you Childcare group account"
-    body = "Kindly follow the link to set your password for the Childcare Management System Account " + path + "/setpassword?email=" + mailid
+    body = "Kindly follow the link to set your password for the Childcare Management System Account " + \
+        path + "/setpassword?email=" + mailid
     sender = "chidambaramg.dev@gmail.com"
     password = "baeaqufrwmtosnnr"
     msg = MIMEText(body)
@@ -55,5 +57,5 @@ def send_mail(path, mailid):
     msg['From'] = sender
     msg['To'] = mailid
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp_server:
-       smtp_server.login(sender, password)
-       smtp_server.sendmail(sender, mailid, msg.as_string())
+        smtp_server.login(sender, password)
+        smtp_server.sendmail(sender, mailid, msg.as_string())
