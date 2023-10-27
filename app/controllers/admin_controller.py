@@ -26,7 +26,7 @@ def get_users():
         user_list.append(user_data)
 
     current_app.logger.debug(user_list)
-    return render_template('users.html', users=user_list)
+    return render_template('users-page.html', users=user_list)
 
 
 @admin_bp.route('/admin/users/<int:user_id>', methods=['GET'])

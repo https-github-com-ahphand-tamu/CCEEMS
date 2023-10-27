@@ -12,7 +12,7 @@ def list_new_requests():
     new_requests = Newrequest.query.all()
     users = User.query.all()
     logging.info("USERS: ", users)
-    return render_template('new-requests.html', new_requests=new_requests, users=users)
+    return render_template('new-requests-page.html', new_requests=new_requests, users=users)
 
 @assign.route('/assign_request/<int:request_id>', methods=['POST'])
 def assign_request(request_id):
