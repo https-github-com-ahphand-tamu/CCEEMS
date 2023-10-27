@@ -9,12 +9,13 @@ jobs:
     name: lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v3
       - run: python -m pip install --upgrade pip wheel
-      - run: pip install tox tox-gh-actions
-      - run: tox -eflake8
-      - run: tox -edocs
+      - run: pip install pylint
+      - run: pylint ./app
 
   tests:
     runs-on: ubuntu-latest
@@ -22,7 +23,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.10.12
       - name: Install dependencies
