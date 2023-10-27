@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.10.12
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+        working-directory: ./
+
+      - name: Run Pytest with code coverage
+        run: |
+          coverage run -m unittest discover -s tests
+          coverage report -m --fail-under=90
+        working-directory: ./
+
+      - name: Run Behave tests
+        run: |
+          behave
+        working-directory: ./
