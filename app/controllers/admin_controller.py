@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify, render_template, current_app
 from app import db
 from app.decorators.login_decorator import requires_admin
 from app.exceptions.validation import ValidationException
-from app.helpers.user_helpers import validate_user_payload, validate_user_email, validate_role
+from app.helpers.user_helpers import validate_add_user_payload, validate_user_email, validate_role
 from app.models import User
 
 admin_bp = Blueprint('admin', __name__)
@@ -54,7 +54,7 @@ def add_user():
         data = request.get_json()
         current_app.logger.debug(f"POST to /users: {data}")
 
-        validate_user_payload(data)
+        validate_add_user_payload(data)
         email = validate_user_email(data["email"])
         role = validate_role(data["role"])
 
@@ -85,7 +85,7 @@ def update_user(user_id):
         data = request.get_json()
         current_app.logger.debug(f"PUT to /users with user id: {user_id} and data: {data}")
 
-        validate_user_payload(data)
+        validate_add_user_payload(data)
         email = validate_user_email(data["email"])
         role = validate_role(data["role"])
 

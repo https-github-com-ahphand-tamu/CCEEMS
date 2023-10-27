@@ -5,7 +5,7 @@ from werkzeug.security import check_password_hash
 from app import db
 from app.decorators.login_decorator import requires_login
 from app.exceptions.validation import ValidationException
-from app.helpers.user_helpers import validate_user_payload, validate_user_email, validate_role
+from app.helpers.user_helpers import validate_add_user_payload, validate_user_email, validate_role
 from app.models import User
 
 user_bp = Blueprint('user', __name__)
@@ -13,21 +13,23 @@ user_bp = Blueprint('user', __name__)
 
 @user_bp.route('/user/login', methods=['POST'])
 def login_auth():
-    if request.method == 'POST':
-        email_id = request.form['email']
-        user_password = request.form['password']
-        user = User.query.filter_by(email=email_id).first()
-        if not user:
-            current_app.logger.error(f"User with email {email_id} does not exists")
-            return render_template('Login.html', incorrect_password=True)
-        elif check_password_hash(user.password, user_password):
-            login_user(user)
-            current_app.logger.info(f"User with email: {email_id} and role: {user.role.name} is successfully logged in!")
-            current_app.logger.debug(f"Current user: {current_user}")
-            return redirect('/index')
-        else:
-            current_app.logger.error(f"Invalid credentials for user: {email_id}")
-            return render_template('Login.html', incorrect_password=True)
+    data = request.form
+    if 'email' not in data or 'password' not in data:
+        return jsonify({'message': 'Missing required fields (email, password)'}), 400
+    email_id = data["email"]
+    user_password = data['password']
+    user = User.query.filter_by(email=email_id).first()
+    if not user:
+        current_app.logger.error(f"User with email {email_id} does not exists")
+        return render_template('Login.html', incorrect_password=True)
+    elif check_password_hash(user.password, user_password):
+        login_user(user)
+        current_app.logger.info(f"User with email: {email_id} and role: {user.role.name} is successfully logged in!")
+        current_app.logger.debug(f"Current user: {current_user}")
+        return redirect('/index')
+    else:
+        current_app.logger.error(f"Invalid credentials for user: {email_id}")
+        return render_template('Login.html', incorrect_password=True)
 
 
 @user_bp.route('/user/logout', methods=['POST'])
@@ -64,7 +66,7 @@ def update_user(user_id):
         current_app.logger.debug(
             f"PUT to /users with user id: {user_id} and data: {data}")
 
-        validate_user_payload(data)
+        validate_add_user_payload(data)
         email = validate_user_email(data["email"])
         role = validate_role(data["role"])
 

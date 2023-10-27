@@ -1,19 +1,19 @@
-Feature: User Controller
-  Scenario: Setup DB
-    Given create db
+@admin-controller
+Feature: Admin Controller
+
   Scenario: Get a list of users
     Given the application is running
-    When I access the "/users" endpoint
+    When I access the "/admin/users" endpoint
     Then I should see user details
 
   Scenario: Get a user by ID
     Given the application is running
-    When I access the "/users/2" endpoint
+    When I access the "/admin/users/2" endpoint
     Then I should see that user's details
 
   Scenario: Add a new user
     Given the application is running
-    When I send a POST request to "/users" with JSON:
+    When I send a POST request to "/admin/users" with JSON
       """
       {
         "name": "John Doe",
@@ -26,7 +26,7 @@ Feature: User Controller
 
   Scenario: Update an existing user
     Given the application is running
-    When I send a PUT request to "/users/2" with JSON:
+    When I send a PUT request to "/admin/users/2" with JSON
       """
       {
         "name": "Updated John Doe",
@@ -39,8 +39,6 @@ Feature: User Controller
 
   Scenario: Delete an user that does not exist
     Given the application is running
-    When I send a DELETE request to "/users/1"
+    When I send a DELETE request to "/admin/users/100"
     Then the response status code should be 404
     Then the response should contain "User not found"
-  Scenario: Purge DB
-    Given purge db
