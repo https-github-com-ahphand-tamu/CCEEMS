@@ -1,13 +1,14 @@
-import os
 import logging
 from behave import when, then
-from flask import Flask
-from app import create_app, db
 from werkzeug.datastructures import FileStorage
-from bs4 import BeautifulSoup
+import os
+
+from behave import when, then
+from werkzeug.datastructures import FileStorage
+
+from main import app
 
 os.environ['FLASK_ENV'] = 'test'
-app = create_app()
 client = app.test_client()
 
 def simulate_form_submission(filename):
@@ -34,10 +35,10 @@ def step_then_data_inserted_successfully(context):
 def step_then_rendered_html_contains(context, expected_text, invalid_text):
     response = context.response
     page_content = response.data.decode('utf-8')
-    
+
     # Check if the expected_text is present in the valid table
     assert expected_text in page_content
-    
+
     # Check if the name is not in the valid table
     valid_table_start = page_content.find('Valid Data')
     valid_table_end = page_content.find('Invalid Data')

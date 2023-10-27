@@ -6,7 +6,7 @@ from app.exceptions.validation import ValidationException
 from app.models import Role, User
 
 
-def validate_user_payload(data):
+def validate_add_user_payload(data):
     if 'name' not in data or 'email' not in data or 'role' not in data:
         raise ValidationException('Missing required fields (name, email, role)', 400)
 

@@ -1,12 +1,14 @@
-from behave import given, when, then
-from flask import Flask
-from app import create_app, db
-from app.seeds import roles, users
 import os
 from app.models import Newrequest, Role
 
+from behave import given, when, then
+
+from app import db
+from app.models import Newrequest, Role
+from app.seeds import roles, users
+from main import app
+
 os.environ['FLASK_ENV'] = 'test'
-app = create_app()
 client = app.test_client()
 
 @given('I am on the "new-requests" page')

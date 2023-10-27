@@ -1,29 +1,26 @@
 import json
 import logging
 from behave import given, when, then
-from flask import Flask
-from app import db, create_app
-from app.models import User, Role
+from main import app, login_manager
 from bs4 import BeautifulSoup
 import random
 import string
 import os
 
 os.environ['FLASK_ENV'] = 'test'
-# Set up a Flask app for testing
-app = create_app()
+login_manager.init_app(app)
 
-# Create a test client to interact with the app
-client = app.test_client()
 
 @given('the application is running')
 def step_given_application_running(context):
     context.users = {}
 
+
 @when('I access the "{endpoint}" endpoint')
 def step_when_access_endpoint(context, endpoint):
-    context.response = client.get(endpoint)
+    context.response = context.client.get(endpoint)
     context.data = context.response.data.decode()
+
 
 @then(u'I should see user details')
 def step_assert_user_details(context):
@@ -57,6 +54,7 @@ def step_assert_user_details(context):
 
     assert context.response.status_code == 200
 
+
 @then('I should see that user\'s details')
 def step_assert_user_details(context):
     logging.info(context.data)
@@ -65,32 +63,39 @@ def step_assert_user_details(context):
     assert 'email' in context.data
     assert 'role' in context.data
 
+
 @when('I send a POST request to "{endpoint}" with JSON')
 def step_when_send_post_request(context, endpoint):
     json_data = json.loads(context.text)
     if json_data['email']:
-        json_data['email'] = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(10)) + '@gmail.com'
-    context.response = client.post(endpoint, json=json_data)
+        json_data['email'] = ''.join(
+            random.choice(string.ascii_uppercase + string.digits) for _ in range(10)) + '@gmail.com'
+    context.response = context.client.post(endpoint, json=json_data)
     context.data = json.loads(context.response.data.decode())
     logging.info(context.data)
+
 
 @then('the response status code should be {status_code:d}')
 def step_then_response_status_code(context, status_code):
     assert context.response.status_code == status_code
+
 
 @then('the response should contain "{text}"')
 def step_then_response_contains_text(context, text):
     logging.info(context.response.data.decode())
     assert text in context.data["message"]
 
+
 @when('I send a PUT request to "{endpoint}" with JSON')
 def step_when_send_put_request(context, endpoint):
     json_data = json.loads(context.text)
-    context.response = client.put(endpoint, json=json_data)
+    context.response = context.client.put(endpoint, json=json_data)
     context.data = json.loads(context.response.data.decode())
     logging.info(context.data)
 
+
 @when('I send a DELETE request to "{endpoint}"')
 def step_when_send_delete_request(context, endpoint):
-    context.response = client.delete(endpoint)
+    context.response = context.client.delete(endpoint)
+    context.app.logger.info(f"{context.response.status_code}, {context.response.text}")
     context.data = json.loads(context.response.data.decode())
