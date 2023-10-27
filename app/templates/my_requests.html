@@ -1,0 +1,97 @@
+<!-- templates/my_requests.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Requests</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            {% for request_id, form in forms %}
+                <div class="col-md-4 mb-3">
+                    <div class="card">
+                        <form method="post" action="{{ url_for('my-requests.update_request', request_id=request_id) }}">
+                            <div class="card-body">
+                                <h5 class="card-title">Request ID: {{ request_id }}</h5>
+                                <p>{{ form.customer_id.label }}: {{ form.customer_id() }}</p>
+                                <p>{{ form.first_name.label }}: {{ form.first_name() }}</p>
+                                <p>{{ form.last_name.label }}: {{ form.last_name() }}</p>
+                                <p>{{ form.num_of_children.label }}: {{ form.num_of_children() }}</p>
+                                {{ form.csrf_token }}
+                                {{ form.hidden_tag() }}
+                                <button class="btn btn-primary save-btn" type="submit">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% if loop.index % 3 == 0 %}
+                    </div><div class="row">
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script>
+        function expandCard(button) {
+            const cardBody = button.closest('.card-body');
+            cardBody.querySelector('.default-view').style.display = 'none';
+            cardBody.querySelector('.expanded-view').style.display = 'block';
+        }
+
+        function collapseCard(button) {
+            const cardBody = button.closest('.card-body');
+            cardBody.querySelector('.default-view').style.display = 'block';
+            cardBody.querySelector('.expanded-view').style.display = 'none';
+        }
+
+        function saveForm(button) {
+            // Implement the logic to save the form data
+            console.log('Saving form data...');
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+<!-- templates/my_requests.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Requests</title>
+</head>
+<body>
+    {% for request_id, form in forms %}
+        <div class="card">
+            <form method="post" action="">
+                {{ form.csrf_token }}
+                {{ form.hidden_tag() }}
+                {{ form.customer_id.label }} {{ form.customer_id }}
+                {{ form.first_name.label }} {{ form.first_name }}
+                {{ form.last_name.label }} {{ form.last_name }}
+                {{ form.num_of_children.label }} {{ form.num_of_children }}
+                {{ form.outreach_date.label }} {{ form.outreach_date }}
+                {{ form.packet_return_status.label }} {{ form.packet_return_status }}
+                {{ form.packet_received_date.label }} {{ form.packet_received_date }}
+                {{ form.staff_initials.label }} {{ form.staff_initials }}
+                {{ form.decision.label }} {{ form.decision }}
+                {{ form.num_children_enrolled.label }} {{ form.num_children_enrolled }}
+                {{ form.decision_date.label }} {{ form.decision_date }}
+                {{ form.not_enrolled_reason.label }} {{ form.not_enrolled_reason }}
+                {{ form.submit }}
+            </form>
+        </div>
+    {% endfor %}
+</body>
+</html> -->
