@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify, render_template, current_app
 from app import db
 from app.decorators.login_decorator import requires_admin
 from app.exceptions.validation import ValidationException
-from app.helpers.user_helpers import validate_add_user_payload, validate_user_email, validate_role
+from app.helpers.user_helpers import validate_add_user_payload, validate_user_email, validate_role, send_mail
 from app.models import User
 
 admin_bp = Blueprint('admin', __name__)
@@ -57,10 +57,11 @@ def add_user():
         validate_add_user_payload(data)
         email = validate_user_email(data["email"])
         role = validate_role(data["role"])
-
         user_exists = db.session.query(User).filter(User.email == email).first()
         if user_exists:
             return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
+
+        
 
         new_user = User(name=data.get('name'), email=email, role=role)
         new_user.created_on = datetime.utcnow()
@@ -68,6 +69,7 @@ def add_user():
         try:
             db.session.add(new_user)
             db.session.commit()
+            send_mail(request.base_url,email)
             return jsonify({'message': 'User added successfully'}), 201
         except Exception as e:
             db.session.rollback()
