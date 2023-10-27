@@ -135,13 +135,3 @@ def step_when_access_login(context, endpoint):
 def step_then_login_response_status_code(context, status_code):
     print("Check", context.response.status_code)
     assert context.response.status_code == status_code
-
-# Hooks to set up and tear down the test database
-def before_scenario(context, scenario):
-    with app.app_context():
-        db.create_all()
-
-def after_scenario(context, scenario):
-    with app.app_context():
-        db.session.remove()
-        db.drop_all()
