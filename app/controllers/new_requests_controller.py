@@ -26,7 +26,7 @@ def upload_new_requests():
         except Exception as e:
             current_app.logger.info("No file selected")
             return jsonify({'message': 'No file selected', 'error': str(e)}), 404
-    return render_template('upload-new-requests-page.html', valid_present=False, valid_data=pd.DataFrame(),
+    return render_template('upload-new-requests.html', valid_present=False, valid_data=pd.DataFrame(),
                            invalid_present=False, invalid_data=pd.DataFrame())
 
 
@@ -107,12 +107,12 @@ def populateDatabase(upload_file, file_path):
         db.session.commit()
 
         if (invalid_data.empty):
-            return render_template('upload-new-requests-page.html', valid_present=True, valid_data=valid_data,
+            return render_template('upload-new-requests.html', valid_present=True, valid_data=valid_data,
                                    invalid_present=False, invalid_data=invalid_data)
         elif (valid_data.empty):
-            return render_template('upload-new-requests-page.html', valid_present=False, valid_data=[], invalid_present=True,
+            return render_template('upload-new-requests.html', valid_present=False, valid_data=[], invalid_present=True,
                                    invalid_data=invalid_data)
-        return render_template('upload-new-requests-page.html', valid_present=True, valid_data=valid_data,
+        return render_template('upload-new-requests.html', valid_present=True, valid_data=valid_data,
                                invalid_present=True, invalid_data=invalid_data)
 
     except Exception as e:
