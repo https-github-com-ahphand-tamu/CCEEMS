@@ -5,6 +5,16 @@ on:
   pull_request:
 
 jobs:
+  setup-postgresql:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up PostgreSQL
+        run: |
+          source ci.env
+          docker run -d --name postgres -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD -p $POSTGRES_PORT:5432 postgres:latest
+
   lint:
     name: lint
     runs-on: ubuntu-latest
@@ -17,8 +27,10 @@ jobs:
       - run: pip install pylint
       - run: pylint ./app
 
-  tests:
+  unit-test:
+    name: Unit Tests
     runs-on: ubuntu-latest
+    needs: setup-postgresql
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -30,12 +42,42 @@ jobs:
         run: |
           pip install -r requirements.txt
         working-directory: ./
+      - name: Load environment variables
+        run: |
+          export $(xargs <ci.env)
       - name: Run unit tests with code coverage
         run: |
+          export $(xargs <ci.env)
+          export FLASK_ENV=test
+          export DATABASE_URL_TEST="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+          echo $DATABASE_URL_TEST
           coverage run -m unittest discover -s tests
           coverage report -m --fail-under=90
         working-directory: ./
+
+  integration-test:
+    name: Behave Tests
+    runs-on: ubuntu-latest
+    needs: setup-postgresql
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: 3.10.12
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+        working-directory: ./
+      - name: Load environment variables
+        run: |
+          export $(xargs <ci.env)
       - name: Run behave tests
         run: |
+          export $(xargs <ci.env)
+          export FLASK_ENV=test
+          export DATABASE_URL_TEST="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
+          echo $DATABASE_URL_TEST
           behave
         working-directory: ./
