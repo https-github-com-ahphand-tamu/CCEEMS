@@ -7,7 +7,7 @@ on:
 env:
   POSTGRES_HOST: localhost
   POSTGRES_PORT: 5432
-  POSTGRES_DB: ccems-test
+  POSTGRES_DB: ccems-ci
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: zJc2B%SDoUz%Uvrr
 
@@ -25,11 +25,18 @@ jobs:
       - run: pylint ./app
 
   unit-test:
-    name: Unit Tests
+    name: unit-test
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:latest
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
         env:
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
@@ -54,11 +61,18 @@ jobs:
         working-directory: ./
 
   integration-test:
-    name: Behave Tests
+    name: integration-test
     runs-on: ubuntu-latest
     services:
       postgres:
         image: postgres:latest
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
         env:
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ env.POSTGRES_DB }}
@@ -76,7 +90,6 @@ jobs:
       - name: Run behave tests
         run: |
           export $(xargs <ci.env)
-          export FLASK_ENV=test
           export DATABASE_URL_TEST="postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}"
           echo $DATABASE_URL_TEST
           behave
