@@ -22,7 +22,7 @@ jobs:
         uses: actions/setup-python@v3
       - run: python -m pip install --upgrade pip wheel
       - run: pip install pylint
-      - run: pylint ./app
+      - run: pylint --rcfile=.pylintrc ./app
 
   unit-test:
     name: unit-test
