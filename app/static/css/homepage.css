@@ -7,7 +7,7 @@
 }
 
 body{
-    background: rgb(237, 232, 232);
+    background: #ffffff;
 }
 
 .container{
@@ -67,6 +67,7 @@ li a{
     background: #ffffff;
     padding: 12px;
     text-align: center;
+    font-size: 24px;
 }
 
 .main-body{
