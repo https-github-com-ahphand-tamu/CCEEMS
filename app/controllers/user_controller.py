@@ -128,3 +128,15 @@ def update_user(user_id):
             db.session.close()
     except ValidationException as ve:
         return jsonify({'message': str(ve)}), ve.status_code
+
+@user_bp.route('/home-page', methods=['GET'])
+def show_home_page():
+    return render_template('home-page.html')
+
+@user_bp.route('/users', methods=['GET'])
+def show_users_page():
+    return render_template('users-page.html')
+
+@user_bp.route('/manage-users', methods=['GET'])
+def show_manage_users_page():
+    return render_template('manage-users-page.html')
