@@ -26,7 +26,8 @@
    1. Set database url - `export DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"`
    1. Copy file and change values in .env - `cp .env.example .env`
 1. Install the dependencies - `pip install -r requirements.txt`
-1. Run migrations - `flask --app main db upgrade`
+1. Install pre-commit - `pre-commit install`
+1. Run migrationgs - `flask --app main db upgrade`
 1. Run seeds - `python seed.py`
 1. Run the application using `flask --app main run` or `gunicorn main:app`
 1. Before you push your code, please format the code to follow the [pep8 standards](#code-formatting) and check your [code quality](#code-quality-check-pylint).
