@@ -50,7 +50,7 @@
 1. In `.env` file, set `FLASK_ENV=test`
 1. Run tests - `python -m unittest tests`
 1. Run with coverage - `coverage run -m unittest discover -s tests`
-1. Generate coverage report - `coverage report -m`
+1. Generate coverage report - `coverage report -m --omit="tests/*"`
 
 ### Steps to run behave tests
 1. Setup the project following the steps in [steps-to-setup-in-local](#steps-to-setup-in-local)
