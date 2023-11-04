@@ -1,4 +1,4 @@
-exclude: '^$|settings|scripts'
+exclude: '^$|.idea|venv|settings|scripts'
 fail_fast: false
 repos:
 
