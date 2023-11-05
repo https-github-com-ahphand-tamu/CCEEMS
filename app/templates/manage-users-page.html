@@ -3,11 +3,49 @@
 <head>
   <title>Manage Users</title>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}"  />
+  <!-- <link rel="stylesheet" href="homepage.css"  /> -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet"> 
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fontawesome-free-6.4.2-web/css/all.min.css') }}" />
 </head>
+<style>
+  table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+  }
+
+  td, th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
+  }
+
+  tr:nth-child(even) {
+      background-color: #dddddd;
+  }
+  body {
+      font-family: arial, sans-serif;
+  }
+  .movebody {
+      margin-left: 160px;
+      padding: 0px 10px;
+      margin-top: 50px;
+  }
+  .purplebutton{
+      background-color: #662484;
+      border: none;
+      color: white;
+      text-align: center;
+      cursor: pointer;
+      padding: 8px 15px;
+      font-size: 16px;
+      border-radius: 4px;
+  }
+  .purplebutton:hover{
+      color: #f3e419;
+  }
+</style>
 <body>
   <div class="container">
     <nav>
@@ -54,43 +92,8 @@
       <div class="main-top">
         <h1>ChildCare Enrollment Management System</h1>
       </div>
-      <style>
-        table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-        }
-
-        td, th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-        }
-
-        tr:nth-child(even) {
-            background-color: #dddddd;
-        }
-        body {
-            font-family: arial, sans-serif;
-        }
-        .movebody {
-            margin-left: 160px;
-            padding: 0px 10px;
-            margin-top: 50px;
-        }
-        .purplebutton{
-            background-color: #662484;
-            border: none;
-            color: white;
-            text-align: center;
-            cursor: pointer;
-            padding: 8px 15px;
-            font-size: 16px;
-            border-radius: 4px;
-        }
-        .purplebutton:hover{
-            color: #f3e419;
-        }
-    </style>
+      
+    
     <div class="movebody">
         <h2>Manage Users</h2>
         <table>
