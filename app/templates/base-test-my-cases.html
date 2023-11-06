@@ -3,7 +3,48 @@
 {% block header %}
   <h2>{% block title %}My Cases{% endblock %}</h2>
 {% endblock %}
+<style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+    }
 
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+    body {
+        font-family: arial, sans-serif;
+    }
+    .movebody {
+        margin-left: 120px;
+        padding: 0px 10px;
+        margin-top: 50px;
+    }
+    .purplebutton{
+        margin: 10px;
+        background-color: #662484;
+        border: none;
+        color: white;
+        text-align: center;
+        cursor: pointer;
+        padding: 5px 10px;
+        font-size: 16px;
+        border-radius: 4px;
+    }
+    .purplebutton:hover{
+        color: #f3e419;
+    }
+    form label {
+        font-weight: 500;
+        letter-spacing: 3px;
+    }
+</style>
 {% block content %}
     <table>
         <tr>
