@@ -56,8 +56,12 @@ li{
 
 li a{
     font-size: 16px;
-    color: #000000;
+    color: #333;
 }
+li a:hover{
+    color: black;
+}
+
 
 .main{
     width: 100%;
