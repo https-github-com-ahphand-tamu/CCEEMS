@@ -8,6 +8,7 @@
 
 body{
     background: #ffffff;
+    font-family: arial, sans-serif;
 }
 
 .container{
@@ -92,6 +93,48 @@ li a:hover{
     margin-left: 2rem;
 }
 
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.movebody {
+    margin-left: 120px;
+    padding: 0px 10px;
+    margin-top: 50px;
+}
+.purplebutton{
+    margin: 10px;
+    background-color: #662484;
+    border: none;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 4px;
+}
+.purplebutton:hover{
+    color: #f3e419;
+}
+.wrapborder{
+    border: 1px solid rgba(0, 0, 0, 0.16);
+    background-color: transparent;
+    border-radius: 4px;
+    padding: 32px;
+    width: 300px;
+    text-align: center
+}
 /* for popup in my_cases */
 .overlay {
 	position: fixed;
