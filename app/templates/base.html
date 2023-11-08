@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>{% block title %} {% endblock %}</title>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet"> 
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fontawesome-free-6.4.2-web/css/all.min.css') }}" />
+</head>
+
+<body>
+    <div class="container">
+        {% include 'include/_navbar.html' %}
+        <section class="main">
+            <!-- App Name -->
+            <div class="main-top">
+                <h1>ChildCare Enrollment Management System</h1>
+            </div>
+            
+            <!-- Content -->
+            <div class="movebody">
+                <h2>{% block header %} {% endblock %}</h2>
+                {% block content %}{% endblock %}
+            </div>
+        </section>
+    </div>
+
+    <!-- Script -->>
+    {% block script %}{% endblock %}
+</body>
+</html>
