@@ -2,20 +2,20 @@
 <nav>
     <div class="nav-menu">
         <div class="nav-title">
-        <a href="./home-page"><img src="{{ url_for('static', filename='images/ccgrouplogo.png') }}" width="250"></a>
+        <a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/ccgrouplogo.png') }}" width="250"></a>
         </div>
         <ul>
-        <li><a href="./home-page">
+        <li><a href="{{ url_for('home') }}">
             <i class="fa-solid fa-chart-simple"></i>
             <span class="page">Home Page</span>
         </a>
         </li>
-        <li><a href="./users-page">
+        <li><a href="{{ url_for('admin.get_users') }}">
             <i class="fa-solid fa-user"></i>
             <span class="page">Users</span>
         </a>
         </li>
-        <li><a href="./manage-users-page">
+        <li><a href="{{ url_for('admin.get_users') }}">
             <i class="fa-solid fa-user-gear"></i>
             <span class="page">Manage Users</span>
         </a>
@@ -35,7 +35,7 @@
             <span class="page">My Cases</span>
         </a>
         </li>
-        <li><a href="./">
+        <li><a href="{{ url_for('user.logout') }}">
             <i class="fas fa-sign-out-alt"></i>
             <span class="page">Logout</span>
         </a>

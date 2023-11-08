@@ -12,8 +12,16 @@ from app.models import User
 user_bp = Blueprint('user', __name__)
 
 
-@user_bp.route('/user/login', methods=['POST'])
-def login_auth():
+@user_bp.route('/user/login', methods=['GET'])
+def render_login():
+    if current_user.is_authenticated:
+        return redirect('/')
+    else:
+        return render_template('login.html')
+
+
+@user_bp.route('/user/login', methods=['GET', 'POST'])
+def login():
     data = request.form
 
     if 'email' not in data or 'password' not in data:
@@ -23,36 +31,31 @@ def login_auth():
     user = User.query.filter_by(email=email_id).first()
     if not user:
         current_app.logger.error(f"User with email {email_id} does not exists")
-        return render_template('Login.html', incorrect_password=True)
+        return render_template('login.html', incorrect_password=True)
     elif check_password_hash(user.password, user_password):
         login_user(user)
         current_app.logger.info(
             f"User with email: {email_id} and role: {user.role.name} is successfully logged in!")
         current_app.logger.debug(f"Current user: {current_user}")
-        return redirect('/index')
+        return redirect('/')
     else:
         current_app.logger.error(f"Invalid credentials for user: {email_id}")
-        return render_template('Login.html', incorrect_password=True)
+        return render_template('login.html', incorrect_password=True)
 
 
-@user_bp.route('/user/logout', methods=['POST'])
+@user_bp.route('/user/logout', methods=['GET', 'POST'])
 @requires_login
 def logout():
     current_app.logger.info(f"Logging out user: {current_user.email}")
     logout_user()
-    return
+    return redirect('/user/login')
 
 
 @user_bp.route('/users/updatePassword', methods=['POST'])
 def update_password():
-
-    # print ("Check 0")
     if request.method == 'POST':
-
         emailid = request.args.get('email')
-
         user_password = request.form['password']
-
         user_repassword = request.form['re-password']
 
         user = User.query.filter_by(email=emailid).first()
@@ -64,10 +67,6 @@ def update_password():
             return render_template('password.html', password_exists=False, incorrect_password=True, mismatch_password=False)
         if (user_password != user_repassword):
             return render_template('password.html', password_exists=False, incorrect_password=False, mismatch_password=True)
-        # user1 = User.query.filter_by(email=emailid).first()
-        # print ("Check 1")
-        # user = db.session.get(User, user1.id)
-
         user.password = generate_password_hash(user_password)
 
         try:
@@ -128,18 +127,3 @@ def update_user(user_id):
             db.session.close()
     except ValidationException as ve:
         return jsonify({'message': str(ve)}), ve.status_code
-
-
-@user_bp.route('/home-page', methods=['GET'])
-def show_home_page():
-    return render_template('home-page.html')
-
-
-@user_bp.route('/users', methods=['GET'])
-def show_users_page():
-    return render_template('users-page.html')
-
-
-@user_bp.route('/manage-users', methods=['GET'])
-def show_manage_users_page():
-    return render_template('manage-users-page.html')
