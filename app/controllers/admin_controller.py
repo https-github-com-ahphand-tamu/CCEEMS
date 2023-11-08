@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from flask import Blueprint, request, jsonify, render_template, current_app
+from flask_login import current_user
 
 from app import db
 from app.decorators.login_decorator import requires_admin
@@ -26,7 +27,7 @@ def get_users():
         user_list.append(user_data)
 
     current_app.logger.debug(user_list)
-    return render_template('manage-users-page.html', users=user_list)
+    return render_template('manage-users-page.html', user=current_user, users=user_list)
 
 
 @admin_bp.route('/admin/users/<int:user_id>', methods=['GET'])
@@ -128,8 +129,3 @@ def delete_user(user_id):
         return jsonify({'message': 'Failed to delete user', 'error': str(e)}), 500
     finally:
         db.session.close()
-
-
-@admin_bp.route('/admin/manage-users', methods=['GET'])
-def show_manage_users_page():
-    return render_template('manage-users-page.html')

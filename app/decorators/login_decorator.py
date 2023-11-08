@@ -1,6 +1,6 @@
 from functools import wraps
 
-from flask import abort, request, redirect, url_for, flash, current_app
+from flask import request, redirect, url_for, flash, current_app
 from flask_login import login_required, current_user
 
 from app.helpers.user_helpers import get_role_from_user
@@ -27,7 +27,7 @@ def requires_login(func):
         user_id = kwargs.get('user_id')
         if user_id and current_user.id != user_id:
             flash('You do not have permission to view this user\'s profile.', 'danger')
-            return redirect('/')
+            return redirect(url_for('home'))
 
         current_app.logger.debug(f"User {user_id} is trying to login")
         return func(*args, **kwargs)
@@ -46,5 +46,5 @@ def requires_admin(func):
         else:
             current_app.logger.debug(
                 f"User {current_user.email} is not an admin, so forbidden from accessing the route")
-            abort(403)
+            return redirect(url_for('home'))
     return decorated_view

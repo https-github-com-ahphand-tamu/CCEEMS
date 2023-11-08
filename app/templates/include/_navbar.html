@@ -10,26 +10,23 @@
             <span class="page">Home Page</span>
         </a>
         </li>
-        <li><a href="{{ url_for('admin.get_users') }}">
-            <i class="fa-solid fa-user"></i>
-            <span class="page">Users</span>
-        </a>
-        </li>
-        <li><a href="{{ url_for('admin.get_users') }}">
-            <i class="fa-solid fa-user-gear"></i>
-            <span class="page">Manage Users</span>
-        </a>
-        </li>
-        <li><a href="./upload-new-requests-page">
-            <i class="fa-solid fa-upload"></i>
-            <span class="page">Upload New Cases</span>
-        </a>
-        </li>
-        <li><a href="./new-requests-page">
-            <i class="fa-solid fa-clipboard-list"></i>
-            <span class="page">Assign Cases</span>
-        </a>
-        </li>
+        {% if user.role.name in ['Admin',  'Eligibility Manager'] %}
+            <li><a href="{{ url_for('admin.get_users') }}">
+                <i class="fa-solid fa-user"></i>
+                <span class="page">Users</span>
+            </a>
+            </li>
+            <li><a href="./upload-new-requests-page">
+                <i class="fa-solid fa-upload"></i>
+                <span class="page">Upload New Cases</span>
+            </a>
+            </li>
+            <li><a href="./new-requests-page">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span class="page">Assign Cases</span>
+            </a>
+            </li>
+        {% endif %}
         <li><a href="./my_cases">
             <i class="fa-solid fa-chart-simple"></i>
             <span class="page">My Cases</span>
