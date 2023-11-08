@@ -1,5 +1,5 @@
-from flask import render_template
-from flask_login import LoginManager
+from flask import render_template, redirect
+from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
 
 from app import create_app, db
@@ -19,13 +19,11 @@ def load_user(user_id):
 
 
 @app.route('/')
-def login():
-    return render_template('Login.html')
-
-
-@app.route('/index')
 def home():
-    return render_template('index.html')
+    if current_user.is_authenticated:
+        return render_template('home-page.html')
+    else:
+        return redirect('/user/login')
 
 
 if __name__ == '__main__':

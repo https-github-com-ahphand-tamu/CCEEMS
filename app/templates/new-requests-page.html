@@ -5,8 +5,8 @@
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet"> 
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='fonts/fontawesome-free-6.4.2-web/css/all.min.css') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}"  />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -42,7 +42,7 @@
             <i class="fa-solid fa-clipboard-list"></i>
             <span class="page">Assign Cases</span>
           </a>
-          </li>        
+          </li>
           </li>
           <li><a href="./">
             <i class="fas fa-sign-out-alt"></i>
@@ -158,7 +158,7 @@
         $('#assignSubmit').on('click', function() {
             var requestId = $('#request_id').val();
             var selectedUserId = $('#user_id').val();
-    
+
             // Make an AJAX request to the /assign_request/<request_id> endpoint
             // with the selected user ID
             $.ajax({
