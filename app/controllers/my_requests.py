@@ -1,10 +1,12 @@
-from app import db
-from flask import Blueprint, render_template, request, jsonify, abort, current_app
-from app.models import Currentrequest
+from flask import Blueprint, render_template
+from flask import redirect, url_for
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField
 from wtforms.fields import DateField
-from flask import redirect, url_for
+
+from app import db
+from app.models import Currentrequest
 
 # from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
@@ -38,7 +40,7 @@ def view_requests():
         form = RequestForm(obj=request_data)
         forms.append((request_data.id, form))
 
-    return render_template('my_requests.html', forms=forms)
+    return render_template('my_requests.html', forms=forms, user=current_user)
 
 
 @my_req_bp.route('/my-requests/<int:request_id>', methods=['POST'])

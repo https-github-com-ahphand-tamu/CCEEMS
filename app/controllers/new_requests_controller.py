@@ -1,17 +1,21 @@
-from app import db
-from flask import Blueprint, render_template, request, jsonify, abort, current_app
-from app.models import Newrequest
 import os
-from werkzeug.utils import secure_filename
-import pandas as pd
-from flask import current_app
 from datetime import datetime
+
+import pandas as pd
+from flask import Blueprint, render_template, request, jsonify, abort, current_app
+from flask_login import current_user
 from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import insert
+from werkzeug.utils import secure_filename
+
+from app import db
+from app.decorators.login_decorator import requires_admin
+from app.models import Newrequest
 
 upload_new_req_bp = Blueprint('new-requests', __name__)
 
 
+@requires_admin
 @upload_new_req_bp.route('/upload-new-requests', methods=['GET', 'POST'])
 def upload_new_requests():
     if request.method == 'POST':
@@ -26,11 +30,13 @@ def upload_new_requests():
         except Exception as e:
             current_app.logger.info("No file selected")
             return jsonify({'message': 'No file selected', 'error': str(e)}), 404
-    return render_template('upload-new-requests-page.html', valid_present=False, valid_data=pd.DataFrame(),
-                           invalid_present=False, invalid_data=pd.DataFrame())
+    else:
+        return render_template('upload-new-requests-page.html', valid_present=False, valid_data=pd.DataFrame(),
+                               invalid_present=False, invalid_data=pd.DataFrame(), user=current_user)
 
 
 def populateDatabase(upload_file, file_path):
+    current_app.logger.debug("Populating database")
     try:
         if upload_file.filename.endswith('.csv'):
             upload_file.save(file_path)
@@ -108,14 +114,16 @@ def populateDatabase(upload_file, file_path):
 
         if (invalid_data.empty):
             return render_template('upload-new-requests-page.html', valid_present=True, valid_data=valid_data,
-                                   invalid_present=False, invalid_data=invalid_data)
+                                   invalid_present=False, invalid_data=invalid_data, user=current_user)
         elif (valid_data.empty):
-            return render_template('upload-new-requests-page.html', valid_present=False, valid_data=[], invalid_present=True,
-                                   invalid_data=invalid_data)
+            return render_template('upload-new-requests-page.html', valid_present=False, valid_data=[],
+                                   invalid_present=True,
+                                   invalid_data=invalid_data, user=current_user)
         return render_template('upload-new-requests-page.html', valid_present=True, valid_data=valid_data,
-                               invalid_present=True, invalid_data=invalid_data)
+                               invalid_present=True, invalid_data=invalid_data, user=current_user)
 
     except Exception as e:
+        current_app.logger.error(e)
         db.session.rollback()
         return jsonify({'message': 'Failed to add new requests', 'error': str(e)}), 500
     finally:

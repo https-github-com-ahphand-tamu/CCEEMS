@@ -1,5 +1,5 @@
-from flask import render_template, request
 from flask import Blueprint, request, render_template, jsonify
+from flask_login import current_user
 from app.models import Newrequest, Currentrequest, User, PacketReturnStatus, Decision
 from app import db
 import logging
@@ -13,7 +13,7 @@ def list_new_requests():
     new_requests = Newrequest.query.all()
     users = User.query.all()
     logging.info("USERS: ", users)
-    return render_template('new-requests-page.html', new_requests=new_requests, users=users)
+    return render_template('new-requests-page.html', new_requests=new_requests, user=current_user)
 
 
 @assign.route('/assign_request/<int:request_id>', methods=['POST'])

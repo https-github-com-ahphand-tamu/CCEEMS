@@ -19,6 +19,7 @@ def step_given_application_running(context):
 @when('I access the "{endpoint}" endpoint')
 def step_when_access_endpoint(context, endpoint):
     context.response = context.client.get(endpoint)
+    assert context.response.status_code == 200, f"Status code is {context.response.status_code}"
     context.data = context.response.data.decode()
 
 

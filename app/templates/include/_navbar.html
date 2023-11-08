@@ -10,7 +10,7 @@
             <span class="page">Home Page</span>
         </a>
         </li>
-        {% if user.role.name in ['Admin',  'Eligibility Manager'] %}
+        {% if user.role.name in ['Admin', 'Eligibility Manager'] %}
             <li><a href="{{ url_for('admin.get_users') }}">
                 <i class="fa-solid fa-user"></i>
                 <span class="page">Users</span>

@@ -10,7 +10,8 @@ class TestApp(unittest.TestCase):
     def test_home_route(self):
         response = self.app.get('/')
         self.assertEqual(response.status_code, 302)
-        self.assertIn("Login Page", response.data.decode('utf-8'))
+        self.assertIn('Redirecting...</h1>\n<p>You should be redirected automatically to the target URL: <a href="/user/login">/user/login</a>.',
+                      response.data.decode('utf-8'))
 
 
 if __name__ == '__main__':
