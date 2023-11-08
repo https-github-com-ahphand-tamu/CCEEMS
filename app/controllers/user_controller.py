@@ -1,5 +1,5 @@
 import datetime
-from flask import Blueprint, redirect, request, jsonify, render_template, current_app
+from flask import Blueprint, redirect, request, jsonify, render_template, current_app, url_for
 from flask_login import login_user, logout_user, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -15,7 +15,7 @@ user_bp = Blueprint('user', __name__)
 @user_bp.route('/user/login', methods=['GET'])
 def render_login():
     if current_user.is_authenticated:
-        return redirect('/')
+        return redirect(url_for('home'))
     else:
         return render_template('login.html')
 
@@ -37,7 +37,7 @@ def login():
         current_app.logger.info(
             f"User with email: {email_id} and role: {user.role.name} is successfully logged in!")
         current_app.logger.debug(f"Current user: {current_user}")
-        return redirect('/')
+        return redirect(url_for('home'))
     else:
         current_app.logger.error(f"Invalid credentials for user: {email_id}")
         return render_template('login.html', incorrect_password=True)
@@ -71,7 +71,7 @@ def update_password():
 
         try:
             db.session.commit()
-            return redirect('/')
+            return redirect(url_for('home'))
         except Exception as e:
             db.session.rollback()
             return jsonify({'message': 'Failed to update Password', 'error': str(e)}), 500

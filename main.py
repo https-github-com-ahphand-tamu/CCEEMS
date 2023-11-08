@@ -21,7 +21,7 @@ def load_user(user_id):
 @app.route('/')
 def home():
     if current_user.is_authenticated:
-        return render_template('home-page.html')
+        return render_template('home-page.html', user=current_user)
     else:
         return redirect('/user/login')
 
