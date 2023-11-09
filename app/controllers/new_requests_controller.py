@@ -55,7 +55,6 @@ def populateDatabase(upload_file, file_path):
         valid_data, invalid_data = validateData(df)
 
         current_app.logger.debug(f"POST to /upload-new-requests: {df}")
-        print("Add: ",valid_data.to_dict(orient='records'))
         insert_stmt = insert(Case).values(
             valid_data.to_dict(orient='records'))
         on_conflict_stmt = insert_stmt.on_conflict_do_update(

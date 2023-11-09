@@ -74,26 +74,46 @@
             background-color: darkpurple;
         }
       </style>
+            <h1>Cases</h1>
     <div class="container">
-        <h1>New Requests</h1>
         <table class="table table-bordered table-striped">
             <thead class="thead-dark purple-table">
                 <tr>
                     <th>ID</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>No.of Children</th>
+                    <th>Outreach Date</th>
+                    <th>Packet Return Status</th>
+                    <th>Packet Received Date</th>
+                    <th>Staff Intials</th>
+                    <th>Decision</th>
+                    <th>No. of Children Enrolled</th>
+                    <th>Decision Date</th>
+                    <th>Not Enrolled Reason</th>
+                    <th>Assigned To User</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for request in new_requests %}
+                {% for case in cases %}
                     <tr>
-                        <td>{{ request.customer_id }}</td>
-                        <td>{{ request.first_name }}</td>
-                        <td>{{ request.last_name }}</td>
+                        <td>{{ case.customer_id }}</td>
+                        <td>{{ case.first_name }}</td>
+                        <td>{{ case.last_name }}</td>
+                        <td>{{ case.num_of_children }}</td>
+                        <td>{{ case.outreach_date }}</td>
+                        <td>{{ case.packet_return_status.value }}</td>
+                        <td>{{ case.packet_received_date }}</td>
+                        <td>{{ case.staff_initials }}</td>
+                        <td>{{ case.decision.value }}</td>
+                        <td>{{ case.num_children_enrolled }}</td>
+                        <td>{{ case.decision_date }}</td>
+                        <td>{{ case.not_enrolled_reason }}</td>
+                        <td>{{ case.assigned_to_user }}</td>
                         <td>
                             <!-- Button to trigger the modal -->
-                            <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ request.id }}" data-request-id="{{ request.id }}">
+                            <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
                                 Assign
                             </button>
                         </td>
@@ -122,7 +142,7 @@
                                     <option value="{{ user.id }}">{{ user.name }}</option>
                                 {% endfor %}
                             </select>
-                            <input type="hidden" id="request_id" name="request_id" value="">
+                            <input type="hidden" id="case_id" name="case_id" value="">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -139,15 +159,15 @@
     document.querySelectorAll('.assign-button').forEach(function(button) {
         button.addEventListener('click', function() {
             // Extract the request ID from the button's data attribute
-            var requestId = this.getAttribute('data-request-id');
-            $(this).attr('data-target', '#assignModal' + requestId);
-            $('#assignmodal').attr('id', '#assignModal' + requestId);
-            console.log("CLICKED " + '#assignModal' + requestId);
+            var case_id = this.getAttribute('data-case-id');
+            $(this).attr('data-target', '#assignModal' + case_id);
+            $('#assignmodal').attr('id', '#assignModal' + case_id);
+            console.log("CLICKED " + '#assignModal' + case_id);
                 // When the modal is shown, set the requestId in the modal form
                 $('#assignModal').on('show.bs.modal', function(event) {
                     console.log("MODAL SHOWN");
                     var modal = $(this);
-                    modal.find('#request_id').val(requestId);
+                    modal.find('#case_id').val(case_id);
                 });
             // Show the modal after the event binding
             $('#assignModal').modal('show');
@@ -156,14 +176,14 @@
 
         // Handle the assignment when the "Assign Request" button in the modal is clicked
         $('#assignSubmit').on('click', function() {
-            var requestId = $('#request_id').val();
+            var case_id = $('#case_id').val();
             var selectedUserId = $('#user_id').val();
 
             // Make an AJAX request to the /assign_request/<request_id> endpoint
             // with the selected user ID
             $.ajax({
                 type: 'POST',
-                url: '/assign_request/' + requestId,
+                url: '/assign_request/' + case_id,
                 data: { user_id: selectedUserId },
                 success: function(response) {
                     // Handle the response as needed, e.g., display a success message
@@ -173,7 +193,7 @@
                 },
                 error: function(error) {
                     console.error('Error:', error);
-                    alert('Error assigning request.');
+                    alert('Error assigning request' + error.message);
                 }
             });
         });
