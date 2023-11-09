@@ -10,7 +10,7 @@ from werkzeug.utils import secure_filename
 
 from app import db
 from app.decorators.login_decorator import requires_admin
-from app.models import Newrequest
+from app.models import Case
 
 upload_new_req_bp = Blueprint('new-requests', __name__)
 
@@ -55,41 +55,8 @@ def populateDatabase(upload_file, file_path):
         valid_data, invalid_data = validateData(df)
 
         current_app.logger.debug(f"POST to /upload-new-requests: {df}")
-
-        # for index, row in valid_data.iterrows():
-        #     customer_id = str(row['customer_id'])
-        #     existing_data = db.session.query(Newrequest).filter_by(customer_id=customer_id).first()
-        #     if existing_data:
-        #         # Update existing row
-        #         existing_data.first_name = row['first_name']
-        #         existing_data.last_name = row['last_name']
-        #         existing_data.num_of_children = row['num_of_children']
-        #         existing_data.outreach_date = row['outreach_date']
-        #     else:
-        #         # Insert a new row
-        #         new_request = Newrequest(**row)
-        #         db.session.add(new_request)
-
-        # valid_data.to_sql(Newrequest.__tablename__, db.engine, if_exists='append', index=False)
-
-        # remove_duplicates_query = """
-        # WITH CTE AS (
-        #     SELECT
-        #         customer_id,
-        #         MIN(id) AS min_id
-        #     FROM
-        #         new_requests
-        #     GROUP BY
-        #         customer_id
-        # )
-        # DELETE FROM
-        #     new_requests
-        # WHERE
-        #     (customer_id, id) NOT IN (SELECT customer_id, min_id FROM CTE);
-
-        # ALTER SEQUENCE new_requests_id_seq RESTART WITH 1;
-        # """
-        insert_stmt = insert(Newrequest).values(
+        print("Add: ",valid_data.to_dict(orient='records'))
+        insert_stmt = insert(Case).values(
             valid_data.to_dict(orient='records'))
         on_conflict_stmt = insert_stmt.on_conflict_do_update(
             index_elements=['customer_id'],
@@ -102,10 +69,10 @@ def populateDatabase(upload_file, file_path):
         )
 
         reset_query = """
-            UPDATE new_requests
+            UPDATE cases
             SET id = new_id
-            FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY id) as new_id FROM new_requests) as subquery
-            WHERE new_requests.id = subquery.id;
+            FROM (SELECT id, ROW_NUMBER() OVER (ORDER BY id) as new_id FROM cases) as subquery
+            WHERE cases.id = subquery.id;
         """
 
         db.session.execute(on_conflict_stmt)
