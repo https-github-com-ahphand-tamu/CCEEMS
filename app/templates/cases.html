@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"  data-bs-theme="dark">
 <head>
   <title>Home Page</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -7,9 +7,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel=""stylesheet href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}"  />
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -74,11 +77,11 @@
             background-color: darkpurple;
         }
       </style>
-            <h1>Cases</h1>
+    <h1>Cases</h1>
     <div class="container">
-        <table class="table table-bordered table-striped">
+        <table id="casesTable" contenteditable="true" class="table table-bordered table-striped resizable-table display">
             <thead class="thead-dark purple-table">
-                <tr>
+                <tr class="row-exclude">
                     <th>ID</th>
                     <th>First Name</th>
                     <th>Last Name</th>
@@ -98,19 +101,28 @@
             <tbody>
                 {% for case in cases %}
                     <tr>
-                        <td>{{ case.customer_id }}</td>
+                        <td class="exclude">{{ case.customer_id }}</td>
                         <td>{{ case.first_name }}</td>
                         <td>{{ case.last_name }}</td>
                         <td>{{ case.num_of_children }}</td>
-                        <td>{{ case.outreach_date }}</td>
-                        <td>{{ case.packet_return_status.value }}</td>
+                        <td class="exclude">
+                            <div class="input-group">
+                                <input type="text" class="form-control datepicker" id="outreach_date_{{ case.id }}" value="{{ case.outreach_date }}">
+                                <div class="input-group-append">
+                                    <span class="input-group-text">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+                                                <td>{{ case.packet_return_status.value }}</td>
                         <td>{{ case.packet_received_date }}</td>
-                        <td>{{ case.staff_initials }}</td>
+                        <td class="exclude">{{ case.staff_initials }}</td>
                         <td>{{ case.decision.value }}</td>
                         <td>{{ case.num_children_enrolled }}</td>
                         <td>{{ case.decision_date }}</td>
                         <td>{{ case.not_enrolled_reason }}</td>
-                        <td>{{ case.assigned_to_user }}</td>
+                        <td class="exclude">{{ case.assigned_to_user }}</td>
                         <td>
                             <!-- Button to trigger the modal -->
                             <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
@@ -157,6 +169,13 @@
     <!-- JavaScript to handle the assignment -->
     <script>
     document.querySelectorAll('.assign-button').forEach(function(button) {
+        let table = new DataTable('#casesTable');
+        var excludeElements = document.querySelectorAll('.exclude');
+        excludeElements.forEach(function(element) {
+            element.contentEditable = 'false';
+        });
+        // document.querySelector('.row-exclude')
+
         button.addEventListener('click', function() {
             // Extract the request ID from the button's data attribute
             var case_id = this.getAttribute('data-case-id');
@@ -172,6 +191,14 @@
             // Show the modal after the event binding
             $('#assignModal').modal('show');
         });
+
+        // Initialize the Bootstrap Datepicker
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd', // Set the desired date format
+            todayBtn: 'linked',
+            autoclose: true,
+        });
+
     });
 
         // Handle the assignment when the "Assign Request" button in the modal is clicked
@@ -179,8 +206,6 @@
             var case_id = $('#case_id').val();
             var selectedUserId = $('#user_id').val();
 
-            // Make an AJAX request to the /assign_request/<request_id> endpoint
-            // with the selected user ID
             $.ajax({
                 type: 'POST',
                 url: '/assign_request/' + case_id,
