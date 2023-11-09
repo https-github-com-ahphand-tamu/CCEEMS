@@ -62,7 +62,7 @@ def register_blueprints(app):
     from app.controllers.user_controller import user_bp
     from app.controllers.admin_controller import admin_bp
     from app.controllers.new_requests_controller import upload_new_req_bp
-    from app.controllers.assign_new_requests import assign
+    from app.controllers.cases_controller import assign
     from app.controllers.my_requests import my_req_bp
 
     app.register_blueprint(user_bp)

@@ -6,7 +6,7 @@ from wtforms import StringField, IntegerField, SubmitField
 from wtforms.fields import DateField
 
 from app import db
-from app.models import Currentrequest
+from app.models import Case
 
 # from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
@@ -32,7 +32,7 @@ class RequestForm(FlaskForm):
 
 @my_req_bp.route('/my-requests', methods=['GET', 'POST'])
 def view_requests():
-    requests_data = Currentrequest.query.order_by(Currentrequest.id).all()
+    requests_data = Cases.query.order_by(Cases.id).all()
 
     forms = []
 
@@ -45,7 +45,7 @@ def view_requests():
 
 @my_req_bp.route('/my-requests/<int:request_id>', methods=['POST'])
 def update_request(request_id):
-    request_data = Currentrequest.query.get_or_404(request_id)
+    request_data = Cases.query.get_or_404(request_id)
     form = RequestForm(obj=request_data)
 
     if form.validate_on_submit():

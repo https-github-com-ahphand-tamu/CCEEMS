@@ -1,16 +1,16 @@
 from flask import Blueprint, request, render_template, jsonify
 from flask_login import current_user
-from app.models import Newrequest, Currentrequest, User, PacketReturnStatus, Decision
+from app.models import Case, User, PacketReturnStatus, Decision
 from app import db
 import logging
 
 assign = Blueprint('assign', __name__)
 
 
-@assign.route('/new-requests', methods=['GET'])
+@assign.route('/cases', methods=['GET'])
 def list_new_requests():
     # Query the new requests from the database, limiting to 50 per page
-    new_requests = Newrequest.query.all()
+    new_requests = Case.query.all()
     users = User.query.all()
     logging.info("USERS: ", users)
     return render_template('new-requests-page.html', new_requests=new_requests, user=current_user)
@@ -21,9 +21,9 @@ def assign_request(request_id):
     # Get the user ID and other assignment details from the form
     user_id = request.form['user_id']
     # Move the request from new_requests to current_requests
-    new_request = Newrequest.query.get(request_id)
+    new_request = Case.query.get(request_id)
     if new_request:
-        current_request = Currentrequest(
+        current_request = Case(
             customer_id=new_request.customer_id,
             first_name=new_request.first_name,
             last_name=new_request.last_name,
