@@ -101,38 +101,29 @@
             <tbody>
                 {% for case in cases %}
                     <tr>
-                        <td>{{ case.customer_id }}</td>
-                        <td>{{ case.first_name }}</td>
-                        <td>{{ case.last_name }}</td>
-                        <td>{{ case.num_of_children }}</td>
-                        <td>
-                            <div class="input-group">
-                                <input type="text" class="form-control datepicker" id="outreach_date_{{ case.id }}" value="{{ case.outreach_date }}">
-                                <div class="input-group-append">
-                                    <span class="input-group-text">
-                                        <i class="fas fa-calendar-alt"></i>
-                                    </span>
-                                </div>
-                            </div>
-                        </td>
-                        <td>{{ case.packet_return_status.value }}</td>
-                        <td>{{ case.packet_received_date }}</td>
-                        <td>{{ case.staff_initials }}</td>
-                        <td>{{ case.decision.value }}</td>
-                        <td>{{ case.num_children_enrolled }}</td>
-                        <td>{{ case.decision_date }}</td>
-                        <td>{{ case.not_enrolled_reason }}</td>
-                        <td>{{ case.assigned_to_user }}</td>
+                        <td id="customerId_{{ case.id }}">{{ case.customer_id }}</td>
+                        <td id="firstName_{{ case.id }}">{{ case.first_name }}</td>
+                        <td id="lastName_{{ case.id }}">{{ case.last_name }}</td>
+                        <td id="numChildren_{{ case.id }}">{{ case.num_of_children }}</td>
+                        <td id="outreachDate_{{ case.id }}">{{ case.outreach_date }}</td>
+                        <td id="packetReturnStatus_{{ case.id }}">{{ case.packet_return_status.value }}</td>
+                        <td id="packetReceivedDate_{{ case.id }}">{{ case.packet_received_date }}</td>
+                        <td id="staffInitials_{{ case.id }}">{{ case.staff_initials }}</td>
+                        <td id="decision_{{ case.id }}">{{ case.decision.value }}</td>
+                        <td id="numChildrenEnrolled_{{ case.id }}">{{ case.num_children_enrolled }}</td>
+                        <td id="decisionDate_{{ case.id }}">{{ case.decision_date }}</td>
+                        <td id="notEnrolledReason_{{ case.id }}">{{ case.not_enrolled_reason }}</td>
+                        <td id="assignedToUser_{{ case.id }}">{{ case.assigned_to_user }}</td>
                         <td>
                             <!-- Button to trigger the modal -->
                             <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
                                 Assign
                             </button>
-                            <button class="btn blue-button btn-primary edit-buttondata-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
+                            <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
                                 Edit
                             </button>
                         </td>
-                    </tr>
+                    </tr>                
                 {% endfor %}
             </tbody>
         </table>
@@ -141,7 +132,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="assignModalLabel">Assign Request</h5>
+                    <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -160,12 +151,60 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="assignSubmit">Assign Request</button>
+                        <button type="button" class="btn btn-primary" id="assignSubmit">Assign Case</button>
                     </div>
                 </form>
             </div>
         </div>
         </div>
+        <div class="modal fade" id="editModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assignModalLabel">Assign Request</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <div class="form-group">
+                    <label for="editFirstName">First Name:</label>
+                    <input type="text" class="form-control" id="editFirstName" value="">
+                </div>
+                <div class="form-group">
+                    <label for="editLastName">Last Name:</label>
+                    <input type="text" class="form-control" id="editLastName" value="">
+                </div>
+                <div class="form-group">
+                    <label for="editNumChildren">No. of Children:</label>
+                    <input type="text" class="form-control" id="editNumChildren" value="">
+                </div>
+                <div class="form-group">
+                    <label for="editOutreachDate">Outreach Date:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control datepicker" id="editOutreachDate" value="">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editPacketReturnStatus">Packet Return Status:</label>
+                    <select class="form-control" id="editPacketReturnStatus">
+                        {% for status in PacketReturnStatus %}
+                            <option value="{{ status.value }}" {% if status == case.packet_return_status %} selected {% endif %}>{{ status.value }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            <div class="form-group">
+                <label for="editDecision">Decision:</label>
+                <select class="form-control" id="editDecision">
+                    {% for decision in Decision %}
+                        <option value="{{ decision.value }}" {% if decision == case.decision %} selected {% endif %}>{{ decision.value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+                </div>
+            </div> 
+        </div>
+        
+
     <!-- JavaScript to handle the assignment -->
     <script>
         $('document').ready(() => {
@@ -180,29 +219,20 @@
                     var case_id = this.getAttribute('data-case-id');
                     $(this).attr('data-target', '#assignModal' + case_id);
                     $('#assignmodal').attr('id', '#assignModal' + case_id);
-                    console.log("CLICKED " + '#assignModal' + case_id);
-                        // When the modal is shown, set the requestId in the modal form
-                        $('#assignModal').on('show.bs.modal', function(event) {
-                            console.log("MODAL SHOWN");
-                            var modal = $(this);
-                            modal.find('#case_id').val(case_id);
-                        });
+                    // When the modal is shown, set the requestId in the modal form
+                    $('#assignModal').on('show.bs.modal', function(event) {
+                        var modal = $(this);
+                        modal.find('#case_id').val(case_id);
+                    });
                     // Show the modal after the event binding
                     $('#assignModal').modal('show');
                 });
-                    // Initialize the Bootstrap Datepicker
-                    $('.datepicker').datepicker({
-                        format: 'yyyy-mm-dd', // Set the desired date format
-                        todayBtn: 'linked',
-                        autoclose: true,
-                    });
-                });
 
-                // Handle the assignment when the "Assign Request" button in the modal is clicked
-                $('#assignSubmit').on('click', function() {
+                });
+            // Handle the assignment when the "Assign Request" button in the modal is clicked
+            $('#assignSubmit').on('click', function() {
                 var case_id = $('#case_id').val();
                 var selectedUserId = $('#user_id').val();
-
                 $.ajax({
                     type: 'POST',
                     url: '/assign_request/' + case_id,
@@ -219,8 +249,28 @@
                     }
                 });
             });
+            
+            document.querySelectorAll('.edit-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var case_id = this.getAttribute('data-case-id');
+                    // Populate the modal with case details
+                    $('#editFirstName').val($('#firstName_' + case_id).text());
+                    $('#editLastName').val($('#lastName_' + case_id).text());
+                    $('#editNumChildren').val($('#numChildren_' + case_id).text());
+                    $('#editOutreachDate').val($('#outreachDate_' + case_id).text());
+                    $('#editPacketReturnStatus').val($('#packetReturnStatus_' + case_id).text());
+                    $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
+                    $('#editStaffInitials').val($('#staffInitials_' + case_id).text());
+                    $('#editDecision').val($('#decision_' + case_id).text());
+                    $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
+                    $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
+                    $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
+                    $('#editAssignedToUser').val($('#assignedToUser_' + case_id).text());
 
-            document.querySelectorAll('.edit-button').forEach(fun);
+                    // Show the modal
+                    $('#editModal').modal('show');
+                });
+            });
         });
     </script>
     </section>
