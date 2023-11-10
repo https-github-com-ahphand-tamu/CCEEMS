@@ -1,56 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>Home Page</title>
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+{% extends 'base.html' %}
 
-</head>
-<body>
+{% block header %}
+    <h2>{% block title %}Home Page{% endblock %}</h2>
+{% endblock %}
+
+{% block content %}
   <div class="container">
-    <nav>
-      <div class="nav-menu">
-        <div class="nav-title">
-          <a href="./home-page"><img src="{{ url_for('static', filename='images/ccgrouplogo.png') }}" width="250"></a>
-        </div>
-        <ul>
-          <li><a href="./home-page">
-            <i class="fa-solid fa-chart-simple"></i>
-            <span class="page">Home Page</span>
-          </a>
-          </li>
-          <li><a href="./users-page">
-            <i class="fa-solid fa-user"></i>
-            <span class="page">Users</span>
-          </a>
-          <li><a href="./manage-users-page">
-            <i class="fa-solid fa-user-gear"></i>
-            <span class="page">Manage Users</span>
-          </a>
-          </li>
-          <li><a href="./upload-new-requests-page">
-            <i class="fa-solid fa-upload"></i>
-            <span class="page">Upload New Cases</span>
-          </a>
-          </li>
-          <li><a href="./new-requests-page">
-            <i class="fa-solid fa-clipboard-list"></i>
-            <span class="page">Assign Cases</span>
-          </a>
-          </li>
-          </li>
-          <li><a href="./">
-            <i class="fas fa-sign-out-alt"></i>
-            <span class="page">Logout</span>
-          </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
     <section class="main">
       <div class="main-top">
         <h1>ChildCare Enrollment Management System</h1>
@@ -63,6 +18,38 @@
           <div class="text">
             <h2>Packets Sent</h2>
             <div style="display: none; text-align: left;" id="sentInfo"><img src="../static/images/graph.png" width="250"></div>
+            <html>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+            <body>
+            <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+            <script>
+            const xValue = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const yValue = [574, 794, 645, 934, 496, 854, 673, 578, 634, 845, 496, 630];
+
+            new Chart("myChart", {
+              type: "line",
+              data: {
+                labels: xValue,
+                datasets: [{
+                  fill: false,
+                  lineTension: 0,
+                  backgroundColor: "rgba(0,0,255,1.0)",
+                  borderColor: "rgba(0,0,255,0.1)",
+                  data: yValue
+                }]
+              },
+              options: {
+                title: {display: true, text: "Family Outreach By Month"},
+                legend: {display: false},
+                scales: {
+                  yAxes: [{ticks: {min: 0, max:1600}}],
+                }
+              }
+            });
+            </script>
+
+            </body>
+            </html>
           </div>
         </div>
       </div>
@@ -72,6 +59,43 @@
           <div class="text" id="status">
             <h2>Packets Status</h2>
             <div style="display: none; text-align: left;" id="statusInfo"><img src="../static/images/graph.png" width="250"></div>
+            <html>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+              <body>
+
+              <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
+
+              <script>
+              var xValues = ["Returned", "Not Returned", "Waiting"];
+              var yValues = [4758, 2537, 1540];
+              var barColors = [
+                "#b91d47",
+                "#00aba9",
+                "#2b5797",
+                "#e8c3b9",
+                "#1e7145"
+              ];
+
+              new Chart("myChart2", {
+                type: "doughnut",
+                data: {
+                  labels: xValues,
+                  datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                  }]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: "Packets by Status"
+                  }
+                }
+              });
+              </script>
+
+              </body>
+              </html>
           </div>
         </div>
       </div>
@@ -81,6 +105,38 @@
           <div class="text" id="enrolled">
             <h2>Families and Children Enrolled</h2>
             <div style="display: none; text-align: left;" id="enrolledInfo"><img src="../static/images/graph.png" width="250"></div>
+            <html>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+            <body>
+            <canvas id="myChart3" style="width:100%;max-width:600px"></canvas>
+            <script>
+            const x = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const y = [674, 894, 445, 744, 936, 684, 863, 978, 850, 575, 786, 530];
+
+            new Chart("myChart3", {
+              type: "line",
+              data: {
+                labels: x,
+                datasets: [{
+                  fill: false,
+                  lineTension: 0,
+                  backgroundColor: "rgba(0,0,255,1.0)",
+                  borderColor: "rgba(0,0,255,0.1)",
+                  data: y
+                }]
+              },
+              options: {
+                title: {display: true, text: "Family and Children Enrolled by Month"},
+                legend: {display: false},
+                scales: {
+                  yAxes: [{ticks: {min: 0, max:1600}}],
+                }
+              }
+            });
+            </script>
+
+            </body>
+            </html>
           </div>
         </div>
       </div>
@@ -90,6 +146,38 @@
           <div class="text">
             <h2>Families and Children Not Enrolled</h2>
             <div style="display: none; text-align: left;" id="notEnrolledInfo"><img src="../static/images/graph.png" width="250"></div>
+            <html>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+            <body>
+            <canvas id="myChart4" style="width:100%;max-width:600px"></canvas>
+            <script>
+            const x_axis = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            const y_axis = [264, 354, 275, 424, 176, 324, 133, 248, 320, 155, 166, 360];
+
+            new Chart("myChart4", {
+              type: "line",
+              data: {
+                labels: x_axis,
+                datasets: [{
+                  fill: false,
+                  lineTension: 0,
+                  backgroundColor: "rgba(0,0,255,1.0)",
+                  borderColor: "rgba(0,0,255,0.1)",
+                  data: y_axis
+                }]
+              },
+              options: {
+                title: {display: true, text: "Family and Children Not Enrolled by Month"},
+                legend: {display: false},
+                scales: {
+                  yAxes: [{ticks: {min: 0, max:1600}}],
+                }
+              }
+            });
+            </script>
+
+            </body>
+            </html>
           </div>
         </div>
       </div>
@@ -99,6 +187,53 @@
           <div class="text">
             <h2>Not Enrolled Reasons</h2>
             <div style="display: none; text-align: left;" id="reasonsInfo"><img src="../static/images/graph.png" width="250"></div>
+            <html>
+              <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+              <body>
+
+              <canvas id="myChart5" style="width:100%;max-width:6000px"></canvas>
+
+              <script>
+              var xValues = ["Does not meet employment/activity requirement", "Fee too high", "No Child Care Slots", "No longer in Dallas County", "No longer needing services", "No packet received", "No Provider Choice", "Not a Priority", "Not working/training", "On leave/STD", "Over the income guidelines", "Unable to Reach Client", "Under participation requirement", "Verification Docs Needed", "Other"];
+              var yValues = [357, 296, 250, 180, 134, 95, 78, 70, 46, 30, 25, 16, 12, 9, 5];
+              var barColors = [
+                "#b91d47",
+                "#00aba9",
+                "#2b5797",
+                "#e8c3b9",
+                "#1e7145",
+                "#800000",
+                "#9A6324",
+                "#808000",
+                "#469990",
+                "#000075",
+                "#f58231",
+                "#42d4f4",
+                "#911eb4",
+                "#f032e6",
+                "#fabed4"
+              ];
+
+              new Chart("myChart5", {
+                type: "pie",
+                data: {
+                  labels: xValues,
+                  datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                  }]
+                },
+                options: {
+                  title: {
+                    display: true,
+                    text: "Not Enrolled Reasons"
+                  }
+                }
+              });
+              </script>
+
+              </body>
+              </html>
           </div>
         </div>
       </div>
@@ -108,75 +243,106 @@
           <div class="text">
             <h2>Processing Time</h2>
             <div style="display: none; text-align: left;" id="startInfo"><img src="../static/images/graph.png" width="250"></div>
+            <html>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+            <body>
+
+            <canvas id="myChart6" style="width:100%;max-width:600px"></canvas>
+
+            <script>
+            var xValues = ["0-10 days", "11-20 days", "21-30 days", "31+ days"];
+            var yValues = [3754, 850, 210, 96];
+            var barColors = ["red", "green","blue","orange"];
+
+            new Chart("myChart6", {
+              type: "bar",
+              data: {
+                labels: xValues,
+                datasets: [{
+                  backgroundColor: barColors,
+                  data: yValues
+                }]
+              },
+              options: {
+                legend: {display: false},
+                title: {
+                  display: true,
+                  text: "Processing Time"
+                }
+
+              }
+            });
+            </script>
+
+            </body>
+            </html>
           </div>
         </div>
       </div>
+{% endblock %}
 
-      <script>
-        const sent = document.getElementById('sent');
-        const sentInfo = document.getElementById('sentInfo');
-        const status = document.getElementById('status');
-        const statusInfo = document.getElementById('statusInfo');
-        const enrolled = document.getElementById('enrolled');
-        const enrolledInfo = document.getElementById('enrolledInfo');
-        const notEnrolled = document.getElementById('notEnrolled');
-        const notEnrolledInfo = document.getElementById('notEnrolledInfo');
-        const reasons = document.getElementById('reasons');
-        const reasonsInfo = document.getElementById('reasonsInfo');
-        const start = document.getElementById('start');
-        const startInfo = document.getElementById('startInfo');
+{% block script %}
+  <script>
+    const sent = document.getElementById('sent');
+    const sentInfo = document.getElementById('sentInfo');
+    const status = document.getElementById('status');
+    const statusInfo = document.getElementById('statusInfo');
+    const enrolled = document.getElementById('enrolled');
+    const enrolledInfo = document.getElementById('enrolledInfo');
+    const notEnrolled = document.getElementById('notEnrolled');
+    const notEnrolledInfo = document.getElementById('notEnrolledInfo');
+    const reasons = document.getElementById('reasons');
+    const reasonsInfo = document.getElementById('reasonsInfo');
+    const start = document.getElementById('start');
+    const startInfo = document.getElementById('startInfo');
 
-        sent.addEventListener('click', () => {
-          if (sentInfo.style.display === 'none') {
-            sentInfo.style.display = 'block';
-          } else {
-            sentInfo.style.display = 'none';
-          }
-        });
+    sent.addEventListener('click', () => {
+      if (sentInfo.style.display === 'none') {
+        sentInfo.style.display = 'block';
+      } else {
+        sentInfo.style.display = 'none';
+      }
+    });
 
-        status.addEventListener('click', () => {
-          if (statusInfo.style.display === 'none') {
-            statusInfo.style.display = 'block';
-          } else {
-            statusInfo.style.display = 'none';
-          }
-        });
+    status.addEventListener('click', () => {
+      if (statusInfo.style.display === 'none') {
+        statusInfo.style.display = 'block';
+      } else {
+        statusInfo.style.display = 'none';
+      }
+    });
 
-        enrolled.addEventListener('click', () => {
-          if (enrolledInfo.style.display === 'none') {
-            enrolledInfo.style.display = 'block';
-          } else {
-            enrolledInfo.style.display = 'none';
-          }
-        });
+    enrolled.addEventListener('click', () => {
+      if (enrolledInfo.style.display === 'none') {
+        enrolledInfo.style.display = 'block';
+      } else {
+        enrolledInfo.style.display = 'none';
+      }
+    });
 
-        notEnrolled.addEventListener('click', () => {
-          if (notEnrolledInfo.style.display === 'none') {
-            notEnrolledInfo.style.display = 'block';
-          } else {
-            notEnrolledInfo.style.display = 'none';
-          }
-        });
+    notEnrolled.addEventListener('click', () => {
+      if (notEnrolledInfo.style.display === 'none') {
+        notEnrolledInfo.style.display = 'block';
+      } else {
+        notEnrolledInfo.style.display = 'none';
+      }
+    });
 
-        reasons.addEventListener('click', () => {
-          if (reasonsInfo.style.display === 'none') {
-            reasonsInfo.style.display = 'block';
-          } else {
-            reasonsInfo.style.display = 'none';
-          }
-        });
+    reasons.addEventListener('click', () => {
+      if (reasonsInfo.style.display === 'none') {
+        reasonsInfo.style.display = 'block';
+      } else {
+        reasonsInfo.style.display = 'none';
+      }
+    });
 
-        start.addEventListener('click', () => {
-          if (startInfo.style.display === 'none') {
-            startInfo.style.display = 'block';
-          } else {
-            startInfo.style.display = 'none';
-          }
-        });
+    start.addEventListener('click', () => {
+      if (startInfo.style.display === 'none') {
+        startInfo.style.display = 'block';
+      } else {
+        startInfo.style.display = 'none';
+      }
+    });
 
-      </script>
-    </div>
-    </section>
-  </div>
-</body>
-</html>
+  </script>
+{% endblock %}
