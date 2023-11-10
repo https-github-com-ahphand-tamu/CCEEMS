@@ -22,25 +22,25 @@
             <span class="page">Home Page</span>
           </a>
           </li>
-          <li><a href="./users">
+          <li><a href="./users-page">
             <i class="fa-solid fa-user"></i>
             <span class="page">Users</span>
           </a>
-          <li><a href="./manage-users">
+          <li><a href="./manage-users-page">
             <i class="fa-solid fa-user-gear"></i>
             <span class="page">Manage Users</span>
           </a>
           </li>
-          <li><a href="./upload-new-requests">
+          <li><a href="./upload-new-requests-page">
             <i class="fa-solid fa-upload"></i>
-            <span class="page">Upload New Requests</span>
+            <span class="page">Upload New Cases</span>
           </a>
           </li>
-          <li><a href="./new-requests">
+          <li><a href="./new-requests-page">
             <i class="fa-solid fa-clipboard-list"></i>
-            <span class="page">Assign New Requests</span>
+            <span class="page">Assign Cases</span>
           </a>
-          </li>        
+          </li>
           </li>
           <li><a href="./">
             <i class="fas fa-sign-out-alt"></i>
@@ -107,9 +107,9 @@
             <html>
               <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
               <body>
-              
+
               <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
-              
+
               <script>
               var xValues = ["Returned", "Not Returned", "Waiting"];
               var yValues = [4758, 2537, 1540];
@@ -120,7 +120,7 @@
                 "#e8c3b9",
                 "#1e7145"
               ];
-              
+
               new Chart("myChart2", {
                 type: "doughnut",
                 data: {
@@ -138,9 +138,9 @@
                 }
               });
               </script>
-              
+
               </body>
-              </html>              
+              </html>
           </div>
         </div>
       </div>
@@ -314,7 +314,7 @@
                   display: true,
                   text: "Processing Time"
                 }
-                
+
               }
             });
             </script>
