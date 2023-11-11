@@ -161,58 +161,79 @@
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="assignModalLabel">Assign Request</h5>
+                        <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                 <div class="form-group">
-                    <label for="editFirstName">First Name:</label>
-                    <input type="text" class="form-control" id="editFirstName" value="">
-                </div>
-                <div class="form-group">
-                    <label for="editLastName">Last Name:</label>
-                    <input type="text" class="form-control" id="editLastName" value="">
-                </div>
-                <div class="form-group">
-                    <label for="editNumChildren">No. of Children:</label>
-                    <input type="text" class="form-control" id="editNumChildren" value="">
-                </div>
-                <div class="form-group">
-                    <label for="editOutreachDate">Outreach Date:</label>
-                    <div class="input-group">
-                        <input type="text" class="form-control datepicker" id="editOutreachDate" value="">
-                    </div>
-                </div>
-                <div class="form-group">
+                    <h5 id="editIdHeader"></h5>                    
+                    <label for="editFirstName">First Name:</label><span id="editFirstName"></span><br/>
+                    <label for="editLastName">Last Name:</label> <span  id="editLastName"></span><br/>
+                    <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
+                    <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
                     <label for="editPacketReturnStatus">Packet Return Status:</label>
                     <select class="form-control" id="editPacketReturnStatus">
-                        {% for status in PacketReturnStatus %}
-                            <option value="{{ status.value }}" {% if status == case.packet_return_status %} selected {% endif %}>{{ status.value }}</option>
-                        {% endfor %}
                     </select>
+                    <label for="editDecision">Decision:</label>
+                    <select class="form-control" id="editDecision">
+                    </select>
+                    <label for="editNumChildrenEnrolled">No. of Children Enrolleded</label><input id="editNumChildrenEnrolled" value=""/>
+                    <label for="editPacketReceivedDate">Packet Received Date:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <label for="editDecisionDate">Decision Date:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control datepicker" id="editDecisionDate" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                    </div>                 
+
+                    <label for="editNotEnrolledReason">Not Enrolled Reason</label><input id="editNotEnrolledReason" value=""/>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
+                    </div>
                 </div>
-            <div class="form-group">
-                <label for="editDecision">Decision:</label>
-                <select class="form-control" id="editDecision">
-                    {% for decision in Decision %}
-                        <option value="{{ decision.value }}" {% if decision == case.decision %} selected {% endif %}>{{ decision.value }}</option>
-                    {% endfor %}
-                </select>
-            </div>
                 </div>
             </div> 
         </div>
         
-
     <!-- JavaScript to handle the assignment -->
     <script>
         $('document').ready(() => {
+            var Enum = {
+        PacketReturnStatus: [
+            { value: 'Returned' },
+            { value: 'Not Returned' },
+            { value: 'Waiting for Response' }
+        ],
+        Decision: [
+            { value: 'Enrolled' },
+            { value: 'Not Enrolled' },
+            { value: 'Waiting for Response' }
+        ]
+    };
+
             $('#casesTable').DataTable({
                 colReorder: true, // Enable column reordering
                 colResize: true, // Enable column resizing
                 select: true, // Enable row selection
             });
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',  // Adjust the format as needed
+                autoclose: true
+            });
+
             document.querySelectorAll('.assign-button').forEach(function(button) {
                 button.addEventListener('click', function() {
                     // Extract the request ID from the button's data attribute
@@ -254,23 +275,42 @@
                 button.addEventListener('click', function() {
                     var case_id = this.getAttribute('data-case-id');
                     // Populate the modal with case details
-                    $('#editFirstName').val($('#firstName_' + case_id).text());
-                    $('#editLastName').val($('#lastName_' + case_id).text());
-                    $('#editNumChildren').val($('#numChildren_' + case_id).text());
-                    $('#editOutreachDate').val($('#outreachDate_' + case_id).text());
-                    $('#editPacketReturnStatus').val($('#packetReturnStatus_' + case_id).text());
+                    $('#editIdHeader').text("ID: " + $('#customerId_' + case_id).text());
+                    $('#editFirstName').text($('#firstName_' + case_id).text());
+                    $('#editLastName').text($('#lastName_' + case_id).text());
+                    $('#editNumChildren').text($('#numChildren_' + case_id).text());
+                    $('#editOutreachDate').text($('#outreachDate_' + case_id).text());
+
+                    populateSelect('#editPacketReturnStatus', 'PacketReturnStatus', $('#packetReturnStatus_' + case_id).text());
+                    populateSelect('#editDecision', 'Decision', $('#decision_' + case_id).text());
+
+
+                    // $('#editPacketReturnStatus').val($('#packetReturnStatus_' + case_id).text());
                     $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
-                    $('#editStaffInitials').val($('#staffInitials_' + case_id).text());
-                    $('#editDecision').val($('#decision_' + case_id).text());
+                    // $('#editDecision').val($('#decision_' + case_id).text());
                     $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
                     $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
                     $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
-                    $('#editAssignedToUser').val($('#assignedToUser_' + case_id).text());
 
                     // Show the modal
                     $('#editModal').modal('show');
                 });
             });
+
+            function populateSelect(selectId, enumName, selectedValue) {
+                var select = $(selectId);
+                select.empty();  // Clear existing options
+
+                // Loop through enum values and add them to the select element
+                Enum[enumName].forEach(function(option) {
+                    var optionElement = $('<option>', {
+                        value: option.value,
+                        text: option.value,
+                        selected: option.value === selectedValue  // Select the option if it matches the case value
+                    });
+                    select.append(optionElement);
+                });
+            }
         });
     </script>
     </section>

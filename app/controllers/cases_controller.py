@@ -13,7 +13,7 @@ def list_new_requests():
     cases = Case.query.all()
     users = User.query.all()
     print(users)
-    return render_template('cases.html', cases=cases, users=users)
+    return render_template('cases.html', cases=cases, users=users, PacketReturnStatus=PacketReturnStatus, Decision=Decision)
 
 
 @assign.route('/assign_request/<int:request_id>', methods=['POST'])
