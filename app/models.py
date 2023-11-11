@@ -4,6 +4,7 @@ from enum import Enum
 from flask_login import UserMixin
 from sqlalchemy import DateTime
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import UniqueConstraint
 
 from app import db
 
@@ -23,6 +24,7 @@ class User(db.Model, UserMixin):
     last_login = db.Column(DateTime)
 
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
+    user_cases = db.relationship('Case', backref=db.backref('cases', lazy=True))
 
     def __init__(self, name, email, role):
         self.name = name
@@ -62,24 +64,6 @@ class Role(db.Model):
         return f'<Role {self.name}>'
 
 
-class Newrequest(db.Model):
-    __tablename__ = 'new_requests'
-
-    id = db.Column(db.Integer, primary_key=True)
-    customer_id = db.Column(db.String(80), unique=True, nullable=False)
-    first_name = db.Column(db.String(80), unique=False, nullable=False)
-    last_name = db.Column(db.String(80), unique=False, nullable=False)
-    num_of_children = db.Column(db.Integer, nullable=False)
-    outreach_date = db.Column(db.Date, nullable=False)
-
-    def __init__(self, customer_id, first_name, last_name, num_of_children, outreach_date):
-        self.customer_id = customer_id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.num_of_children = num_of_children
-        self.outreach_date = outreach_date
-
-
 class PacketReturnStatus(Enum):
     RETURNED = "Returned"
     NOT_RETURNED = "Not Returned"
@@ -92,8 +76,11 @@ class Decision(Enum):
     WAITING = "Waiting for Response"
 
 
-class Currentrequest(db.Model):
-    __tablename__ = 'current_requests'
+class Case(db.Model):
+    __tablename__ = 'cases'
+    __table_args__ = (
+        UniqueConstraint('customer_id', name='_customer_id_uc'),  # Add a unique constraint to customer_id
+    )
 
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.String(80), unique=False, nullable=False)
@@ -101,14 +88,14 @@ class Currentrequest(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     num_of_children = db.Column(db.Integer, unique=False, nullable=False)
     outreach_date = db.Column(db.Date, unique=False, nullable=False)
-    packet_return_status = db.Column(
-        db.Enum(PacketReturnStatus), nullable=False)
+    packet_return_status = db.Column(db.Enum(PacketReturnStatus), nullable=False, server_default=str(PacketReturnStatus.WAITING))
     packet_received_date = db.Column(db.Date, unique=False, nullable=True)
-    staff_initials = db.Column(db.String(80), unique=False, nullable=False)
-    decision = db.Column(db.Enum(Decision), nullable=False)
+    staff_initials = db.Column(db.String(80), unique=False, nullable=True)
+    decision = db.Column(db.Enum(Decision), nullable=False, server_default=str(Decision.WAITING))
     num_children_enrolled = db.Column(db.Integer, unique=False, nullable=True)
     decision_date = db.Column(db.Date, unique=False, nullable=True)
     not_enrolled_reason = db.Column(db.String(80), unique=False, nullable=True)
+    assigned_to_user = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __init__(self, customer_id, first_name, last_name, num_of_children, outreach_date, packet_return_status,
                  packet_received_date, staff_initials, decision, num_children_enrolled, decision_date,
