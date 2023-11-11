@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Home Page</title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link rel=""stylesheet href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}"  />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <nav>
+      <div class="nav-menu">
+        <div class="nav-title">
+          <a href="./home-page"><img src="{{ url_for('static', filename='images/ccgrouplogo.png') }}" width="250"></a>
+        </div>
+        <ul>
+          <li><a href="./home-page">
+            <i class="fa-solid fa-chart-simple"></i>
+            <span class="page">Home Page</span>
+          </a>
+          </li>
+          <li><a href="./users">
+            <i class="fa-solid fa-user"></i>
+            <span class="page">Users</span>
+          </a>
+          <li><a href="./manage-users">
+            <i class="fa-solid fa-user-gear"></i>
+            <span class="page">Manage Users</span>
+          </a>
+          </li>
+          <li><a href="./upload-new-requests">
+            <i class="fa-solid fa-upload"></i>
+            <span class="page">Upload New Cases</span>
+          </a>
+          </li>
+          <li><a href="./new-requests">
+            <i class="fa-solid fa-clipboard-list"></i>
+            <span class="page">Assign Cases</span>
+          </a>
+          </li>
+          </li>
+          <li><a href="./">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="page">Logout</span>
+          </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <section class="main">
+      <div class="main-top">
+        <h1>ChildCare Enrollment Management System</h1>
+      </div>
+      <style>
+        /* Custom CSS for the purple table and button */
+        .purple-table  {
+            background-color: purple;
+            color: white;
+        }
+
+        .purple-button {
+            background-color: purple;
+            color: white;
+            border: none;
+        }
+
+        .purple-button:hover {
+            background-color: darkpurple;
+        }
+      </style>
+    <h1>Cases</h1>
+    <div class="container">
+        <table id="casesTable" class="table table-bordered table-striped resizable-table display">
+            <thead class="purple-table">
+                <tr class="row-exclude">
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>No.of Children</th>
+                    <th>Outreach Date</th>
+                    <th>Packet Return Status</th>
+                    <th>Packet Received Date</th>
+                    <th>Staff Intials</th>
+                    <th>Decision</th>
+                    <th>No. of Children Enrolled</th>
+                    <th>Decision Date</th>
+                    <th>Not Enrolled Reason</th>
+                    <th>Assigned To User</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for case in cases %}
+                    <tr>
+                        <td id="customerId_{{ case.id }}">{{ case.customer_id }}</td>
+                        <td id="firstName_{{ case.id }}">{{ case.first_name }}</td>
+                        <td id="lastName_{{ case.id }}">{{ case.last_name }}</td>
+                        <td id="numChildren_{{ case.id }}">{{ case.num_of_children }}</td>
+                        <td id="outreachDate_{{ case.id }}">{{ case.outreach_date }}</td>
+                        <td id="packetReturnStatus_{{ case.id }}">{{ case.packet_return_status.value }}</td>
+                        <td id="packetReceivedDate_{{ case.id }}">{{ case.packet_received_date }}</td>
+                        <td id="staffInitials_{{ case.id }}">{{ case.staff_initials }}</td>
+                        <td id="decision_{{ case.id }}">{{ case.decision.value }}</td>
+                        <td id="numChildrenEnrolled_{{ case.id }}">{{ case.num_children_enrolled }}</td>
+                        <td id="decisionDate_{{ case.id }}">{{ case.decision_date }}</td>
+                        <td id="notEnrolledReason_{{ case.id }}">{{ case.not_enrolled_reason }}</td>
+                        <td id="assignedToUser_{{ case.id }}">{{ case.assigned_to_user }}</td>
+                        <td>
+                            <!-- Button to trigger the modal -->
+                            <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
+                                Assign
+                            </button>
+                            <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>                
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="assignForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="user_id">Select User:</label>
+                            <select class="form-control" id="user_id" name="user_id">
+                                {% for user in users %}
+                                    <option value="{{ user.id }}">{{ user.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <input type="hidden" id="case_id" name="case_id" value="">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="assignSubmit">Assign Case</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+        <div class="modal fade" id="editModal">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                <div class="form-group">
+                    <h5 id="editIdHeader"></h5>                    
+                    <label for="editFirstName">First Name:</label><span id="editFirstName"></span><br/>
+                    <label for="editLastName">Last Name:</label> <span  id="editLastName"></span><br/>
+                    <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
+                    <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
+                    <label for="editPacketReturnStatus">Packet Return Status:</label>
+                    <select class="form-control" id="editPacketReturnStatus">
+                    </select>
+                    <label for="editDecision">Decision:</label>
+                    <select class="form-control" id="editDecision">
+                    </select>
+                    <label for="editNumChildrenEnrolled">No. of Children Enrolleded</label><input id="editNumChildrenEnrolled" value=""/>
+                    <label for="editPacketReceivedDate">Packet Received Date:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <label for="editDecisionDate">Decision Date:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control datepicker" id="editDecisionDate" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                    </div>                 
+
+                    <label for="editNotEnrolledReason">Not Enrolled Reason</label><input id="editNotEnrolledReason" value=""/>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
+                    </div>
+                </div>
+                </div>
+            </div> 
+        </div>
+        
+    <!-- JavaScript to handle the assignment -->
+    <script>
+        $('document').ready(() => {
+            var Enum = {
+        PacketReturnStatus: [
+            { value: 'Returned' },
+            { value: 'Not Returned' },
+            { value: 'Waiting for Response' }
+        ],
+        Decision: [
+            { value: 'Enrolled' },
+            { value: 'Not Enrolled' },
+            { value: 'Waiting for Response' }
+        ]
+    };
+
+            $('#casesTable').DataTable({
+                colReorder: true, // Enable column reordering
+                colResize: true, // Enable column resizing
+                select: true, // Enable row selection
+            });
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',  // Adjust the format as needed
+                autoclose: true
+            });
+
+            document.querySelectorAll('.assign-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    // Extract the request ID from the button's data attribute
+                    var case_id = this.getAttribute('data-case-id');
+                    $(this).attr('data-target', '#assignModal' + case_id);
+                    $('#assignmodal').attr('id', '#assignModal' + case_id);
+                    // When the modal is shown, set the requestId in the modal form
+                    $('#assignModal').on('show.bs.modal', function(event) {
+                        var modal = $(this);
+                        modal.find('#case_id').val(case_id);
+                    });
+                    // Show the modal after the event binding
+                    $('#assignModal').modal('show');
+                });
+
+                });
+            // Handle the assignment when the "Assign Request" button in the modal is clicked
+            $('#assignSubmit').on('click', function() {
+                var case_id = $('#case_id').val();
+                var selectedUserId = $('#user_id').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/assign_request/' + case_id,
+                    data: { user_id: selectedUserId },
+                    success: function(response) {
+                        // Handle the response as needed, e.g., display a success message
+                        alert('Request assigned successfully.');
+                        $('#assignModal' + requestId).modal('hide');
+                        location.reload(); // Optionally, reload the page or update the UI
+                    },
+                    error: function(error) {
+                        console.error('Error:', error);
+                        alert('Error assigning request' + error.message);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.edit-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var case_id = this.getAttribute('data-case-id');
+                    // Populate the modal with case details
+                    $('#editIdHeader').text("ID: " + $('#customerId_' + case_id).text());
+                    $('#editFirstName').text($('#firstName_' + case_id).text());
+                    $('#editLastName').text($('#lastName_' + case_id).text());
+                    $('#editNumChildren').text($('#numChildren_' + case_id).text());
+                    $('#editOutreachDate').text($('#outreachDate_' + case_id).text());
+
+                    populateSelect('#editPacketReturnStatus', 'PacketReturnStatus', $('#packetReturnStatus_' + case_id).text());
+                    populateSelect('#editDecision', 'Decision', $('#decision_' + case_id).text());
+
+
+                    // $('#editPacketReturnStatus').val($('#packetReturnStatus_' + case_id).text());
+                    $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
+                    // $('#editDecision').val($('#decision_' + case_id).text());
+                    $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
+                    $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
+                    $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
+
+                    // Show the modal
+                    $('#editModal').modal('show');
+                });
+            });
+
+            function populateSelect(selectId, enumName, selectedValue) {
+                var select = $(selectId);
+                select.empty();  // Clear existing options
+
+                // Loop through enum values and add them to the select element
+                Enum[enumName].forEach(function(option) {
+                    var optionElement = $('<option>', {
+                        value: option.value,
+                        text: option.value,
+                        selected: option.value === selectedValue  // Select the option if it matches the case value
+                    });
+                    select.append(optionElement);
+                });
+            }
+        });
+    </script>
+    </section>
+  </div>
+</body>
+</html>

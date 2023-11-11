@@ -25,6 +25,7 @@
 1. Configure environment and configuration files:
    1. Set database url - `export DATABASE_URL="postgresql://[username]:[password]@localhost:5432/[dbname]"`
    1. Copy file and change values in .env - `cp .env.example .env`
+   1. Export env values - `export $(xargs <.env)`
 1. Install the dependencies - `pip install -r requirements.txt`
 1. Install pre-commit - `pre-commit install`
 1. Run migrations - `flask --app main db upgrade`
