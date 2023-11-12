@@ -332,7 +332,7 @@
                 var submitButton = $('#editSubmit');
                 submitButton.prop('disabled', true);
                 submitButton.text('Processing...');
-                modal.find("#errorBox").text("").hide();
+                $("#errorBox").text("").hide();
                 // Make an Ajax post request to /cases
                 $.ajax({
                     type: 'POST',
