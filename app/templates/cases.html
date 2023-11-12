@@ -173,11 +173,9 @@
                     <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
                     <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
                     <label for="editPacketReturnStatus">Packet Return Status:</label>
-                    <select class="form-control" id="editPacketReturnStatus">
-                    </select>
+                    <select class="form-control" id="editPacketReturnStatus"></select>
                     <label for="editDecision">Decision:</label>
-                    <select class="form-control" id="editDecision">
-                    </select>
+                    <select class="form-control" id="editDecision"></select>
                     <label for="editNumChildrenEnrolled">No. of Children Enrolleded</label><input id="editNumChildrenEnrolled" value=""/>
                     <label for="editPacketReceivedDate">Packet Received Date:</label>
                     <div class="input-group">
@@ -197,9 +195,10 @@
                             </span>
                         </div>
                     </div>                 
-
+                    <input type="hidden" id="editCaseId" name="case_id" value="">
                     <label for="editNotEnrolledReason">Not Enrolled Reason</label><input id="editNotEnrolledReason" value=""/>
                     <div class="modal-footer">
+                        <div id="errorBox" class="alert alert-danger" style="display: none;"></div>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
                     </div>
@@ -212,17 +211,17 @@
     <script>
         $('document').ready(() => {
             var Enum = {
-        PacketReturnStatus: [
-            { value: 'Returned' },
-            { value: 'Not Returned' },
-            { value: 'Waiting for Response' }
-        ],
-        Decision: [
-            { value: 'Enrolled' },
-            { value: 'Not Enrolled' },
-            { value: 'Waiting for Response' }
-        ]
-    };
+                PacketReturnStatus: [
+                    { key: 'RETURNED', value: 'Returned' },
+                    { key: 'NOT_RETURNED', value: 'Not Returned' },
+                    { key: 'WAITING', value: 'Waiting for Response' }
+                ],
+                Decision: [
+                    { key: 'ENROLLED', value: 'Enrolled' },
+                    { key: 'NOT_ENROLLED', value: 'Not Enrolled' },
+                    { key: 'WAITING', value: 'Waiting for Response' }
+                ]
+            };
 
             $('#casesTable').DataTable({
                 colReorder: true, // Enable column reordering
@@ -248,7 +247,6 @@
                     // Show the modal after the event binding
                     $('#assignModal').modal('show');
                 });
-
                 });
             // Handle the assignment when the "Assign Request" button in the modal is clicked
             $('#assignSubmit').on('click', function() {
@@ -260,8 +258,8 @@
                     data: { user_id: selectedUserId },
                     success: function(response) {
                         // Handle the response as needed, e.g., display a success message
-                        alert('Request assigned successfully.');
-                        $('#assignModal' + requestId).modal('hide');
+                        alert('Case assigned successfully.');
+                        $('#assignModal').modal('hide');
                         location.reload(); // Optionally, reload the page or update the UI
                     },
                     error: function(error) {
@@ -270,7 +268,7 @@
                     }
                 });
             });
-            
+
             document.querySelectorAll('.edit-button').forEach(function(button) {
                 button.addEventListener('click', function() {
                     var case_id = this.getAttribute('data-case-id');
@@ -284,16 +282,81 @@
                     populateSelect('#editPacketReturnStatus', 'PacketReturnStatus', $('#packetReturnStatus_' + case_id).text());
                     populateSelect('#editDecision', 'Decision', $('#decision_' + case_id).text());
 
-
                     // $('#editPacketReturnStatus').val($('#packetReturnStatus_' + case_id).text());
                     $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
                     // $('#editDecision').val($('#decision_' + case_id).text());
                     $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
                     $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
                     $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
+                    $('#editModal').on('show.bs.modal', function(event) {
+                        var modal = $(this);
+                        modal.find('#editCaseId').val(case_id);
+                        modal.find("#errorBox").text("").hide();
+                    });
 
                     // Show the modal
                     $('#editModal').modal('show');
+                });
+            });
+            $('#editSubmit').on('click', function() {
+                // Get all input values
+                var caseId = $('#editCaseId').val();
+                var customerId = $('#editIdHeader').text();
+                var firstName = $('#editFirstName').text();
+                var lastName = $('#editLastName').text();
+                var numChildren = $('#editNumChildren').text();
+                var outreachDate = $('#editOutreachDate').text();
+                var packetReturnStatus = $('#editPacketReturnStatus').val();
+                var decision = $('#editDecision').val();
+                var numChildrenEnrolled = $('#editNumChildrenEnrolled').val();
+                var packetReceivedDate = $('#editPacketReceivedDate').val();
+                var decisionDate = $('#editDecisionDate').val();
+                var notEnrolledReason = $('#editNotEnrolledReason').val();
+
+                // Create an object with the data
+                var postData = {
+                    customerId: customerId,
+                    caseId: caseId,
+                    firstName: firstName,
+                    lastName: lastName,
+                    numChildren: numChildren,
+                    outreachDate: outreachDate,
+                    packetReturnStatus: packetReturnStatus,
+                    decision: decision,
+                    numChildrenEnrolled: numChildrenEnrolled,
+                    packetReceivedDate: packetReceivedDate,
+                    decisionDate: decisionDate,
+                    notEnrolledReason: notEnrolledReason
+                };
+
+                var submitButton = $('#editSubmit');
+                submitButton.prop('disabled', true);
+                submitButton.text('Processing...');
+                modal.find("#errorBox").text("").hide();
+                // Make an Ajax post request to /cases
+                $.ajax({
+                    type: 'POST',
+                    url: '/case/edit',
+                    contentType: 'application/json',  // Set the content type to JSON
+                    data: JSON.stringify(postData),  // Convert postData to JSON string
+                    success: function(response) {
+                        alert('Case details saved successfully.');
+                        $('#editModal').modal('hide');
+                        location.reload();
+
+                    },
+                    error: function(error) {
+                        var errorMessage = 'Error in the server request. Please try again.';
+                        if (error.responseJSON && error.responseJSON.message) {
+                            errorMessage = error.responseJSON.message;
+                        }
+                        // Display error message in an error box in the modal
+                        $('#errorBox').text(errorMessage).show();
+                    },
+                    complete: function () {
+                        submitButton.prop('disabled', false);
+                        submitButton.text('Save Case');
+                    }
                 });
             });
 
@@ -304,7 +367,7 @@
                 // Loop through enum values and add them to the select element
                 Enum[enumName].forEach(function(option) {
                     var optionElement = $('<option>', {
-                        value: option.value,
+                        value: option.key,
                         text: option.value,
                         selected: option.value === selectedValue  // Select the option if it matches the case value
                     });
