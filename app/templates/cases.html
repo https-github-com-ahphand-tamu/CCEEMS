@@ -82,8 +82,36 @@
         }
       </style>
     <h1>Cases</h1>
-    <div class="container">
+    <div class="container">        
+        <div class="mb-3">
+            <div class="form-check">
+                <input class="form-check-input caseFilter" type="checkbox" id="ALL">
+                <label class="form-check-label" for="ALL">ALL</label>
+            </div>
+        
+            <div class="form-check">
+                <input class="form-check-input caseFilter" type="checkbox" id="ASSIGNED">
+                <label class="form-check-label" for="ASSIGNED">ASSIGNED</label>
+            </div>
+        
+            <div class="form-check">
+                <input class="form-check-input caseFilter" type="checkbox" id="ASSIGNABLE">
+                <label class="form-check-label" for="ASSIGNABLE">ASSIGNABLE</label>
+            </div>
+        
+            <div class="form-check">
+                <input class="form-check-input caseFilter" type="checkbox" id="WAITING">
+                <label class="form-check-label" for="WAITING">WAITING</label>
+            </div>
+        
+            <div class="form-check">
+                <input class="form-check-input caseFilter" type="checkbox" id="LATE">
+                <label class="form-check-label" for="LATE">LATE</label>
+            </div>
+        </div>
+        
         <table id="casesTable" class="table table-bordered table-striped resizable-table display">
+            
             <thead class="purple-table">
                 <tr class="row-exclude">
                     <th>ID</th>
@@ -119,21 +147,30 @@
                         <td id="notEnrolledReason_{{ case.id }}">{{ case.not_enrolled_reason }}</td>
                         <td id="assignedToUser_{{ case.id }}">{{ case.assigned_to_user }}</td>
                         <td>
+                            <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
+                                Edit
+                            </button>
                                 {% if case.outreach_date is not none %}
                                     {% set days_since_outreach = (currentDate  - case.outreach_date).days %}
-                                    {% if case.packet_return_status.name == PacketReturnStatus.RETURNED.name %}
+                                    {%if case.assigned_to_user %}
                                         <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
                                             Assign
                                         </button>
+                                        <span id="caseState" key="ASSIGNED" hidden/>                                
+                                    {% elif case.packet_return_status.name == PacketReturnStatus.RETURNED.name %}
+                                        <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
+                                            Assign
+                                        </button>
+                                        <span id="caseState" key="ASSIGNABLE" hidden/>
                                     {% elif days_since_outreach < 15 and case.packet_return_status.name == PacketReturnStatus.WAITING.name %}
                                         <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}" disabled title="To assign, set the package status to 'Returned'">
                                             Assign
                                         </button>
+                                        <span id="caseState" key="WAITING" hidden/>
+                                    {% else %}
+                                        <span id="caseState" key="LATE" hidden/>
                                     {% endif %}
                                 {% endif %}
-                            <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
-                                Edit
-                            </button>
                         </td>
                     </tr>                
                 {% endfor %}
@@ -223,6 +260,52 @@
         
         <script>
             $('document').ready(() => {
+
+                var dataTable = $('#casesTable').DataTable({
+                    colReorder: true, // Enable column reordering
+                    colResize: true, // Enable column resizing
+                    select: true, // Enable row selection
+                });
+
+                $('.caseFilter').on('change', function () {
+                    filterCases();
+                });
+
+                // Function to filter cases based on selected checkboxes
+                function filterCases() {
+                    var original = dataTable.page.len();
+
+                    var selectedStates = $('.caseFilter:checked').map(function () {
+                        return this.id;
+                    }).get();
+                    console.log(selectedStates, selectedStates.includes('ALL'));
+                    // if (selectedStates.length === 0 || selectedStates.includes('ALL')) {
+                    //     dataTable.search('').columns().search('').draw();
+                    // } else 
+                    {
+                        // Show or hide rows based on the caseState span's key attribute
+                        dataTable.rows().nodes().to$().each(function () {
+                            var row = $(this);
+                            var caseStateSpan = $(this).find('#caseState');
+                            var caseState = caseStateSpan.attr('key');
+                            console.log(caseState);
+                            if (selectedStates.length === 0 || selectedStates.includes('ALL') || selectedStates.includes(caseState)) {
+                                row.show();
+                            } else {
+                                row.hide();
+                            }
+                        });
+                        var recordsTotal = dataTable.rows().count();
+                        var recordsDisplay = dataTable.rows({ search: 'applied' }).count();
+                        var info = dataTable.page.info();
+                        info.recordsTotal = recordsTotal;
+                        info.recordsDisplay = recordsDisplay;
+                        dataTable.page.info(info);
+
+                        dataTable.draw();
+                    }
+                }
+
                 var Enum = {
                     PacketReturnStatus: [
                         { key: 'RETURNED', value: 'Returned' },
@@ -236,11 +319,6 @@
                     ]
                 };
 
-                $('#casesTable').DataTable({
-                    colReorder: true, // Enable column reordering
-                    colResize: true, // Enable column resizing
-                    select: true, // Enable row selection
-                });
                 $('.datepicker').datepicker({
                     format: 'yyyy-mm-dd',  // Adjust the format as needed
                     autoclose: true
