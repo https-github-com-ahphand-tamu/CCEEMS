@@ -119,12 +119,12 @@
                         <td id="notEnrolledReason_{{ case.id }}">{{ case.not_enrolled_reason }}</td>
                         <td id="assignedToUser_{{ case.id }}">{{ case.assigned_to_user }}</td>
                         <td>
-                                {% if case.outreach_date is not none and case.packet_return_status.value == 'WAITING'%}
+                                {% if case.outreach_date is not none %}
                                     {% set days_since_outreach = (currentDate  - case.outreach_date).days %}
-                                    {% if days_since_outreach < 15 %}
-                                    <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
-                                        Assign
-                                    </button>
+                                    {% if  case.assigned_to_user is not none or (days_since_outreach < 15 and case.packet_return_status.value == 'WAITING')%}
+                                        <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
+                                            Assign
+                                        </button>
                                     {% endif %}
                                 {% endif %}
                             <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
@@ -241,8 +241,7 @@
                 autoclose: true
             });
 
-            document.querySelectorAll('.assign-button').forEach(function(button) {
-                button.addEventListener('click', function() {
+            $('#casesTable').on('click', '.assign-button', function() {
                     // Extract the request ID from the button's data attribute
                     var case_id = this.getAttribute('data-case-id');
                     $(this).attr('data-target', '#assignModal' + case_id);
@@ -254,8 +253,7 @@
                     });
                     // Show the modal after the event binding
                     $('#assignModal').modal('show');
-                });
-                });
+            });
             // Handle the assignment when the "Assign Request" button in the modal is clicked
             $('#assignSubmit').on('click', function() {
                 var case_id = $('#case_id').val();
@@ -277,8 +275,7 @@
                 });
             });
 
-            document.querySelectorAll('.edit-button').forEach(function(button) {
-                button.addEventListener('click', function() {
+            $('#casesTable').on('click', '.edit-button', function() {                
                     var case_id = this.getAttribute('data-case-id');
                     // Populate the modal with case details
                     $('#editIdHeader').text("ID: " + $('#customerId_' + case_id).text());
@@ -304,8 +301,8 @@
 
                     // Show the modal
                     $('#editModal').modal('show');
-                });
             });
+            
             $('#editSubmit').on('click', function() {
                 // Get all input values
                 var caseId = $('#editCaseId').val();
