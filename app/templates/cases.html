@@ -268,43 +268,25 @@
                 });
 
                 $('.caseFilter').on('change', function () {
-                    filterCases();
+                    dataTable.draw();
                 });
 
-                // Function to filter cases based on selected checkboxes
-                function filterCases() {
-                    var original = dataTable.page.len();
+                DataTable.ext.search.push(function (settings, data, dataIndex) {
+                    // Get the caseState from the key attribute of the span in the 12th column of the current row
+                    let caseState = $(dataTable.row(dataIndex).node()).find('#caseState').attr('key');
 
                     var selectedStates = $('.caseFilter:checked').map(function () {
                         return this.id;
                     }).get();
-                    console.log(selectedStates, selectedStates.includes('ALL'));
-                    // if (selectedStates.length === 0 || selectedStates.includes('ALL')) {
-                    //     dataTable.search('').columns().search('').draw();
-                    // } else 
-                    {
-                        // Show or hide rows based on the caseState span's key attribute
-                        dataTable.rows().nodes().to$().each(function () {
-                            var row = $(this);
-                            var caseStateSpan = $(this).find('#caseState');
-                            var caseState = caseStateSpan.attr('key');
-                            console.log(caseState);
-                            if (selectedStates.length === 0 || selectedStates.includes('ALL') || selectedStates.includes(caseState)) {
-                                row.show();
-                            } else {
-                                row.hide();
-                            }
-                        });
-                        var recordsTotal = dataTable.rows().count();
-                        var recordsDisplay = dataTable.rows({ search: 'applied' }).count();
-                        var info = dataTable.page.info();
-                        info.recordsTotal = recordsTotal;
-                        info.recordsDisplay = recordsDisplay;
-                        dataTable.page.info(info);
 
-                        dataTable.draw();
+                    // Check if the caseState is in the selectedStates
+                    if (selectedStates.length === 0 || selectedStates.includes('ALL') || selectedStates.includes(caseState)) {
+                        return true;
                     }
-                }
+
+                    return false;
+                });
+
 
                 var Enum = {
                     PacketReturnStatus: [
@@ -359,38 +341,38 @@
                 });
 
                 $('#casesTable').on('click', '.edit-button', function() {                
-                        var case_id = this.getAttribute('data-case-id');
-                        $('.edit-group-user').show();
-                        // Populate the modal with case details
-                        $('#editIdHeader').text("ID: " + $('#customerId_' + case_id).text());
-                        $('#editFirstName').text($('#firstName_' + case_id).text());
-                        $('#editLastName').text($('#lastName_' + case_id).text());
-                        $('#editNumChildren').text($('#numChildren_' + case_id).text());
-                        $('#editOutreachDate').text($('#outreachDate_' + case_id).text());
-                        var packageReturnStatus = $("#packetReturnStatus_"+case_id).attr("key");
+                    var case_id = this.getAttribute('data-case-id');
+                    $('.edit-group-user').show();
+                    // Populate the modal with case details
+                    $('#editIdHeader').text("ID: " + $('#customerId_' + case_id).text());
+                    $('#editFirstName').text($('#firstName_' + case_id).text());
+                    $('#editLastName').text($('#lastName_' + case_id).text());
+                    $('#editNumChildren').text($('#numChildren_' + case_id).text());
+                    $('#editOutreachDate').text($('#outreachDate_' + case_id).text());
+                    var packageReturnStatus = $("#packetReturnStatus_"+case_id).attr("key");
 
-                        populateSelect('#editPacketReturnStatus', 'PacketReturnStatus', $('#packetReturnStatus_' + case_id).text());
+                    populateSelect('#editPacketReturnStatus', 'PacketReturnStatus', $('#packetReturnStatus_' + case_id).text());
 
-                        var days_since_outreach = calculateDaysSinceOutreach($('#outreachDate_' + case_id).text());
-                        console.log(packageReturnStatus, packageReturnStatus !== "RETURNED", days_since_outreach, days_since_outreach > 15);
-                        
-                        if (packageReturnStatus !== "RETURNED" && days_since_outreach > 15) {
-                            $('.edit-group-user').hide();
-                            $("#editPacketReturnStatus option[value='" + "RETURNED" + "']").hide();
-                        } else {
-                            populateSelect('#editDecision', 'Decision', $('#decision_' + case_id).text());
-                            $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
-                            $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
-                            $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
-                            $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
-                        }
-                        $('#editModal').on('show.bs.modal', function(event) {
-                            var modal = $(this);
-                            modal.find('#editCaseId').val(case_id);
-                            modal.find("#errorBox").text("").hide();
-                        });
+                    var days_since_outreach = calculateDaysSinceOutreach($('#outreachDate_' + case_id).text());
+                    console.log(packageReturnStatus, packageReturnStatus !== "RETURNED", days_since_outreach, days_since_outreach > 15);
+                    
+                    if (packageReturnStatus !== "RETURNED" && days_since_outreach > 15) {
+                        $('.edit-group-user').hide();
+                        $("#editPacketReturnStatus option[value='" + "RETURNED" + "']").hide();
+                    } else {
+                        populateSelect('#editDecision', 'Decision', $('#decision_' + case_id).text());
+                        $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
+                        $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
+                        $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
+                        $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
+                    }
+                    $('#editModal').on('show.bs.modal', function(event) {
+                        var modal = $(this);
+                        modal.find('#editCaseId').val(case_id);
+                        modal.find("#errorBox").text("").hide();
+                    });
 
-                        $('#editModal').modal('show');
+                    $('#editModal').modal('show');
                 });
                 
                 $('#editSubmit').on('click', function() {
