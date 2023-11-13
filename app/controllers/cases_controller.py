@@ -18,7 +18,6 @@ def list_new_requests():
 def edit_case():
     data = request.json
 
-    # Extract and validate data
     num_children_enrolled_str = data.get('numChildrenEnrolled')
     decision_date_str = data.get('decisionDate')
     packet_received_date_str = data.get('packetReceivedDate')
@@ -28,13 +27,13 @@ def edit_case():
     except ValueError as e:
         return jsonify({"status": "Error", "message": "no. of children enrolled must be integer"}), 400
 
-    # Validate and convert strings to proper types
     try:
-        decision_date = datetime.strptime(decision_date_str, '%Y-%m-%d' ) if decision_date_str else None
-        packet_received_date = datetime.strptime(packet_received_date_str, '%Y-%m-%d') if packet_received_date_str else None
+        decision_date = datetime.strptime(decision_date_str, '%Y-%m-%d' ) if decision_date_str or decision_date_str == 'None' else None
+        packet_received_date = datetime.strptime(packet_received_date_str, '%Y-%m-%d') if packet_received_date_str or decision_date_str == 'None' else None
     except (ValueError, TypeError) as _:
-        return jsonify({"status": "Error", "message": "decision/packet received date provided must valid dates"}), 400
-    
+        decision_date = None
+        packet_received_date = None
+
     case_id = data.get('caseId')
     case_to_edit = Case.query.filter_by(id=case_id).first()
     
