@@ -76,6 +76,10 @@
         .purple-button:hover {
             background-color: darkpurple;
         }
+
+        .hidden-assign-button {
+            display: none;
+        }
       </style>
     <h1>Cases</h1>
     <div class="container">
@@ -115,10 +119,14 @@
                         <td id="notEnrolledReason_{{ case.id }}">{{ case.not_enrolled_reason }}</td>
                         <td id="assignedToUser_{{ case.id }}">{{ case.assigned_to_user }}</td>
                         <td>
-                            <!-- Button to trigger the modal -->
-                            <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
-                                Assign
-                            </button>
+                                {% if case.outreach_date is not none and case.packet_return_status.value == 'WAITING'%}
+                                    {% set days_since_outreach = (currentDate  - case.outreach_date).days %}
+                                    {% if days_since_outreach < 15 %}
+                                    <button class="btn purple-button btn-primary assign-button" data-toggle="modal" data-target="#assignModal{{ case.id }}" data-case-id="{{ case.id }}">
+                                        Assign
+                                    </button>
+                                    {% endif %}
+                                {% endif %}
                             <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
                                 Edit
                             </button>

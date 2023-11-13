@@ -13,7 +13,7 @@ def list_new_requests():
     # Query the new requests from the database, limiting to 50 per page
     cases = Case.query.all()
     users = User.query.all()
-    return render_template('cases.html', cases=cases, users=users, PacketReturnStatus=PacketReturnStatus, Decision=Decision)
+    return render_template('cases.html', cases=cases, users=users, PacketReturnStatus=PacketReturnStatus, Decision=Decision, currentDate=datetime.now().date())
 
 @assign.route('/case/edit', methods=['POST'])
 def edit_case():
