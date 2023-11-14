@@ -20,7 +20,7 @@ upload_new_req_bp = Blueprint('new-requests', __name__)
 def upload_new_requests():
     if request.method == 'POST':
         try:
-            upload_file = request.files['new-requests']
+            upload_file = request.files[' new-requests']
             if len(upload_file.filename) > 0:
                 file_path = os.path.join(
                     current_app.config['UPLOAD_LOCATION'], secure_filename(upload_file.filename))

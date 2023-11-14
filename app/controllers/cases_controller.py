@@ -19,45 +19,45 @@ def edit_case():
     num_children_enrolled_str = data.get('numChildrenEnrolled')
     decision_date_str = data.get('decisionDate')
     packet_received_date_str = data.get('packetReceivedDate')
-
-    try:
-        num_children_enrolled = int(num_children_enrolled_str) if num_children_enrolled_str else None
-    except ValueError as e:
-        return jsonify({"status": "Error", "message": "no. of children enrolled must be integer"}), 400
-
-    try:
-        decision_date = datetime.strptime(decision_date_str, '%Y-%m-%d' ) if decision_date_str or decision_date_str == 'None' else None
-        packet_received_date = datetime.strptime(packet_received_date_str, '%Y-%m-%d') if packet_received_date_str or decision_date_str == 'None' else None
-    except (ValueError, TypeError) as _:
-        decision_date = None
-        packet_received_date = None
-
     case_id = data.get('caseId')
     case_to_edit = Case.query.filter_by(id=case_id).first()
-
+    
     if not case_to_edit:
         return jsonify({"status": "Error", "message": "Case not found"}), 404
 
-    isCaseLate = case_to_edit.packet_return_status == PacketReturnStatus.WAITING.name and datetime.now().date() - outreach_date > 15
+    outreach_date = case_to_edit.outreach_date   
+    isCaseLate = case_to_edit.packet_return_status == PacketReturnStatus.WAITING and (datetime.now().date() - outreach_date).days > 15
+    print('isCaseLate=', isCaseLate)
 
     if isCaseLate and data.get('packetReturnStatus') != PacketReturnStatus.RETURNED:
-        case_to_edit = data.get('packetReturnStatus')
-    else:
-        outreach_date = case_to_edit.outreach_date
-        # Validate that decision and packet_received_date are not before outreach_date
-        if decision_date and decision_date.date() < outreach_date:
-            return jsonify({"status": "Error", "message": "Decision date cannot be before outreach date"}), 400
-
-        if packet_received_date and packet_received_date.date() < outreach_date:
-            return jsonify({"status": "Error", "message": "Packet received date cannot be before outreach date"}), 400
-
-        # Get the case ID from the data
         case_to_edit.packet_return_status = data.get('packetReturnStatus')
-        case_to_edit.packet_received_date = data.get('packetReceivedDate')
-        case_to_edit.decision = data.get('decision')
-        case_to_edit.num_children_enrolled = num_children_enrolled
-        case_to_edit.decision_date = decision_date
-        case_to_edit.not_enrolled_reason = data.get('notEnrolledReason')
+    else:
+        try:
+            num_children_enrolled = int(num_children_enrolled_str) if num_children_enrolled_str.lower() != 'none' else None
+        except ValueError as e:
+            return jsonify({"status": "Error", "message": "no. of children enrolled must be integer"}), 400
+
+        try:
+            decision_date = datetime.strptime(decision_date_str, '%Y-%m-%d' ) if decision_date_str or decision_date_str.lower() == 'none' else None
+            packet_received_date = datetime.strptime(packet_received_date_str, '%Y-%m-%d') if packet_received_date_str or decision_date_str.lower() == 'none' else None
+        except (ValueError, TypeError) as _:
+            decision_date = None
+            packet_received_date = None
+
+            # Validate that decision and packet_received_date are not before outreach_date
+            if decision_date and decision_date.date() < outreach_date:
+                return jsonify({"status": "Error", "message": "Decision date cannot be before outreach date"}), 400
+
+            if packet_received_date and packet_received_date.date() < outreach_date:
+                return jsonify({"status": "Error", "message": "Packet received date cannot be before outreach date"}), 400
+
+            # Get the case ID from the data
+            case_to_edit.packet_return_status = data.get('packetReturnStatus')
+            case_to_edit.packet_received_date = data.get('packetReceivedDate')
+            case_to_edit.decision = data.get('decision')
+            case_to_edit.num_children_enrolled = num_children_enrolled
+            case_to_edit.decision_date = decision_date
+            case_to_edit.not_enrolled_reason = data.get('notEnrolledReason')
 
     try:
         db.session.commit()

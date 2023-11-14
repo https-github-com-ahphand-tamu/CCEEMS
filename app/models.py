@@ -88,27 +88,28 @@ class Case(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     num_of_children = db.Column(db.Integer, unique=False, nullable=False)
     outreach_date = db.Column(db.Date, unique=False, nullable=False)
-    packet_return_status = db.Column(db.Enum(PacketReturnStatus), nullable=False, server_default=str(PacketReturnStatus.WAITING))
+    packet_return_status = db.Column(db.Enum(PacketReturnStatus), nullable=False, server_default=PacketReturnStatus.WAITING.name)
     packet_received_date = db.Column(db.Date, unique=False, nullable=True)
     staff_initials = db.Column(db.String(80), unique=False, nullable=True)
-    decision = db.Column(db.Enum(Decision), nullable=False, server_default=str(Decision.WAITING))
+    decision = db.Column(db.Enum(Decision), nullable=False, server_default=Decision.WAITING.name)
     num_children_enrolled = db.Column(db.Integer, unique=False, nullable=True)
     decision_date = db.Column(db.Date, unique=False, nullable=True)
     not_enrolled_reason = db.Column(db.String(80), unique=False, nullable=True)
     assigned_to_user = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def __init__(self, customer_id, first_name, last_name, num_of_children, outreach_date, packet_return_status,
-                 packet_received_date, staff_initials, decision, num_children_enrolled, decision_date,
-                 not_enrolled_reason):
+    def __init__(self, customer_id, first_name, last_name, num_of_children, outreach_date, packet_return_status=None,
+                 packet_received_date=None, staff_initials=None, decision=None, num_children_enrolled=None,
+                 decision_date=None, not_enrolled_reason=None, assigned_to_user=None):
         self.customer_id = customer_id
         self.first_name = first_name
         self.last_name = last_name
         self.num_of_children = num_of_children
         self.outreach_date = outreach_date
-        self.packet_return_status = packet_return_status
+        self.packet_return_status = packet_return_status or PacketReturnStatus.WAITING
         self.packet_received_date = packet_received_date
         self.staff_initials = staff_initials
-        self.decision = decision
+        self.decision = decision or Decision.WAITING
         self.num_children_enrolled = num_children_enrolled
         self.decision_date = decision_date
         self.not_enrolled_reason = not_enrolled_reason
+        self.assigned_to_user = assigned_to_user
