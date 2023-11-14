@@ -6,15 +6,13 @@ from datetime import datetime
 
 assign = Blueprint('assign', __name__)
 
-
-@assign.route('/cases', methods=['GET'])
-def list_new_requests():
-    # Query the new requests from the database, limiting to 50 per page
+@assign.route('/cases/', methods=['GET'])
+def list_cases():
     cases = Case.query.all()
     users = User.query.all()
     return render_template('cases.html', cases=cases, users=users, PacketReturnStatus=PacketReturnStatus, Decision=Decision, currentDate=datetime.now().date())
 
-@assign.route('/case/edit', methods=['POST'])
+@assign.route('/case/edit/', methods=['POST'])
 def edit_case():
     data = request.json
 
@@ -36,25 +34,30 @@ def edit_case():
 
     case_id = data.get('caseId')
     case_to_edit = Case.query.filter_by(id=case_id).first()
-    
+
     if not case_to_edit:
         return jsonify({"status": "Error", "message": "Case not found"}), 404
 
-    outreach_date = case_to_edit.outreach_date
-    # Validate that decision and packet_received_date are not before outreach_date
-    if decision_date and decision_date.date() < outreach_date:
-        return jsonify({"status": "Error", "message": "Decision date cannot be before outreach date"}), 400
+    isCaseLate = case_to_edit.packet_return_status == PacketReturnStatus.WAITING.name and datetime.now().date() - outreach_date > 15
 
-    if packet_received_date and packet_received_date.date() < outreach_date:
-        return jsonify({"status": "Error", "message": "Packet received date cannot be before outreach date"}), 400
+    if isCaseLate and data.get('packetReturnStatus') != PacketReturnStatus.RETURNED:
+        case_to_edit = data.get('packetReturnStatus')
+    else:
+        outreach_date = case_to_edit.outreach_date
+        # Validate that decision and packet_received_date are not before outreach_date
+        if decision_date and decision_date.date() < outreach_date:
+            return jsonify({"status": "Error", "message": "Decision date cannot be before outreach date"}), 400
 
-    # Get the case ID from the data
-    case_to_edit.packet_return_status = data.get('packetReturnStatus')
-    case_to_edit.packet_received_date = data.get('packetReceivedDate')
-    case_to_edit.decision = data.get('decision')
-    case_to_edit.num_children_enrolled = num_children_enrolled
-    case_to_edit.decision_date = decision_date
-    case_to_edit.not_enrolled_reason = data.get('notEnrolledReason')
+        if packet_received_date and packet_received_date.date() < outreach_date:
+            return jsonify({"status": "Error", "message": "Packet received date cannot be before outreach date"}), 400
+
+        # Get the case ID from the data
+        case_to_edit.packet_return_status = data.get('packetReturnStatus')
+        case_to_edit.packet_received_date = data.get('packetReceivedDate')
+        case_to_edit.decision = data.get('decision')
+        case_to_edit.num_children_enrolled = num_children_enrolled
+        case_to_edit.decision_date = decision_date
+        case_to_edit.not_enrolled_reason = data.get('notEnrolledReason')
 
     try:
         db.session.commit()
@@ -62,16 +65,20 @@ def edit_case():
     except Exception as e:
         return jsonify({"status": "Error", "message": e}), 400
 
-@assign.route('/assign_request/<int:request_id>', methods=['POST'])
-def assign_request(request_id):
+@assign.route('/case/assign/', methods=['POST'])
+def assign_request():
     user_id = request.form['user_id']
-    case = Case.query.get(request_id)
-    if case and User.query.get(user_id):
+    case_id = int(request.form['case_id']);
+    case = Case.query.get(case_id)
+    user = User.query.get(int(user_id))
+    if case and user:
+        if case.packet_return_status != PacketReturnStatus.RETURNED:
+            return jsonify({'status': 'error', 'message': "Cannot assign case who\'s package is not received"}), 400
+        case.assigned_to_user = user.id
+        case.staff_initials = user.name
         try:
-            case.assigned_to_user = int(user_id)
             db.session.commit()
-            return jsonify({'message': 'Request assigned successfully'})
-        except:
-            # Return an error response with an appropriate status code
-            return jsonify({'error': 'Error assigning request'}), 500
-    return jsonify({'message': 'Invalid Case/User' + str(request_id)}), 400
+            return jsonify({'status': 'error','message': 'Case assigned successfully'}), 200
+        except Exception as e:
+            return jsonify({'status': 'error','message': 'Error assigning request ' + str(e)}), 500
+    return jsonify({'status': 'error','message': 'Invalid Case/User'}), 400

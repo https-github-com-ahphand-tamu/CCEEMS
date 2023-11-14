@@ -126,7 +126,7 @@
                     <th>No. of Children Enrolled</th>
                     <th>Decision Date</th>
                     <th>Not Enrolled Reason</th>
-                    <th>Assigned To User</th>
+                    <!-- <th>Assigned To User</th> -->
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -145,7 +145,7 @@
                         <td id="numChildrenEnrolled_{{ case.id }}">{{ case.num_children_enrolled }}</td>
                         <td id="decisionDate_{{ case.id }}">{{ case.decision_date }}</td>
                         <td id="notEnrolledReason_{{ case.id }}">{{ case.not_enrolled_reason }}</td>
-                        <td id="assignedToUser_{{ case.id }}">{{ case.assigned_to_user }}</td>
+                        <!-- <td id="assignedToUser_{{ case.id }}">{{ case.assigned_to_user }}</td> -->
                         <td>
                             <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
                                 Edit
@@ -287,7 +287,6 @@
                     return false;
                 });
 
-
                 var Enum = {
                     PacketReturnStatus: [
                         { key: 'RETURNED', value: 'Returned' },
@@ -325,8 +324,8 @@
                     var selectedUserId = $('#user_id').val();
                     $.ajax({
                         type: 'POST',
-                        url: '/assign_request/' + case_id,
-                        data: { user_id: selectedUserId },
+                        url: '/case/assign/',
+                        data: { user_id: selectedUserId, case_id: case_id },
                         success: function(response) {
                             // Handle the response as needed, e.g., display a success message
                             alert('Case assigned successfully.');
@@ -334,8 +333,8 @@
                             location.reload(); // Optionally, reload the page or update the UI
                         },
                         error: function(error) {
-                            console.error('Error:', error);
-                            alert('Error assigning request' + error.message);
+                            console.log(JSON.stringify(error));
+                            alert('Error assigning request' + error.error);
                         }
                     });
                 });
