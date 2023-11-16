@@ -113,3 +113,12 @@ class Case(db.Model):
         self.decision_date = decision_date
         self.not_enrolled_reason = not_enrolled_reason
         self.assigned_to_user = assigned_to_user
+
+    def __str__(self):
+        return f"Case(id={self.id}, customer_id={self.customer_id}, first_name={self.first_name}, " \
+               f"last_name={self.last_name}, num_of_children={self.num_of_children}, " \
+               f"outreach_date={self.outreach_date}, packet_return_status={self.packet_return_status}, " \
+               f"packet_received_date={self.packet_received_date}, staff_initials={self.staff_initials}, " \
+               f"decision={self.decision}, num_children_enrolled={self.num_children_enrolled}, " \
+               f"decision_date={self.decision_date}, not_enrolled_reason={self.not_enrolled_reason}, " \
+               f"assigned_to_user={self.assigned_to_user})"

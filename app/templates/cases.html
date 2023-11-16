@@ -85,9 +85,8 @@
     <div class="container">        
         <div class="mb-3">
             <div class="form-check">
-                <input class="form-check-input caseFilter" type="checkbox" id="ALL">
-                <label class="form-check-label" for="ALL">ALL</label>
-            </div>
+                <input class="form-check-input" type="button" id="caseFilterUnset" value="Reset Filters" />
+            </div><br /><br />
         
             <div class="form-check">
                 <input class="form-check-input caseFilter" type="checkbox" id="ASSIGNED">
@@ -226,7 +225,7 @@
                     <div class="edit-group-user">
                         <label for="editDecision">Decision:</label>
                         <select class="form-control" id="editDecision"></select>
-                        <label for="editNumChildrenEnrolled">No. of Children Enrolleded</label><input id="editNumChildrenEnrolled" value=""/>
+                        <label for="editNumChildrenEnrolled">No. of Children Enrolleded</label><input id="editNumChildrenEnrolled" type="number" value=""/>
                         <label for="editPacketReceivedDate">Packet Received Date:</label>
                         <div class="input-group">
                             <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
@@ -269,6 +268,13 @@
 
                 $('.caseFilter').on('change', function () {
                     dataTable.draw();
+                });
+
+                $('#caseFilterUnset').on('click', function () {
+                    $('.caseFilter').each(function () {
+                        $(this).prop('checked', false);
+                    });
+                    dataTable.search("").draw();
                 });
 
                 DataTable.ext.search.push(function (settings, data, dataIndex) {
