@@ -29,7 +29,7 @@ def step_assert_user_details(context):
     soup = BeautifulSoup(context.response.data, 'html.parser')
     # Check if the table headers are present
     headers = soup.find_all('th')
-    expected_headers = ['Name', 'Email', 'Role']
+    expected_headers = ['Name', 'Email', 'Role', 'Edit', 'ID']
     for header in headers:
         assert header.text in expected_headers
 
