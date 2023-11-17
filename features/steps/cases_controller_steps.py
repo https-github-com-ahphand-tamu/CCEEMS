@@ -24,7 +24,6 @@ def assign_case_to_user(context):
 
 @then('the case should be assigned successfully')
 def check_assignment_success(context):
-    # print(context.response.json, context.user_id, context.returned_case_id)
     assert context.response.status_code == 200
     assert 'Case assigned successfully' in context.response.json['message']
 

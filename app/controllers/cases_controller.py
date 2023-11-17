@@ -11,7 +11,6 @@ def list_cases():
     cases = Case.query.all()
     users = User.query.all()
     return render_template('cases.html', user=current_user, cases=cases, users=users, PacketReturnStatus=PacketReturnStatus, Decision=Decision, currentDate=datetime.now().date())
-
 @assign.route('/case/edit/', methods=['POST'])
 def edit_case():
     data = request.json
