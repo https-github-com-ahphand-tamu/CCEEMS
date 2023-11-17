@@ -1,7 +1,7 @@
 from flask import render_template, redirect
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
-
+import logging
 from app import create_app, db
 from app.models import User
 
@@ -28,3 +28,8 @@ def home():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
