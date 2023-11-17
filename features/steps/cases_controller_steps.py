@@ -5,12 +5,12 @@ from behave import given, when, then
 @given('there is a case with packet return status "RETURNED"')
 def create_returned_case(context):
     # Assuming you have logic to create a case with packet return status "RETURNED"
-    context.returned_case_id = context.returned_case.id  # Replace with the actual case ID
+    context.case_id = context.returned_case_id
 
 @given('there is a case with packet return status "WAITING"')
 def create_waiting_case(context):
     # Assuming you have logic to create a case with packet return status "WAITING"
-    context.waiting_case_id = context.waiting_case.id  # Replace with the actual case ID
+    context.case_id = context.waiting_case_id
 
 @given('there is a user')
 def create_user(context):
@@ -39,8 +39,8 @@ def check_assignment_error(context):
 
 @given('there is an invalid case ID or user ID')
 def set_invalid_ids(context):
-    context.invalid_case_id = 999  # Replace with an invalid case ID
-    context.invalid_user_id = 999  # Replace with an invalid user ID
+    context.case_id = 999  # Replace with an invalid case ID
+    context.user_id = 999  # Replace with an invalid user ID
 
 @then('an error should be displayed indicating an invalid case or user')
 def check_invalid_assignment_error(context):

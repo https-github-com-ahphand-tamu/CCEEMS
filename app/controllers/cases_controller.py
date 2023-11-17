@@ -6,11 +6,13 @@ from datetime import datetime
 
 assign = Blueprint('assign', __name__)
 
+
 @assign.route('/cases/', methods=['GET'])
 def list_cases():
     cases = Case.query.all()
     users = User.query.all()
-    return render_template('cases.html', cases=cases, users=users, PacketReturnStatus=PacketReturnStatus, Decision=Decision, currentDate=datetime.now().date())
+    return render_template('cases.html', user=current_user, cases=cases, users=users, PacketReturnStatus=PacketReturnStatus, Decision=Decision, currentDate=datetime.now().date())
+
 
 @assign.route('/case/edit/', methods=['POST'])
 def edit_case():
@@ -20,29 +22,33 @@ def edit_case():
     packet_received_date_str = data.get('packetReceivedDate')
     case_id = data.get('caseId')
     case_to_edit = Case.query.filter_by(id=case_id).first()
-    
+
     if not case_to_edit:
         return jsonify({"status": "Error", "message": "Case not found"}), 404
 
-    outreach_date = case_to_edit.outreach_date   
-    isCaseLate = case_to_edit.packet_return_status == PacketReturnStatus.WAITING and (datetime.now().date() - outreach_date).days > 15
+    outreach_date = case_to_edit.outreach_date
+    isCaseLate = case_to_edit.packet_return_status == PacketReturnStatus.WAITING and (
+        datetime.now().date() - outreach_date).days > 15
 
     if isCaseLate:
         if data.get('packetReturnStatus') != PacketReturnStatus.RETURNED.name:
             case_to_edit.packet_return_status = data.get('packetReturnStatus')
         else:
-            return jsonify({"status": "Error", "message": "Late case package status can\'t be made returned"}), 400;
+            return jsonify({"status": "Error", "message": "Late case package status can\'t be made returned"}), 400
     else:
         if num_children_enrolled != "":
             try:
                 int(num_children_enrolled)
             except:
-                return jsonify({"status": "Error", "message": "no. of children enrolled must be integer"}), 400    
-        num_children_enrolled = int(num_children_enrolled) if num_children_enrolled != "" else 0
+                return jsonify({"status": "Error", "message": "no. of children enrolled must be integer"}), 400
+        num_children_enrolled = int(
+            num_children_enrolled) if num_children_enrolled != "" else 0
 
         try:
-            decision_date = datetime.strptime(decision_date_str, '%Y-%m-%d' ) if decision_date_str and decision_date_str.lower() != 'none' else None
-            packet_received_date = datetime.strptime(packet_received_date_str, '%Y-%m-%d') if packet_received_date_str and packet_received_date_str.lower() != 'none' else None
+            decision_date = datetime.strptime(
+                decision_date_str, '%Y-%m-%d') if decision_date_str and decision_date_str.lower() != 'none' else None
+            packet_received_date = datetime.strptime(
+                packet_received_date_str, '%Y-%m-%d') if packet_received_date_str and packet_received_date_str.lower() != 'none' else None
         except ValueError as e:
             return jsonify({"status": "Error", "message": "Decision/Package dates must be valid dates"}), 400
         print(decision_date, packet_received_date)
@@ -67,12 +73,13 @@ def edit_case():
     except Exception as e:
         return jsonify({"status": "Error", "message": e}), 400
 
+
 @assign.route('/case/assign/', methods=['POST'])
 def assign_request():
     try:
         data = request.json
         user_id = data.get('user_id')
-        case_id = data.get('case_id');
+        case_id = data.get('case_id')
         case = Case.query.get(int(case_id))
         user = User.query.get(int(user_id))
         if case and user:
@@ -82,9 +89,9 @@ def assign_request():
             case.staff_initials = user.name
             try:
                 db.session.commit()
-                return jsonify({'status': 'error','message': 'Case assigned successfully'}), 200
+                return jsonify({'status': 'error', 'message': 'Case assigned successfully'}), 200
             except Exception as e:
-                return jsonify({'status': 'error','message': 'Error assigning case', 'exception': str(e)}), 500
-        return jsonify({'status': 'error','message': 'Invalid Case/User'}), 400
+                return jsonify({'status': 'error', 'message': 'Error assigning case', 'exception': str(e)}), 500
+        return jsonify({'status': 'error', 'message': 'Invalid Case/User'}), 400
     except:
         return jsonify({'status': "error", "message": "user_id/case_id should be numbers in payload"}), 400

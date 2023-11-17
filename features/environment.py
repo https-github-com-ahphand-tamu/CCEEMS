@@ -2,7 +2,7 @@ import os
 
 from app import db
 from features.service import admin_controller_service, update_password_service, \
-    new_requests_controller_service
+    new_requests_controller_service, cases_controller_service
 from main import app, login_manager
 
 

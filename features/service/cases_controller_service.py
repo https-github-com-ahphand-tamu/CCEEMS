@@ -1,6 +1,7 @@
 from app import db
 from app.seeds import users, roles
-
+from app.models import Case, PacketReturnStatus, Decision
+from datetime import datetime
 
 def setup_feature(context, app):
     with app.app_context():
@@ -26,9 +27,11 @@ def setup_feature(context, app):
             packet_return_status=PacketReturnStatus.WAITING,
             decision=Decision.WAITING
         )
-        context.returned_case = returned_case
-        context.waiting_case = waiting_case
+        db.session.add(returned_case)
+        db.session.add(waiting_case)
         db.session.commit()
+        context.returned_case_id = returned_case.id
+        context.waiting_case_id  = waiting_case.id
 
 def teardown_feature(context, app):
     with app.app_context():
