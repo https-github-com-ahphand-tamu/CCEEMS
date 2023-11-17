@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>{% block title %}Manage Users{% endblock %}</h2>
+    <button id="addUser" class="btn btn-primary">Add User</button>
+  </div>
+{% endblock %}
+
+{% block content %}
+<table id="userTable">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Role</th>
+    <th>Edit</th>
+    <th style="display: none;">ID</th>
+  </tr>
+  </thead>
+  <tbody>
+<!--  {% for user in users %}-->
+  <tr>
+    <td>{{ user.name }}</td>
+    <td>{{ user.email }}</td>
+    <td>{{ user.role.name }}</td>
+    <td>
+      <button id="editUser" class="editUser purplebutton">Edit</button>
+    </td>
+    <td style="display: none;">{{ user.id }}</td>
+  </tr>
+<!--  {% endfor %}-->
+  </tbody>
+</table>
+
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">Add/Edit User</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Form for adding/editing user -->
+        <form id="userForm">
+          <div class="form-group">
+            <label for="userName">Name</label>
+            <input type="text" id="userName" class="form-control" placeholder="Enter name">
+          </div>
+          <div class="form-group">
+            <label for="userEmail">Email</label>
+            <input type="email" id="userEmail" class="form-control" placeholder="Enter email">
+          </div>
+          <div class="form-group">
+            <label for="userRole">Role</label>
+            <select id="userRole" class="form-control">
+              <!-- Options for roles -->
+            </select>
+          </div>
+          <button type="button" id="saveUser" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block script %}
+  <script>
+    const users = JSON.parse('{{ users | tojson | safe }}');
+  </script>
+  <script src="{{ url_for('static', filename='js/manage_users.js') }}"></script>
+{% endblock %}

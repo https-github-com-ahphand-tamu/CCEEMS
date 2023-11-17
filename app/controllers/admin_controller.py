@@ -22,12 +22,12 @@ def get_users():
             'id': user.id,
             'name': user.name,
             'email': user.email,
-            'role': user.role
+            'role': user.role.name
         }
         user_list.append(user_data)
 
     current_app.logger.debug(user_list)
-    return render_template('manage-users-page.html', user=current_user, users=user_list)
+    return render_template('manage_users.html', user=current_user, users=user_list)
 
 
 @admin_bp.route('/admin/users/<int:user_id>', methods=['GET'])
