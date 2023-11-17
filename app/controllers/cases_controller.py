@@ -3,6 +3,7 @@ from flask_login import current_user
 from app.models import Case, User, PacketReturnStatus, Decision
 from app import db
 from datetime import datetime
+import logging
 
 assign = Blueprint('assign', __name__)
 
@@ -80,8 +81,11 @@ def assign_request():
         data = request.json
         user_id = data.get('user_id')
         case_id = data.get('case_id')
+        logging.info(f"ASSIGN={data}, user_id={user_id}, case_id={case_id}")
         case = Case.query.get(int(case_id))
         user = User.query.get(int(user_id))
+        logging.info(f"ASSIGN={data}, case={case}, user={user}")
+
         if case and user:
             if case.packet_return_status != PacketReturnStatus.RETURNED:
                 return jsonify({'status': 'error', 'message': "Cannot assign case who\'s package is not received"}), 400
