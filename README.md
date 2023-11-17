@@ -10,6 +10,7 @@
 ### Install postgres in your local
 - Installing PostgreSQL on macOS
     - ```brew install postgresql@16```
+    - ```brew services start postgresql@16```
 
 - Installing PostgreSQL on Linux (Ubuntu)
     ```sh
