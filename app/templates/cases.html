@@ -292,7 +292,8 @@
                     $.ajax({
                         type: 'POST',
                         url: '/case/assign/',
-                        data: { user_id: selectedUserId, case_id: case_id },
+                        data: JSON.stringify({ user_id: selectedUserId, case_id: case_id }),
+                        contentType: "application/json",
                         success: function(response) {
                             // Handle the response as needed, e.g., display a success message
                             alert('Case assigned successfully.');

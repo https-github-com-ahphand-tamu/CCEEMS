@@ -19,8 +19,6 @@ upload_new_req_bp = Blueprint('new-requests', __name__)
 @upload_new_req_bp.route('/upload-new-requests', methods=['GET', 'POST'])
 def upload_new_requests():
     if request.method == 'POST':
-        print(request.form)
-        print(request.files)
         try:
             upload_file = request.files['new-requests']
             if len(upload_file.filename) > 0:

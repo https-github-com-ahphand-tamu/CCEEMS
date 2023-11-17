@@ -1,7 +1,7 @@
 from flask import render_template, redirect
 from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
-
+import logging
 from app import create_app, db
 from app.models import User
 

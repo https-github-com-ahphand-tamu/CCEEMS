@@ -3,6 +3,7 @@ from flask_login import current_user
 from app.models import Case, User, PacketReturnStatus, Decision
 from app import db
 from datetime import datetime
+import logging
 
 assign = Blueprint('assign', __name__)
 
@@ -82,6 +83,7 @@ def assign_request():
         case_id = data.get('case_id')
         case = Case.query.get(int(case_id))
         user = User.query.get(int(user_id))
+
         if case and user:
             if case.packet_return_status != PacketReturnStatus.RETURNED:
                 return jsonify({'status': 'error', 'message': "Cannot assign case who\'s package is not received"}), 400
@@ -93,5 +95,6 @@ def assign_request():
             except Exception as e:
                 return jsonify({'status': 'error', 'message': 'Error assigning case', 'exception': str(e)}), 500
         return jsonify({'status': 'error', 'message': 'Invalid Case/User'}), 400
-    except:
+    except Exception as e:
+        logging.error(f"error={e}")
         return jsonify({'status': "error", "message": "user_id/case_id should be numbers in payload"}), 400
