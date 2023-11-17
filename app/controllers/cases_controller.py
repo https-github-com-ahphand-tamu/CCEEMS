@@ -41,7 +41,7 @@ def edit_case():
         num_children_enrolled = int(num_children_enrolled) if num_children_enrolled != "" else 0
 
         try:
-            decision_date        = datetime.strptime(decision_date_str, '%Y-%m-%d' ) if decision_date_str and decision_date_str.lower() != 'none' else None
+            decision_date = datetime.strptime(decision_date_str, '%Y-%m-%d' ) if decision_date_str and decision_date_str.lower() != 'none' else None
             packet_received_date = datetime.strptime(packet_received_date_str, '%Y-%m-%d') if packet_received_date_str and packet_received_date_str.lower() != 'none' else None
         except ValueError as e:
             return jsonify({"status": "Error", "message": "Decision/Package dates must be valid dates"}), 400
