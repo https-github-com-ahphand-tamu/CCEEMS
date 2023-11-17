@@ -8,6 +8,7 @@ Create Date: 2023-11-09 18:39:44.347237
 from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
+from app.models import PacketReturnStatus, Decision
 
 # revision identifiers, used by Alembic.
 revision = '25aa6d0954cb'
@@ -25,10 +26,10 @@ def upgrade():
     sa.Column('last_name', sa.String(length=80), nullable=False),
     sa.Column('num_of_children', sa.Integer(), nullable=False),
     sa.Column('outreach_date', sa.Date(), nullable=False),
-    sa.Column('packet_return_status', sa.Enum('RETURNED', 'NOT_RETURNED', 'WAITING', name='packetreturnstatus'), server_default='WAITING', nullable=False),
+    sa.Column('packet_return_status', sa.Enum(PacketReturnStatus), server_default=PacketReturnStatus.WAITING.name, nullable=False),
     sa.Column('packet_received_date', sa.Date(), nullable=True),
     sa.Column('staff_initials', sa.String(length=80), nullable=True),
-    sa.Column('decision', sa.Enum('ENROLLED', 'NOT_ENROLLED', 'WAITING', name='decision'), server_default='WAITING', nullable=False),
+    sa.Column('decision', sa.Enum(Decision), server_default=Decision.WAITING.name, nullable=False),
     sa.Column('num_children_enrolled', sa.Integer(), nullable=True),
     sa.Column('decision_date', sa.Date(), nullable=True),
     sa.Column('not_enrolled_reason', sa.String(length=80), nullable=True),
@@ -51,10 +52,10 @@ def downgrade():
     sa.Column('last_name', sa.VARCHAR(length=80), autoincrement=False, nullable=False),
     sa.Column('num_of_children', sa.INTEGER(), autoincrement=False, nullable=False),
     sa.Column('outreach_date', sa.DATE(), autoincrement=False, nullable=False),
-    sa.Column('packet_return_status', postgresql.ENUM('RETURNED', 'NOT_RETURNED', 'WAITING', name='packetreturnstatus'), autoincrement=False, nullable=False),
+    sa.Column('packet_return_status', sa.Enum('RETURNED', 'NOT_RETURNED', 'WAITING', name='packetreturnstatus'), nullable=False),
     sa.Column('packet_received_date', sa.DATE(), autoincrement=False, nullable=True),
     sa.Column('staff_initials', sa.VARCHAR(length=80), autoincrement=False, nullable=False),
-    sa.Column('decision', postgresql.ENUM('ENROLLED', 'NOT_ENROLLED', 'WAITING', name='decision'), autoincrement=False, nullable=False),
+    sa.Column('decision', sa.Enum(Decision), server_default=str(Decision.WAITING), nullable=False),
     sa.Column('num_children_enrolled', sa.INTEGER(), autoincrement=False, nullable=True),
     sa.Column('decision_date', sa.DATE(), autoincrement=False, nullable=True),
     sa.Column('not_enrolled_reason', sa.VARCHAR(length=80), autoincrement=False, nullable=True),
