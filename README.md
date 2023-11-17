@@ -11,6 +11,9 @@
 - Installing PostgreSQL on macOS
     - ```brew install postgresql@16```
     - ```brew services start postgresql@16```
+    - add the PostgreSQL binaries directory to your PATH by adding the following line to your shell profile file (such as ~/.zshrc if you're using Zsh):
+      ```export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"```
+    - ```source ~/.zshrc```
 
 - Installing PostgreSQL on Linux (Ubuntu)
     ```sh
