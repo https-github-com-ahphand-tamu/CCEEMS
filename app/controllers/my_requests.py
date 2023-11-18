@@ -1,12 +1,13 @@
-from flask import Blueprint, render_template
+from flask import request, Blueprint, render_template
 from flask import redirect, url_for
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField
 from wtforms.fields import DateField
-
 from app import db
-from app.models import Case
+from app.models import Case, User, PacketReturnStatus, Decision
+from flask import jsonify
+from datetime import datetime
 
 # from wtforms.ext.sqlalchemy.fields import QuerySelectField
 
@@ -30,28 +31,71 @@ class RequestForm(FlaskForm):
     submit = SubmitField('Save Changes')
 
 
-@my_req_bp.route('/my-requests', methods=['GET', 'POST'])
+@my_req_bp.route('/my_cases', methods=['GET', 'POST'])
 def view_requests():
-    requests_data = Cases.query.order_by(Cases.id).all()
+    cases = User.query.get(current_user.id).user_cases
+    return render_template('my_requests.html', cases=cases, user=current_user)
 
-    forms = []
+@my_req_bp.route('/my_cases/edit/', methods=['POST'])
+def edit_case():
+    data = request.json
+    num_children_enrolled = data.get('numChildrenEnrolled')
 
-    for request_data in requests_data:
-        form = RequestForm(obj=request_data)
-        forms.append((request_data.id, form))
+    print(num_children_enrolled)
+    decision_date_str = data.get('decisionDate')
+    packet_received_date_str = data.get('packetReceivedDate')
+    case_id = data.get('caseId')
+    case_to_edit = Case.query.filter_by(id=case_id).first()
 
-    return render_template('my_requests.html', forms=forms, user=current_user)
+    if not case_to_edit:
+        return jsonify({"status": "Error", "message": "Case not found"}), 404
 
+    outreach_date = case_to_edit.outreach_date
+    if num_children_enrolled != "":
+        try:
+            int(num_children_enrolled)
+        except:
+            return jsonify({"status": "Error", "message": "no. of children enrolled must be integer"}), 400
+    num_children_enrolled = int(num_children_enrolled) if num_children_enrolled != "" else 0
 
-@my_req_bp.route('/my-requests/<int:request_id>', methods=['POST'])
-def update_request(request_id):
-    request_data = Cases.query.get_or_404(request_id)
-    form = RequestForm(obj=request_data)
+    try:
+        decision_date = datetime.strptime(
+                decision_date_str, '%Y-%m-%d') if decision_date_str and decision_date_str.lower() != 'none' else None
+        packet_received_date = datetime.strptime(
+                packet_received_date_str, '%Y-%m-%d') if packet_received_date_str and packet_received_date_str.lower() != 'none' else None
+    except ValueError as e:
+        return jsonify({"status": "Error", "message": "Decision/Package dates must be valid dates"}), 400
+    print(decision_date, packet_received_date)
+        # Validate that decision and packet_received_date are not before outreach_date
+    if decision_date and decision_date.date() < outreach_date:
+        return jsonify({"status": "Error", "message": "Decision date cannot be before outreach date"}), 400
 
-    if form.validate_on_submit():
-        form.populate_obj(request_data)
+    if packet_received_date and packet_received_date.date() < outreach_date:
+        return jsonify({"status": "Error", "message": "Packet received date cannot be before outreach date"}), 400
+
+    # Get the case ID from the data
+    case_to_edit.packet_return_status = data.get('packetReturnStatus')
+    case_to_edit.packet_received_date = data.get('packetReceivedDate')
+    case_to_edit.decision = data.get('decision')
+    case_to_edit.num_children_enrolled = num_children_enrolled
+    case_to_edit.decision_date = decision_date
+    case_to_edit.not_enrolled_reason = data.get('notEnrolledReason')
+
+    try:
         db.session.commit()
-        print(f"Updating request {request_id} with data: {form.data}")
+        return jsonify({"status": "OK"}), 200
+    except Exception as e:
+        return jsonify({"status": "Error", "message": e}), 400
 
-    # Redirect to avoid form resubmission on page refresh
-    return redirect(url_for('my-requests.view_requests'))
+# @my_req_bp.route('/my-requests/<int:request_id>', methods=['POST'])
+# def update_request(request_id):
+#     request_data = Case.query.get_or_404(request_id)
+#     form = RequestForm(obj=request_data)
+
+#     if form.validate_on_submit():
+#         form.populate_obj(request_data)
+#         db.session.commit()
+#         print(f"Updating request {request_id} with data: {form.data}")
+
+#     # Redirect to avoid form resubmission on page refresh
+#     return redirect(url_for('my-requests.view_requests'))

@@ -1,7 +1,7 @@
 from werkzeug.security import generate_password_hash
 
 from app import db
-from app.models import User, Role
+from app.models import User, Role, Case
 import logging
 import uuid
 
