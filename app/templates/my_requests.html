@@ -14,6 +14,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
   <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 </head>
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
 <body>
   <div class="container">
     {% include 'include/_navbar.html' %}
@@ -54,6 +59,13 @@
                     <th>Last Name</th>
                     <th>No.of Children</th>
                     <th>Outreach Date</th>
+                    <th class="hidden">Packet Return Status</th>
+                    <th class="hidden">Packet Received Date</th>
+                    <th class="hidden">Staff Intials</th>
+                    <th class="hidden">Decision</th>
+                    <th class="hidden">No. of Children Enrolled</th>
+                    <th class="hidden">Decision Date</th>
+                    <th class="hidden">Not Enrolled Reason</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -65,13 +77,13 @@
                         <td id="lastName_{{ case.id }}">{{ case.last_name }}</td>
                         <td id="numChildren_{{ case.id }}">{{ case.num_of_children }}</td>
                         <td id="outreachDate_{{ case.id }}">{{ case.outreach_date }}</td>
-                        <td hidden id="packetReturnStatus_{{ case.id }}" key="{{ case.packet_return_status.name }}">{{ case.packet_return_status.value }}</td>
-                        <td hidden id="packetReceivedDate_{{ case.id }}">{{ case.packet_received_date }}</td>
-                        <td hidden id="staffInitials_{{ case.id }}">{{ case.staff_initials }}</td>
-                        <td hidden id="decision_{{ case.id }}">{{ case.decision.value }}</td>
-                        <td hidden id="numChildrenEnrolled_{{ case.id }}">{{ case.num_children_enrolled }}</td>
-                        <td hidden id="decisionDate_{{ case.id }}">{{ case.decision_date }}</td>
-                        <td hidden id="notEnrolledReason_{{ case.id }}">{{ case.not_enrolled_reason }}</td>
+                        <td id="packetReturnStatus_{{ case.id }}" class="hidden" key="{{ case.packet_return_status.name }}">{{ case.packet_return_status.value }}</td>
+                        <td id="packetReceivedDate_{{ case.id }}" class="hidden">{{ case.packet_received_date }}</td>
+                        <td id="staffInitials_{{ case.id }}" class="hidden">{{ case.staff_initials }}</td>
+                        <td id="decision_{{ case.id }}" class="hidden">{{ case.decision.value }}</td>
+                        <td id="numChildrenEnrolled_{{ case.id }}" class="hidden">{{ case.num_children_enrolled }}</td>
+                        <td id="decisionDate_{{ case.id }}" class="hidden">{{ case.decision_date }}</td>
+                        <td id="notEnrolledReason_{{ case.id }}" class="hidden">{{ case.not_enrolled_reason }}</td>
                         <td>
                             <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
                                 Edit
