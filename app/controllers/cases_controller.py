@@ -52,8 +52,7 @@ def edit_case():
                 packet_received_date_str, '%Y-%m-%d') if packet_received_date_str and packet_received_date_str.lower() != 'none' else None
         except ValueError as e:
             return jsonify({"status": "Error", "message": "Decision/Package dates must be valid dates"}), 400
-        print(decision_date, packet_received_date)
-        # Validate that decision and packet_received_date are not before outreach_date
+
         if decision_date and decision_date.date() < outreach_date:
             return jsonify({"status": "Error", "message": "Decision date cannot be before outreach date"}), 400
 
@@ -62,10 +61,10 @@ def edit_case():
 
         # Get the case ID from the data
         case_to_edit.packet_return_status = data.get('packetReturnStatus')
-        case_to_edit.packet_received_date = data.get('packetReceivedDate')
         case_to_edit.decision = data.get('decision')
         case_to_edit.num_children_enrolled = num_children_enrolled
         case_to_edit.decision_date = decision_date
+        case_to_edit.packet_received_date =  packet_received_date
         case_to_edit.not_enrolled_reason = data.get('notEnrolledReason')
 
     try:

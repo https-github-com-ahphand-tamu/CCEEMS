@@ -106,11 +106,11 @@ class Case(db.Model):
         self.num_of_children = num_of_children
         self.outreach_date = outreach_date
         self.packet_return_status = packet_return_status or PacketReturnStatus.WAITING
-        self.packet_received_date = packet_received_date
+        self.packet_received_date = packet_received_date or None
         self.staff_initials = staff_initials
         self.decision = decision or Decision.WAITING
         self.num_children_enrolled = num_children_enrolled
-        self.decision_date = decision_date
+        self.decision_date = decision_date or None
         self.not_enrolled_reason = not_enrolled_reason
         self.assigned_to_user = assigned_to_user
 
