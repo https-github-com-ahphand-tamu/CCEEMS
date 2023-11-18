@@ -9,9 +9,7 @@ from app.models import Case, User, PacketReturnStatus, Decision
 from flask import jsonify
 from datetime import datetime
 
-# from wtforms.ext.sqlalchemy.fields import QuerySelectField
-
-my_req_bp = Blueprint('my-requests', __name__)
+my_req_bp = Blueprint('my-cases', __name__)
 
 
 class RequestForm(FlaskForm):
@@ -31,10 +29,10 @@ class RequestForm(FlaskForm):
     submit = SubmitField('Save Changes')
 
 
-@my_req_bp.route('/my_cases', methods=['GET', 'POST'])
-def view_requests():
+@my_req_bp.route('/my_cases', methods=['GET'])
+def view_cases():
     cases = User.query.get(current_user.id).user_cases
-    return render_template('my_requests.html', cases=cases, user=current_user)
+    return render_template('my_cases.html', cases=cases, user=current_user)
 
 @my_req_bp.route('/my_cases/edit/', methods=['POST'])
 def edit_case():
@@ -86,16 +84,3 @@ def edit_case():
         return jsonify({"status": "OK"}), 200
     except Exception as e:
         return jsonify({"status": "Error", "message": e}), 400
-
-# @my_req_bp.route('/my-requests/<int:request_id>', methods=['POST'])
-# def update_request(request_id):
-#     request_data = Case.query.get_or_404(request_id)
-#     form = RequestForm(obj=request_data)
-
-#     if form.validate_on_submit():
-#         form.populate_obj(request_data)
-#         db.session.commit()
-#         print(f"Updating request {request_id} with data: {form.data}")
-
-#     # Redirect to avoid form resubmission on page refresh
-#     return redirect(url_for('my-requests.view_requests'))
