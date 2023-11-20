@@ -6,7 +6,7 @@
 * Python version `3.10.12` is required to build and run this application.
 * If you plan to deploy this in heroku, please see Heroku's supported python runtimes and stacks [Heroku\'s Stacks & Python Support](https://devcenter.heroku.com/articles/python-support). Check the same for `AWS` as well.
 
-### Whom To Contact
+### Whom To Contact for Troubleshooting
 * If you face any issues during the setup contact one of us
    * Bharath Kumar Ravichadran (bharathkumarravichandran@gmail.com)
    * Tanmai Harish (tanmai@tamu.edu)
