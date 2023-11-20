@@ -6,11 +6,6 @@
 * Python version `3.10.12` is required to build and run this application.
 * If you plan to deploy this in heroku, please see Heroku's supported python runtimes and stacks [Heroku\'s Stacks & Python Support](https://devcenter.heroku.com/articles/python-support). Check the same for `AWS` as well.
 
-### Whom To Contact for Troubleshooting
-* If you face any issues during the setup contact one of us
-   * Bharath Kumar Ravichandran (`bharath[at]tamu[dot]edu`)
-   * Tanmai Harish (`tanmai[at]tamu[dot]edu`)
-
 ### Install postgres in your local
 - #### Installing PostgreSQL on macOS
     - ```brew install postgresql@16```
@@ -124,3 +119,8 @@ To check the code quality using pylint, run the following command:
 ```
 pylint app
 ```
+
+### Whom To Contact for Troubleshooting
+* If you face any issues during the setup contact one of us
+    * Bharath Kumar Ravichandran (`bharath[at]tamu[dot]edu`)
+    * Tanmai Harish (`tanmai[at]tamu[dot]edu`)

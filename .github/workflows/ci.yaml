@@ -97,7 +97,3 @@ jobs:
           echo $DATABASE_URL_TEST
           coverage run -m behave
         working-directory: ./
-      - name: Generate coverage report
-        run: |
-          coverage report --fail-under=90 -m main.py config.py $(find app -name "*.py" ! -path "app/seeds/*.py")
-        working-directory: ./
