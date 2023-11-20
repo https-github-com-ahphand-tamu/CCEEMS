@@ -66,6 +66,10 @@ Replace <your_username>, <your_password>, and <your_database> with your chosen v
 1. Run migrations - `flask --app main db upgrade`
 1. Run seeds - `python seed.py`
 1. Run the application using `flask --app main run`
+2. #### Test login details -
+   Username - test1@tamu.edu
+
+   Password - Password@123
 1. Before you push your code, please format the code to follow the [pep8 standards](#code-formatting) and check your [code quality](#code-quality-check-pylint).
 
 ### Steps to Deploy (Heroku)
