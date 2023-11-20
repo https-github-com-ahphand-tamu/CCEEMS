@@ -1,0 +1,21 @@
+.hidden {
+    display: none;
+}
+.purple-table  {
+    background-color: #662484;
+    color: white;
+}
+
+.purple-button {
+    background-color: #662484;
+    color: white;
+    border: none;
+}
+
+.purple-button:hover {
+    background-color: #501c68;
+}
+
+.hidden-assign-button {
+    display: none;
+}
