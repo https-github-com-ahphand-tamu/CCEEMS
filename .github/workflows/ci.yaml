@@ -57,6 +57,9 @@ jobs:
           export DATABASE_URL_TEST="postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}"
           echo $DATABASE_URL_TEST
           coverage run -m unittest discover -s tests
+        working-directory: ./
+      - name: Generate coverage report
+        run: |
           coverage report -m --fail-under=90
         working-directory: ./
 
@@ -92,5 +95,9 @@ jobs:
           export $(xargs <ci.env)
           export DATABASE_URL_TEST="postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}"
           echo $DATABASE_URL_TEST
-          behave
+          coverage run -m behave
+        working-directory: ./
+      - name: Generate coverage report
+        run: |
+          coverage report -m --fail-under=90
         working-directory: ./

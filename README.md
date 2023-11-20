@@ -33,23 +33,23 @@
     ```
     psql -U postgres
     ```
-    
+
     Create a new user
     ```
     CREATE USER <your_username> WITH PASSWORD '<your_password>';
     ```
-    
+
     Create a database
     ```
     CREATE DATABASE <your_database>;
-    ```    
-    
+    ```
+
     Provide all privileges to your user for your database
     ```
     ALTER USER <your_username> WITH SUPERUSER;
     GRANT ALL PRIVILEGES ON DATABASE <your_database> TO <your_username>;
     ```
-    
+
     Type `\q` to exit
 
 ##### Create your local connection string
@@ -96,7 +96,7 @@ Replace <your_username>, <your_password>, and <your_database> with your chosen v
 
 ### Steps to run unit tests
 1. Setup the project following the steps in [steps-to-setup-in-local](#steps-to-setup-in-local)
-2. #### Setup the Test DB
+2. Setup the Test DB
    Create another database called `test`, and grant all privileges to your user for this database.
    Follow the same steps [Setup PSQL User](#create-a-user-in-postgreSQL-for-local-setup)
    Copy the connection string accordingly.
