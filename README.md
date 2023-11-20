@@ -51,8 +51,9 @@
 Copy this string for use in the later steps for the local setup
 ```
 DATABASE_URL=postgres://<your_username>:<your_password>@localhost:5432/<your_database>
-Replace <your_username>, <your_password>, and <your_database> with your chosen values
 ```
+Replace <your_username>, <your_password>, and <your_database> with your chosen values
+
 ### Steps to setup in local
 1. Clone this repo using `git clone`
 1. Install postgres and create the database and the user in your local machine following [install-postgres-in-your-local](#install-postgres-in-your-local)
@@ -66,11 +67,10 @@ Replace <your_username>, <your_password>, and <your_database> with your chosen v
 1. Run migrations - `flask --app main db upgrade`
 1. Run seeds - `python seed.py`
 1. Run the application using `flask --app main run`
-2. #### Test login details -
-   Username - test1@tamu.edu
-
-   Password - Password@123
-1. Before you push your code, please format the code to follow the [pep8 standards](#code-formatting) and check your [code quality](#code-quality-check-pylint).
+2. Use login details -
+   - Username - `test1@tamu.edu`
+   - Password - `Password@123`
+1. Pre-commit hooks automatically format the code using autopep8 when you do `git commit`. Additionally, please format the code to follow the [pep8 standards](#code-formatting) and check your [code quality](#code-quality-check-pylint).
 
 ### Steps to Deploy (Heroku)
 1. Clone this repo using `git clone`
@@ -101,9 +101,8 @@ Replace <your_username>, <your_password>, and <your_database> with your chosen v
    Copy the connection string accordingly.
 1. In a terminal, type this `export FLASK_ENV=test FLASK_SECRET_KEY=test DATABASE_URL_TEST={connectionURIForTestDB}`
    Seed the DATABASE_URL_TEST permanently into `.bashrc` if required. See this [How to set env variables in .bashrc](https://askubuntu.com/questions/211716/add-environment-variable-to-bashrc-through-script)
-1. Run tests - `python -m unittest tests`
 1. To run with coverage - `coverage run -m unittest discover -s tests`
-1. Generate coverage report - `coverage report main.py config.py app/*.py`
+1. Generate coverage report - `coverage report -m main.py config.py $(find app -name "*.py" ! -path "app/seeds/*.py")`
 
 ### Steps to run behave tests
 1. Setup the project following the steps in [steps-to-setup-in-local](#steps-to-setup-in-local)

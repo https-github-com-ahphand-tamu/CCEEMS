@@ -20,3 +20,5 @@ def seed():
     user2.password = generate_password_hash("Password@456")
     db.session.add(user2)
     db.session.commit()
+
+    logging.info("Users seeded")

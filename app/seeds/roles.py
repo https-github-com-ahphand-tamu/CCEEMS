@@ -1,3 +1,5 @@
+import logging
+
 from app import db
 from app.models import Role
 
@@ -15,3 +17,4 @@ def seed():
         db.session.add(role)
 
     db.session.commit()
+    logging.info("Roles seeded")
