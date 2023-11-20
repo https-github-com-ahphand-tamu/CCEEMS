@@ -60,7 +60,7 @@ jobs:
         working-directory: ./
       - name: Generate coverage report
         run: |
-          coverage report -m --fail-under=90
+          coverage report --fail-under=90 -m main.py config.py $(find app -name "*.py" ! -path "app/seeds/*.py")
         working-directory: ./
 
   integration-test:
@@ -99,5 +99,5 @@ jobs:
         working-directory: ./
       - name: Generate coverage report
         run: |
-          coverage report -m --fail-under=90
+          coverage report --fail-under=90 -m main.py config.py $(find app -name "*.py" ! -path "app/seeds/*.py")
         working-directory: ./

@@ -1,4 +1,6 @@
+import mock
 import unittest
+
 from main import app, db
 from app.models import User, Role
 
@@ -21,11 +23,13 @@ class TestAdminRoutes(unittest.TestCase):
         db.session.add(test_role)
         db.session.commit()
 
-        admin_user = User(name='Admin User', email='admin@example.com', role=admin_role)
+        admin_user = User(name='Admin User',
+                          email='admin@example.com', role=admin_role)
         admin_user.password = generate_password_hash("admin123")
         db.session.add(admin_user)
 
-        test_user = User(name='Test User', email='test1@example.com', role=test_role)
+        test_user = User(name='Test User',
+                         email='test1@example.com', role=test_role)
         test_user.password = generate_password_hash("user123")
         db.session.add(test_user)
 
@@ -119,6 +123,17 @@ class TestAdminRoutes(unittest.TestCase):
         response = self.client.post('/admin/users', json=data)
         self.assertEqual(response.status_code, 400)
 
+    def test_add_user_with_database_error(self):
+        data = {
+            'name': 'New User',
+            'email': 'newuser@example.com',
+            'role': 'Admin'
+        }
+        with mock.patch('app.db.session.commit', side_effect=Exception('Simulated database error')):
+            response = self.client.post('/admin/users', json=data)
+        self.assertEqual(response.status_code, 500)
+        self.assertIn(b'Failed to add user', response.data)
+
     def test_update_user(self):
         data = {
             'name': 'Updated User',
@@ -172,12 +187,28 @@ class TestAdminRoutes(unittest.TestCase):
         response = self.client.put('/admin/users/2', json=data)
         self.assertEqual(response.status_code, 400)
 
+    def test_update_user_with_database_error(self):
+        data = {
+            'name': 'Updated User',
+            'email': 'updateduser@example.com',
+            'role': 'Admin'
+        }
+        with mock.patch('app.db.session.commit', side_effect=Exception('Simulated database error')):
+            response = self.client.put('/admin/users/2', json=data)
+        self.assertEqual(response.status_code, 500)
+        self.assertIn(b'Failed to update user', response.data)
+
     def test_delete_user(self):
         response = self.client.delete('/admin/users/2')
         self.assertEqual(response.status_code, 204)
         deleted_user = db.session.get(User, 2)
         self.assertIsNone(deleted_user)
 
+    def test_delete_user_with_database_error(self):
+        with mock.patch('app.db.session.commit', side_effect=Exception('Simulated database error')):
+            response = self.client.delete('/admin/users/2')
+        self.assertEqual(response.status_code, 500)
+        self.assertIn(b'Failed to delete user', response.data)
 
 
 if __name__ == '__main__':

@@ -8,8 +8,8 @@
 
 ### Whom To Contact for Troubleshooting
 * If you face any issues during the setup contact one of us
-   * Bharath Kumar Ravichadran (bharathkumarravichandran@gmail.com)
-   * Tanmai Harish (tanmai@tamu.edu)
+   * Bharath Kumar Ravichandran (`bharath[at]tamu[dot]edu`)
+   * Tanmai Harish (`tanmai[at]tamu[dot]edu`)
 
 ### Install postgres in your local
 - #### Installing PostgreSQL on macOS
