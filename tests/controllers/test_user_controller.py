@@ -1,4 +1,6 @@
+import mock
 import unittest
+
 from main import app, db
 from app.models import User, Role
 
@@ -43,10 +45,24 @@ class TestUserRoutes(unittest.TestCase):
         ))
         return response
 
-    def test_login_auth_with_correct_credentials(self):
+    def test_get_login_auth_unauthenticated(self):
+        response = self.client.get("/user/login")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Login', response.data.decode('utf-8'))
+
+    def test_post_login_auth_with_correct_credentials(self):
         response = self.login_user("test@example.com", "test123")
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.headers['Location'], "/")
+
+    def test_get_login_auth_authenticated(self):
+        response = self.login_user("test@example.com", "test123")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers['Location'], "/")
+
+        response2 = self.client.get("/user/login")
+        self.assertEqual(response2.status_code, 302)
+        self.assertEqual(response2.headers['Location'], "/")
 
     def test_login_auth_user_does_not_exist(self):
         response = self.login_user("nouser@example.com", "no-user")
@@ -57,6 +73,33 @@ class TestUserRoutes(unittest.TestCase):
         response = self.login_user("test@example.com", "not-right-password")
         self.assertIn(b'Incorrect Password', response.data)
         self.assertEqual(response.status_code, 200)
+
+    def test_login_auth_with_no_email(self):
+        response = self.client.post('/user/login', data=dict(
+            password="test123"
+        ))
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            b'Missing required fields (email, password)', response.data)
+
+    def test_login_auth_with_no_password(self):
+        response = self.client.post('/user/login', data=dict(
+            email="test@example.com"
+        ))
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            b'Missing required fields (email, password)', response.data)
+
+    def test_logout_user(self):
+        response = self.login_user("test@example.com", "test123")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers['Location'], "/")
+
+        self.client.post("/user/logout")
+
+        response3 = self.client.get("/")
+        self.assertEqual(response3.status_code, 302)
+        self.assertEqual(response3.headers['Location'], "/user/login")
 
     def test_get_user_by_id(self):
         self.login_user("test@example.com", "test123")
@@ -180,7 +223,7 @@ class TestUserRoutes(unittest.TestCase):
     def test_update_password_with_password_mismatch(self):
         self.login_user("test@example.com", "test123")
 
-        response = self.client.post('/admin/users', json={
+        self.client.post('/admin/users', json={
             "name": "Test User3",
             "email": "test3@tamu.edu",
             "role": "Admin"
@@ -194,6 +237,20 @@ class TestUserRoutes(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Both the passwords should match", response.text)
+
+    def test_update_user_with_database_error(self):
+        self.login_user("test@example.com", "test123")
+        data = {
+            'name': 'Updated User',
+            'email': 'updateduser@example.com',
+            'role': 'Admin'
+        }
+
+        with mock.patch('app.db.session.commit', side_effect=Exception('Simulated database error')):
+            response = self.client.put('/user/1', json=data)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertIn(b'Failed to update user', response.data)
 
 
 if __name__ == '__main__':

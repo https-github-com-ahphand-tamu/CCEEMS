@@ -6,11 +6,6 @@
 * Python version `3.10.12` is required to build and run this application.
 * If you plan to deploy this in heroku, please see Heroku's supported python runtimes and stacks [Heroku\'s Stacks & Python Support](https://devcenter.heroku.com/articles/python-support). Check the same for `AWS` as well.
 
-### Whom To Contact for Troubleshooting
-* If you face any issues during the setup contact one of us
-   * Bharath Kumar Ravichadran (bharathkumarravichandran@gmail.com)
-   * Tanmai Harish (tanmai@tamu.edu)
-
 ### Install postgres in your local
 - #### Installing PostgreSQL on macOS
     - ```brew install postgresql@16```
@@ -33,23 +28,23 @@
     ```
     psql -U postgres
     ```
-    
+
     Create a new user
     ```
     CREATE USER <your_username> WITH PASSWORD '<your_password>';
     ```
-    
+
     Create a database
     ```
     CREATE DATABASE <your_database>;
-    ```    
-    
+    ```
+
     Provide all privileges to your user for your database
     ```
     ALTER USER <your_username> WITH SUPERUSER;
     GRANT ALL PRIVILEGES ON DATABASE <your_database> TO <your_username>;
     ```
-    
+
     Type `\q` to exit
 
 ##### Create your local connection string
@@ -96,7 +91,7 @@ Replace <your_username>, <your_password>, and <your_database> with your chosen v
 
 ### Steps to run unit tests
 1. Setup the project following the steps in [steps-to-setup-in-local](#steps-to-setup-in-local)
-2. #### Setup the Test DB
+2. Setup the Test DB
    Create another database called `test`, and grant all privileges to your user for this database.
    Follow the same steps [Setup PSQL User](#create-a-user-in-postgreSQL-for-local-setup)
    Copy the connection string accordingly.
@@ -124,3 +119,8 @@ To check the code quality using pylint, run the following command:
 ```
 pylint app
 ```
+
+### Whom To Contact for Troubleshooting
+* If you face any issues during the setup contact one of us
+    * Bharath Kumar Ravichandran (`bharath[at]tamu[dot]edu`)
+    * Tanmai Harish (`tanmai[at]tamu[dot]edu`)

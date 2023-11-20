@@ -57,7 +57,10 @@ jobs:
           export DATABASE_URL_TEST="postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}"
           echo $DATABASE_URL_TEST
           coverage run -m unittest discover -s tests
-          coverage report -m --fail-under=90
+        working-directory: ./
+      - name: Generate coverage report
+        run: |
+          coverage report --fail-under=90 -m main.py config.py $(find app -name "*.py" ! -path "app/seeds/*.py")
         working-directory: ./
 
   integration-test:
@@ -92,5 +95,5 @@ jobs:
           export $(xargs <ci.env)
           export DATABASE_URL_TEST="postgresql://${{ env.POSTGRES_USER }}:${{ env.POSTGRES_PASSWORD }}@${{ env.POSTGRES_HOST }}:${{ env.POSTGRES_PORT }}/${{ env.POSTGRES_DB }}"
           echo $DATABASE_URL_TEST
-          behave
+          coverage run -m behave
         working-directory: ./
