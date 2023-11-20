@@ -1,75 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 <head>
-  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter&family=Poppins:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-  <link rel=""stylesheet href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" />
-  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/homepage.css') }}"  />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script> 
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/cases.css') }}"/>
 </head>
-<style>
-    .hidden {
-        display: none;
-    }
-</style>
-<body>
-  <div class="container">
-    {% include 'include/_navbar.html' %}
-    <section class="main">
-      <div class="main-top">
-        <h1>ChildCare Enrollment Management System</h1>
-      </div>
-      <style>
-        /* Custom CSS for the purple table and button */
-        .purple-table  {
-            background-color: purple;
-            color: white;
-        }
 
-        .purple-button {
-            background-color: purple;
-            color: white;
-            border: none;
-        }
+{% block header %}
+  <h2>{% block title %}My Cases{% endblock %}</h2>
+{% endblock %}
 
-        .purple-button:hover {
-            background-color: darkpurple;
-        }
+{% block content %}
+    <div class="container">
+        <section class="main">
+        <div class="main-top">
+            <h1>ChildCare Enrollment Management System</h1>
+        </div>
 
-        .hidden-assign-button {
-            display: none;
-        }
-      </style>
-    <h1>My Cases</h1>
-    <div class="container">        
-        
-        <table id="casesTable" class="table table-bordered table-striped resizable-table display">
-            
-            <thead class="purple-table">
-                <tr class="row-exclude">
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>No.of Children</th>
-                    <th>Outreach Date</th>
-                    <th class="hidden">Packet Return Status</th>
-                    <th class="hidden">Packet Received Date</th>
-                    <th class="hidden">Staff Intials</th>
-                    <th class="hidden">Decision</th>
-                    <th class="hidden">No. of Children Enrolled</th>
-                    <th class="hidden">Decision Date</th>
-                    <th class="hidden">Not Enrolled Reason</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for case in cases %}
+        <div class="container">
+            <table id="casesTable" class="table table-bordered table-striped resizable-table display">
+                <thead class="purple-table">
+                    <tr class="row-exclude">
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>No.of Children</th>
+                        <th>Outreach Date</th>
+                        <th class="hidden">Packet Return Status</th>
+                        <th class="hidden">Packet Received Date</th>
+                        <th class="hidden">Staff Intials</th>
+                        <th class="hidden">Decision</th>
+                        <th class="hidden">No. of Children Enrolled</th>
+                        <th class="hidden">Decision Date</th>
+                        <th class="hidden">Not Enrolled Reason</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for case in cases %}
                     <tr>
                         <td id="customerId_{{ case.id }}">{{ case.customer_id }}</td>
                         <td id="firstName_{{ case.id }}">{{ case.first_name }}</td>
@@ -84,44 +50,15 @@
                         <td id="decisionDate_{{ case.id }}" class="hidden">{{ case.decision_date }}</td>
                         <td id="notEnrolledReason_{{ case.id }}" class="hidden">{{ case.not_enrolled_reason }}</td>
                         <td>
-                            <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
-                                Edit
-                            </button>
+                        <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
+                        Edit
+                        </button>
                         </td>
                     </tr>                
-                {% endfor %}
-            </tbody>
-        </table>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-        <!-- <div class="modal fade" id="assignModal" tabindex="-1" role="dialog" aria-labelledby="assignModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="assignForm">
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label for="user_id">Select User:</label>
-                                <select class="form-control" id="user_id" name="user_id">
-                                    {% for user in users %}
-                                        <option value="{{ user.id }}">{{ user.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <input type="hidden" id="case_id" name="case_id" value="">
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="assignSubmit">Assign Case</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            </div> -->
             <div class="modal fade" id="editModal">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
@@ -148,7 +85,7 @@
                                 <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
                                 <div class="input-group-append">
                                     <span class="input-group-text">
-                                        <i class="fas fa-calendar-alt"></i>
+                                    <i class="fas fa-calendar-alt"></i>
                                     </span>
                                 </div>
                             </div>
@@ -157,10 +94,10 @@
                                 <input type="text" class="form-control datepicker" id="editDecisionDate" value="">
                                 <div class="input-group-append">
                                     <span class="input-group-text">
-                                        <i class="fas fa-calendar-alt"></i>
+                                    <i class="fas fa-calendar-alt"></i>
                                     </span>
                                 </div>
-                            </div>                 
+                            </div>               
                             <input type="hidden" id="editCaseId" name="case_id" value="">
                             <label for="editNotEnrolledReason">Not Enrolled Reason</label><input id="editNotEnrolledReason" value=""/>    
                         </div>
@@ -170,223 +107,224 @@
                             <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
                         </div>
                     </div>
-                    </div>
-                </div> 
+                </div>
             </div>
-        
-        <script>
-            $('document').ready(() => {
+        </div>
+    </div>  
+{% endblock %}
+{% block script %}
+    <script>
+        $('document').ready(() => {
 
-                var dataTable = $('#casesTable').DataTable({
-                    colReorder: true, // Enable column reordering
-                    colResize: true, // Enable column resizing
-                    select: true, // Enable row selection
+            var dataTable = $('#casesTable').DataTable({
+                colReorder: true, // Enable column reordering
+                colResize: true, // Enable column resizing
+                select: true, // Enable row selection
+            });
+
+            $('.caseFilter').on('change', function () {
+                dataTable.draw();
+            });
+
+            $('#caseFilterUnset').on('click', function () {
+                $('.caseFilter').each(function () {
+                    $(this).prop('checked', false);
                 });
+                dataTable.search("").draw();
+            });
 
-                $('.caseFilter').on('change', function () {
-                    dataTable.draw();
-                });
+            DataTable.ext.search.push(function (settings, data, dataIndex) {
+                // Get the caseState from the key attribute of the span in the 12th column of the current row
+                let caseState = $(dataTable.row(dataIndex).node()).find('#caseState').attr('key');
 
-                $('#caseFilterUnset').on('click', function () {
-                    $('.caseFilter').each(function () {
-                        $(this).prop('checked', false);
+                var selectedStates = $('.caseFilter:checked').map(function () {
+                    return this.id;
+                }).get();
+
+                // Check if the caseState is in the selectedStates
+                if (selectedStates.length === 0 || selectedStates.includes('ALL') || selectedStates.includes(caseState)) {
+                    return true;
+                }
+
+                return false;
+            });
+
+            var Enum = {
+                PacketReturnStatus: [
+                    { key: 'RETURNED', value: 'Returned' },
+                    { key: 'NOT_RETURNED', value: 'Not Returned' },
+                    { key: 'WAITING', value: 'Waiting for Response' }
+                ],
+                Decision: [
+                    { key: 'ENROLLED', value: 'Enrolled' },
+                    { key: 'NOT_ENROLLED', value: 'Not Enrolled' },
+                    { key: 'WAITING', value: 'Waiting for Response' }
+                ]
+            };
+
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',  // Adjust the format as needed
+                autoclose: true
+            });
+
+            $('#casesTable').on('click', '.assign-button', function() {
+                    // Extract the request ID from the button's data attribute
+                    var case_id = this.getAttribute('data-case-id');
+                    $(this).attr('data-target', '#assignModal' + case_id);
+                    $('#assignmodal').attr('id', '#assignModal' + case_id);
+                    // When the modal is shown, set the requestId in the modal form
+                    $('#assignModal').on('show.bs.modal', function(event) {
+                        var modal = $(this);
+                        modal.find('#case_id').val(case_id);
                     });
-                    dataTable.search("").draw();
-                });
+                    // Show the modal after the event binding
+                    $('#assignModal').modal('show');
+            });
 
-                DataTable.ext.search.push(function (settings, data, dataIndex) {
-                    // Get the caseState from the key attribute of the span in the 12th column of the current row
-                    let caseState = $(dataTable.row(dataIndex).node()).find('#caseState').attr('key');
-
-                    var selectedStates = $('.caseFilter:checked').map(function () {
-                        return this.id;
-                    }).get();
-
-                    // Check if the caseState is in the selectedStates
-                    if (selectedStates.length === 0 || selectedStates.includes('ALL') || selectedStates.includes(caseState)) {
-                        return true;
+            $('#assignSubmit').on('click', function() {
+                var case_id = $('#case_id').val();
+                var selectedUserId = $('#user_id').val();
+                $.ajax({
+                    type: 'POST',
+                    url: '/case/assign/',
+                    data: { user_id: selectedUserId, case_id: case_id },
+                    success: function(response) {
+                        // Handle the response as needed, e.g., display a success message
+                        alert('Case assigned successfully.');
+                        $('#assignModal').modal('hide');
+                        location.reload(); // Optionally, reload the page or update the UI
+                    },
+                    error: function(error) {
+                        console.log(JSON.stringify(error));
+                        alert('Error assigning request' + error.error);
                     }
+                });
+            });
 
-                    return false;
+            $('#casesTable').on('click', '.edit-button', function() {                
+                var case_id = this.getAttribute('data-case-id');
+                $('.edit-group-user').show();
+                // Populate the modal with case details
+                $('#editIdHeader').text("ID: " + $('#customerId_' + case_id).text());
+                $('#editFirstName').text($('#firstName_' + case_id).text());
+                $('#editLastName').text($('#lastName_' + case_id).text());
+                $('#editNumChildren').text($('#numChildren_' + case_id).text());
+                $('#editOutreachDate').text($('#outreachDate_' + case_id).text());
+                var packageReturnStatus = $("#packetReturnStatus_"+case_id).attr("key");
+
+                populateSelect('#editPacketReturnStatus', 'PacketReturnStatus', $('#packetReturnStatus_' + case_id).text());
+
+                var days_since_outreach = calculateDaysSinceOutreach($('#outreachDate_' + case_id).text());
+                console.log(packageReturnStatus, packageReturnStatus !== "RETURNED", days_since_outreach, days_since_outreach > 15);
+                
+                if (packageReturnStatus !== "RETURNED" && days_since_outreach > 15) {
+                    $('.edit-group-user').hide();
+                    $("#editPacketReturnStatus option[value='" + "RETURNED" + "']").hide();
+                } else {
+                    populateSelect('#editDecision', 'Decision', $('#decision_' + case_id).text());
+                    $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
+                    $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
+                    $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
+                    $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
+                }
+                $('#editModal').on('show.bs.modal', function(event) {
+                    var modal = $(this);
+                    modal.find('#editCaseId').val(case_id);
+                    modal.find("#errorBox").text("").hide();
                 });
 
-                var Enum = {
-                    PacketReturnStatus: [
-                        { key: 'RETURNED', value: 'Returned' },
-                        { key: 'NOT_RETURNED', value: 'Not Returned' },
-                        { key: 'WAITING', value: 'Waiting for Response' }
-                    ],
-                    Decision: [
-                        { key: 'ENROLLED', value: 'Enrolled' },
-                        { key: 'NOT_ENROLLED', value: 'Not Enrolled' },
-                        { key: 'WAITING', value: 'Waiting for Response' }
-                    ]
+                $('#editModal').modal('show');
+            });
+            
+            $('#editSubmit').on('click', function() {
+                // Get all input values
+                var caseId = $('#editCaseId').val();
+                var customerId = $('#editIdHeader').text();
+                var firstName = $('#editFirstName').text();
+                var lastName = $('#editLastName').text();
+                var numChildren = $('#editNumChildren').text();
+                var outreachDate = $('#editOutreachDate').text();
+                var packetReturnStatus = $('#editPacketReturnStatus').val();
+                var decision = $('#editDecision').val();
+                var numChildrenEnrolled = $('#editNumChildrenEnrolled').val();
+                var packetReceivedDate = $('#editPacketReceivedDate').val();
+                var decisionDate = $('#editDecisionDate').val();
+                var notEnrolledReason = $('#editNotEnrolledReason').val();
+
+                // Create an object with the data
+                var postData = {
+                    customerId: customerId,
+                    caseId: caseId,
+                    firstName: firstName,
+                    lastName: lastName,
+                    numChildren: numChildren,
+                    outreachDate: outreachDate,
+                    packetReturnStatus: packetReturnStatus,
+                    decision: decision,
+                    numChildrenEnrolled: numChildrenEnrolled,
+                    packetReceivedDate: packetReceivedDate,
+                    decisionDate: decisionDate,
+                    notEnrolledReason: notEnrolledReason
                 };
 
-                $('.datepicker').datepicker({
-                    format: 'yyyy-mm-dd',  // Adjust the format as needed
-                    autoclose: true
-                });
+                var submitButton = $('#editSubmit');
+                submitButton.prop('disabled', true);
+                submitButton.text('Processing...');
+                $("#errorBox").text("").hide();
+                // Make an Ajax post request to /cases
+                $.ajax({
+                    type: 'POST',
+                    url: '/case/edit',
+                    contentType: 'application/json',  // Set the content type to JSON
+                    data: JSON.stringify(postData),  // Convert postData to JSON string
+                    success: function(response) {
+                        alert('Case details saved successfully.');
+                        $('#editModal').modal('hide');
+                        location.reload();
 
-                $('#casesTable').on('click', '.assign-button', function() {
-                        // Extract the request ID from the button's data attribute
-                        var case_id = this.getAttribute('data-case-id');
-                        $(this).attr('data-target', '#assignModal' + case_id);
-                        $('#assignmodal').attr('id', '#assignModal' + case_id);
-                        // When the modal is shown, set the requestId in the modal form
-                        $('#assignModal').on('show.bs.modal', function(event) {
-                            var modal = $(this);
-                            modal.find('#case_id').val(case_id);
-                        });
-                        // Show the modal after the event binding
-                        $('#assignModal').modal('show');
-                });
-
-                $('#assignSubmit').on('click', function() {
-                    var case_id = $('#case_id').val();
-                    var selectedUserId = $('#user_id').val();
-                    $.ajax({
-                        type: 'POST',
-                        url: '/case/assign/',
-                        data: { user_id: selectedUserId, case_id: case_id },
-                        success: function(response) {
-                            // Handle the response as needed, e.g., display a success message
-                            alert('Case assigned successfully.');
-                            $('#assignModal').modal('hide');
-                            location.reload(); // Optionally, reload the page or update the UI
-                        },
-                        error: function(error) {
-                            console.log(JSON.stringify(error));
-                            alert('Error assigning request' + error.error);
+                    },
+                    error: function(error) {
+                        var errorMessage = 'Error in the server request. Please try again.';
+                        if (error.responseJSON && error.responseJSON.message) {
+                            errorMessage = error.responseJSON.message;
                         }
-                    });
-                });
-
-                $('#casesTable').on('click', '.edit-button', function() {                
-                    var case_id = this.getAttribute('data-case-id');
-                    $('.edit-group-user').show();
-                    // Populate the modal with case details
-                    $('#editIdHeader').text("ID: " + $('#customerId_' + case_id).text());
-                    $('#editFirstName').text($('#firstName_' + case_id).text());
-                    $('#editLastName').text($('#lastName_' + case_id).text());
-                    $('#editNumChildren').text($('#numChildren_' + case_id).text());
-                    $('#editOutreachDate').text($('#outreachDate_' + case_id).text());
-                    var packageReturnStatus = $("#packetReturnStatus_"+case_id).attr("key");
-
-                    populateSelect('#editPacketReturnStatus', 'PacketReturnStatus', $('#packetReturnStatus_' + case_id).text());
-
-                    var days_since_outreach = calculateDaysSinceOutreach($('#outreachDate_' + case_id).text());
-                    console.log(packageReturnStatus, packageReturnStatus !== "RETURNED", days_since_outreach, days_since_outreach > 15);
-                    
-                    if (packageReturnStatus !== "RETURNED" && days_since_outreach > 15) {
-                        $('.edit-group-user').hide();
-                        $("#editPacketReturnStatus option[value='" + "RETURNED" + "']").hide();
-                    } else {
-                        populateSelect('#editDecision', 'Decision', $('#decision_' + case_id).text());
-                        $('#editPacketReceivedDate').val($('#packetReceivedDate_' + case_id).text());
-                        $('#editNumChildrenEnrolled').val($('#numChildrenEnrolled_' + case_id).text());
-                        $('#editDecisionDate').val($('#decisionDate_' + case_id).text());
-                        $('#editNotEnrolledReason').val($('#notEnrolledReason_' + case_id).text());
+                        // Display error message in an error box in the modal
+                        $('#errorBox').text(errorMessage).show();
+                    },
+                    complete: function () {
+                        submitButton.prop('disabled', false);
+                        submitButton.text('Save Case');
                     }
-                    $('#editModal').on('show.bs.modal', function(event) {
-                        var modal = $(this);
-                        modal.find('#editCaseId').val(case_id);
-                        modal.find("#errorBox").text("").hide();
-                    });
-
-                    $('#editModal').modal('show');
                 });
-                
-                $('#editSubmit').on('click', function() {
-                    // Get all input values
-                    var caseId = $('#editCaseId').val();
-                    var customerId = $('#editIdHeader').text();
-                    var firstName = $('#editFirstName').text();
-                    var lastName = $('#editLastName').text();
-                    var numChildren = $('#editNumChildren').text();
-                    var outreachDate = $('#editOutreachDate').text();
-                    var packetReturnStatus = $('#editPacketReturnStatus').val();
-                    var decision = $('#editDecision').val();
-                    var numChildrenEnrolled = $('#editNumChildrenEnrolled').val();
-                    var packetReceivedDate = $('#editPacketReceivedDate').val();
-                    var decisionDate = $('#editDecisionDate').val();
-                    var notEnrolledReason = $('#editNotEnrolledReason').val();
-
-                    // Create an object with the data
-                    var postData = {
-                        customerId: customerId,
-                        caseId: caseId,
-                        firstName: firstName,
-                        lastName: lastName,
-                        numChildren: numChildren,
-                        outreachDate: outreachDate,
-                        packetReturnStatus: packetReturnStatus,
-                        decision: decision,
-                        numChildrenEnrolled: numChildrenEnrolled,
-                        packetReceivedDate: packetReceivedDate,
-                        decisionDate: decisionDate,
-                        notEnrolledReason: notEnrolledReason
-                    };
-
-                    var submitButton = $('#editSubmit');
-                    submitButton.prop('disabled', true);
-                    submitButton.text('Processing...');
-                    $("#errorBox").text("").hide();
-                    // Make an Ajax post request to /cases
-                    $.ajax({
-                        type: 'POST',
-                        url: '/case/edit',
-                        contentType: 'application/json',  // Set the content type to JSON
-                        data: JSON.stringify(postData),  // Convert postData to JSON string
-                        success: function(response) {
-                            alert('Case details saved successfully.');
-                            $('#editModal').modal('hide');
-                            location.reload();
-
-                        },
-                        error: function(error) {
-                            var errorMessage = 'Error in the server request. Please try again.';
-                            if (error.responseJSON && error.responseJSON.message) {
-                                errorMessage = error.responseJSON.message;
-                            }
-                            // Display error message in an error box in the modal
-                            $('#errorBox').text(errorMessage).show();
-                        },
-                        complete: function () {
-                            submitButton.prop('disabled', false);
-                            submitButton.text('Save Case');
-                        }
-                    });
-                });
-
-                function populateSelect(selectId, enumName, selectedValue) {
-                    var select = $(selectId);
-                    select.empty();
-
-                    Enum[enumName].forEach(function(option) {
-                        var optionElement = $('<option>', {
-                            value: option.key,
-                            text: option.value,
-                            selected: option.value === selectedValue  // Select the option if it matches the case value
-                        });
-                        select.append(optionElement);
-                    });
-                }
-
-                function calculateDaysSinceOutreach(outreachDate) {
-                    // Assuming outreachDate is a string in the format 'YYYY-MM-DD'
-                    var currentDate = new Date();
-                    var outreachDateObj = new Date(outreachDate);
-                    // Calculate the difference in milliseconds
-                    var timeDifference = currentDate - outreachDateObj;
-                    console.log(timeDifference);
-                    // Calculate the difference in days
-                    var daysDifference = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
-
-                    return daysDifference;
-                }
             });
-        </script>
-  </div>
-</body>
-</html>
+
+            function populateSelect(selectId, enumName, selectedValue) {
+                var select = $(selectId);
+                select.empty();
+
+                Enum[enumName].forEach(function(option) {
+                    var optionElement = $('<option>', {
+                        value: option.key,
+                        text: option.value,
+                        selected: option.value === selectedValue  // Select the option if it matches the case value
+                    });
+                    select.append(optionElement);
+                });
+            }
+
+            function calculateDaysSinceOutreach(outreachDate) {
+                // Assuming outreachDate is a string in the format 'YYYY-MM-DD'
+                var currentDate = new Date();
+                var outreachDateObj = new Date(outreachDate);
+                // Calculate the difference in milliseconds
+                var timeDifference = currentDate - outreachDateObj;
+                console.log(timeDifference);
+                // Calculate the difference in days
+                var daysDifference = Math.floor(timeDifference / (24 * 60 * 60 * 1000));
+
+                return daysDifference;
+            }
+        });
+    </script>
+{% endblock %}
+
