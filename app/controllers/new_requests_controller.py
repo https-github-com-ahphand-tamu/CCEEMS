@@ -50,7 +50,7 @@ def populateDatabase(upload_file, file_path):
             except Exception as e:
                 return jsonify({'message': 'Unsupported file format', 'error': str(e)}), 501
 
-        df = df.iloc[:, :5]
+        #df = df.iloc[:, :5]
         df.rename(columns={'Outreach_Date': 'outreach_date'}, inplace=True)
         valid_data, invalid_data = validateData(df)
 
