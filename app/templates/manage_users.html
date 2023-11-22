@@ -45,6 +45,7 @@
       <div class="modal-body">
         <!-- Form for adding/editing user -->
         <form id="userForm">
+          <div id="userError" class="alert alert-danger" style="display: none;"></div>
           <div class="form-group">
             <label for="userName">Name</label>
             <input type="text" id="userName" class="form-control" placeholder="Enter name">
@@ -70,7 +71,7 @@
 
 {% block script %}
   <script>
-    const users = JSON.parse('{{ users | tojson | safe }}');
+    let users = JSON.parse('{{ users | tojson | safe }}');
   </script>
   <script src="{{ url_for('static', filename='js/manage_users.js') }}"></script>
 {% endblock %}

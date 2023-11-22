@@ -1,3 +1,4 @@
+import logging
 import re
 import smtplib
 
@@ -47,6 +48,7 @@ def is_valid_email(email):
 
 
 def send_mail(path, mailid):
+    logging.info(f"Sending mail to {mailid}")
     subject = "Set password for you Childcare group account"
     body = "Kindly follow the link to set your password for the Childcare Management System Account " + \
         path + "/setpassword?email=" + mailid
