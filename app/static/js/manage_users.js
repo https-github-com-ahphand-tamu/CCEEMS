@@ -1,14 +1,15 @@
 $(document).ready(function() {
+    let dataIndex = null;
     const table = $('#userTable').DataTable();
     function populateTable(users) {
         table.clear().draw(); // Clear the table
 
-        users.forEach(user => {
+        users.forEach((user, index) => {
             const rowData = [
                 user.name,
                 user.email,
                 user.role,
-                '<button id="editUser" class="editUser purplebutton">Edit</button>',
+                `<button id="editUser_${index}" class="editUser purplebutton">Edit</button>`,
                 user.id
             ];
 
@@ -54,6 +55,7 @@ $(document).ready(function() {
         $('#userModalLabel').text(title);
         $('#saveUser').text(buttonText);
         $('#userModal').modal('show');
+        $('#userError').text("").hide();
     }
 
     function closeUserModal() {
@@ -61,6 +63,7 @@ $(document).ready(function() {
         $('#userEmail').val('');
         $('#userRole').prop('selectedIndex', 0);
         $('#userModal').modal('hide');
+        $('#userError').text("").hide();
     }
 
     $('#addUser').on('click', function() {
@@ -72,12 +75,14 @@ $(document).ready(function() {
     });
 
     $('#userTable').on('click', '.editUser', function() {
-        console.log("Edir click")
+        console.log("Edit click")
         const $row = $(this).closest('tr');
         const name = $row.find('td:eq(0)').text();
         const email = $row.find('td:eq(1)').text();
         const role = $row.find('td:eq(2)').text();
         populateRolesDropdown(role);
+
+        dataIndex = $(this).attr("id").split("_")[1];
 
         // Populate the modal with user details
         $('#userName').val(name);
@@ -86,60 +91,104 @@ $(document).ready(function() {
         openUserModal('Edit User', 'Update');
     });
 
-
-    $('#saveUser').on('click', function(event) {
-        event.preventDefault();
-
+    function addUser() {
         const name = $('#userName').val();
         const email = $('#userEmail').val();
         const role = $('#userRole option:selected').text();
 
-        const selectedRow = table.row('.selected');
-        const dataIndex = selectedRow.index();
-
-        users[dataIndex].name = name;
-        users[dataIndex].email = email;
-        users[dataIndex].role = role;
-
-        console.log(users);
         const userData = {
             name: name,
             email: email,
             role: role
         };
 
-        let method, url;
-        const modalHeading = $('#userModalLabel').text();
-        if (modalHeading === 'Add User') {
-            method = 'POST';
-            url = '/admin/users';
-        } else if (modalHeading === 'Edit User') {
-            method = 'PUT';
-            const userID = table.row('.selected').data()[4];
-            url = `/admin/users/${userID}`;
-        }
-
-        fetch(url, {
-            method: method,
+        fetch('/admin/users', {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(userData)
         })
             .then(response => {
-                if (response.ok) {
-                    console.log(`${modalHeading} successful`);
-                    populateTable(users);
-                } else {
-                    console.error(`${modalHeading} failed`);
-                }
-                closeUserModal();
+                return response.json()
             })
-            .catch(error => {
-                console.error('Error:', error);
-                closeUserModal();
+            .then(responseData => {
+                console.log(responseData);
+                if ("data" in responseData) {
+                    console.log('Add User successful');
+                    users.push(responseData.data);
+                    populateTable(users);
+                    console.log(users);
+                    closeUserModal();
+                } else {
+                    console.log('Error:', responseData);
+                    $('#userError').text(responseData.message).show();
+                }
+            })
+            .catch(errorResponse => {
+                console.error('Error:', errorResponse);
+                errorResponse.json().then(errorData => {
+                    $('#userError').text(errorData.message).show();
+                }).catch(() => {
+                    $('#userError').text('An error occurred. Please try again.').show();
+                });
             });
+    }
 
-        closeUserModal();
+    function editUser() {
+        const name = $('#userName').val();
+        const email = $('#userEmail').val();
+        const role = $('#userRole option:selected').text();
+
+        const userData = {
+            name: name,
+            email: email,
+            role: role
+        };
+
+        fetch(`/admin/users/${dataIndex}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })
+            .then(response => {
+                return response.json();
+            })
+            .then(responseData => {
+                if ("data" in responseData) {
+                    console.log('Edit User successful');
+                    users[dataIndex].name = name;
+                    users[dataIndex].email = email;
+                    users[dataIndex].role = role;
+                    populateTable(users);
+                    closeUserModal();
+                } else {
+                    console.log('Error:', responseData);
+                    $('#userError').text(responseData.message).show();
+                }
+            })
+            .catch(errorResponse => {
+                console.error('Error:', errorResponse);
+                errorResponse.json().then(errorData => {
+                    $('#userError').text(errorData.message).show();
+                }).catch(() => {
+                    $('#userError').text('An error occurred. Please try again.').show();
+                });
+            });
+    }
+
+    $('#saveUser').on('click', function(event) {
+        event.preventDefault();
+
+        const modalHeading = $('#userModalLabel').text();
+
+        if (modalHeading === 'Add User') {
+            addUser();
+        } else if (modalHeading === 'Edit User') {
+            editUser();
+        }
     });
+
 });
