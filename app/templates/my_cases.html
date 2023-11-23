@@ -9,101 +9,152 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
-        <table id="casesTable" class="table table-bordered table-striped resizable-table display">
-            <thead class="purple-table">
-                <tr class="row-exclude">
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>No.of Children</th>
-                    <th>Outreach Date</th>
-                    <th class="hidden">Packet Return Status</th>
-                    <th class="hidden">Packet Received Date</th>
-                    <th class="hidden">Staff Intials</th>
-                    <th class="hidden">Decision</th>
-                    <th class="hidden">No. of Children Enrolled</th>
-                    <th class="hidden">Decision Date</th>
-                    <th class="hidden">Not Enrolled Reason</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for case in cases %}
-                <tr>
-                    <td id="customerId_{{ case.id }}">{{ case.customer_id }}</td>
-                    <td id="firstName_{{ case.id }}">{{ case.first_name }}</td>
-                    <td id="lastName_{{ case.id }}">{{ case.last_name }}</td>
-                    <td id="numChildren_{{ case.id }}">{{ case.num_of_children }}</td>
-                    <td id="outreachDate_{{ case.id }}">{{ case.outreach_date }}</td>
-                    <td id="packetReturnStatus_{{ case.id }}" class="hidden" key="{{ case.packet_return_status.name }}">{{ case.packet_return_status.value }}</td>
-                    <td id="packetReceivedDate_{{ case.id }}" class="hidden">{{ case.packet_received_date }}</td>
-                    <td id="staffInitials_{{ case.id }}" class="hidden">{{ case.staff_initials }}</td>
-                    <td id="decision_{{ case.id }}" class="hidden">{{ case.decision.value }}</td>
-                    <td id="numChildrenEnrolled_{{ case.id }}" class="hidden">{{ case.num_children_enrolled }}</td>
-                    <td id="decisionDate_{{ case.id }}" class="hidden">{{ case.decision_date }}</td>
-                    <td id="notEnrolledReason_{{ case.id }}" class="hidden">{{ case.not_enrolled_reason }}</td>
-                    <td>
+<h2>My Cases</h2>
+<div class="container">
+    <table id="casesTable" class="table table-bordered table-striped resizable-table display">
+        <thead class="purple-table">
+            <tr class="row-exclude">
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>No.of Children</th>
+                <th>Outreach Date</th>
+                <th class="hidden">Packet Return Status</th>
+                <th class="hidden">Packet Received Date</th>
+                <th class="hidden">Staff Intials</th>
+                <th class="hidden">Decision</th>
+                <th class="hidden">No. of Children Enrolled</th>
+                <th class="hidden">Decision Date</th>
+                <th class="hidden">Not Enrolled Reason</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for case in cases %}
+            <tr>
+                <td id="customerId_{{ case.id }}">{{ case.customer_id }}</td>
+                <td id="firstName_{{ case.id }}">{{ case.first_name }}</td>
+                <td id="lastName_{{ case.id }}">{{ case.last_name }}</td>
+                <td id="numChildren_{{ case.id }}">{{ case.num_of_children }}</td>
+                <td id="outreachDate_{{ case.id }}">{{ case.outreach_date }}</td>
+                <td id="packetReturnStatus_{{ case.id }}" class="hidden" key="{{ case.packet_return_status.name }}">{{ case.packet_return_status.value }}</td>
+                <td id="packetReceivedDate_{{ case.id }}" class="hidden">{{ case.packet_received_date }}</td>
+                <td id="staffInitials_{{ case.id }}" class="hidden">{{ case.staff_initials }}</td>
+                <td id="decision_{{ case.id }}" class="hidden">{{ case.decision.value }}</td>
+                <td id="numChildrenEnrolled_{{ case.id }}" class="hidden">{{ case.num_children_enrolled }}</td>
+                <td id="decisionDate_{{ case.id }}" class="hidden">{{ case.decision_date }}</td>
+                <td id="notEnrolledReason_{{ case.id }}" class="hidden">{{ case.not_enrolled_reason }}</td>
+                <td>
                     <button class="btn blue-button btn-primary edit-button" data-toggle="modal" data-target="#editModal{{ case.id }}" data-case-id="{{ case.id }}">
                     Edit
                     </button>
-                    </td>
-                </tr>                
-                {% endfor %}
-            </tbody>
-        </table>
+                    <a href="#popupForm" class="purplebutton">Detail</a>
+                </td>
+            </tr>
+            <div class="overlay" id="popupForm">
+                <div class="wrapper">
+                    <h2>Detailed Case Information</h2>
+                    <h3>Case Number: {{ case.customer_id }}</h3>
+                    <!-- Button to close popup -->
+                    <a class="close" href="#">&times;</a>
 
-        <div class="modal fade" id="editModal">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                <div class="form-group">
-                    <h5 id="editIdHeader"></h5>                    
-                    <label for="editFirstName">First Name:</label><span id="editFirstName"></span><br/>
-                    <label for="editLastName">Last Name:</label> <span  id="editLastName"></span><br/>
-                    <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
-                    <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
-                    <label for="editPacketReturnStatus">Packet Return Status:</label>
-                    <select class="form-control" id="editPacketReturnStatus"></select>        
-                    <div class="edit-group-user">
-                        <label for="editDecision">Decision:</label>
-                        <select class="form-control" id="editDecision"></select>
-                        <label for="editNumChildrenEnrolled">No. of Children Enrolled</label><input id="editNumChildrenEnrolled" type="number" value=""/>
-                        <label for="editPacketReceivedDate">Packet Received Date:</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                <i class="fas fa-calendar-alt"></i>
-                                </span>
-                            </div>
+                    <!-- Actual popup form -->
+                    <div class="content">
+                        <div class="popupContent">
+                            <label>First Name: </label>
+                            <br>
+                            {{ case.first_name }}
+                        <br>
+                            <label>Last Name: </label>
+                            <br>
+                            {{ case.last_name }}
+                        <br>
+                            <label>Number Of Children: </label>
+                            <br>
+                            {{ case.num_of_children }}
+                        <br>
+                            <label>Number Of Children Enrolled: </label>
+                            <br>
+                            {{ case.num_children_enrolled }}
+                        <br>
+                            <label>Outreach Date: </label>
+                            <br>
+                            {{ case.outreach_date }}
+                        <br>
+                            <label>Package Return Date: </label>
+                            <br>
+                            {{ case.packet_received_date }}
+                        <br>
+                            <label>Packet Return Status: </label>
+                            <br>
+                            {{ case.packet_return_status }}
+                        <br>
+                            <label>Decision Date: </label>
+                            <br>
+                            {{ case.decision_date }}
+                        <br>
+                            <label>Not Enrolled Reason: </label>
+                            <br>
+                            {{ case.not_enrolled_reason }}     
                         </div>
-                        <label for="editDecisionDate">Decision Date:</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control datepicker" id="editDecisionDate" value="">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                <i class="fas fa-calendar-alt"></i>
-                                </span>
-                            </div>
-                        </div>               
-                        <input type="hidden" id="editCaseId" name="case_id" value="">
-                        <label for="editNotEnrolledReason">Not Enrolled Reason</label><input id="editNotEnrolledReason" value=""/>    
                     </div>
-                    <div class="modal-footer">
-                        <div id="errorBox" class="alert alert-danger" style="display: none;"></div>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
+                </div>
+            </div>              
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="modal fade" id="editModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            <div class="form-group">
+                <h5 id="editIdHeader"></h5>                    
+                <label for="editFirstName">First Name:</label><span id="editFirstName"></span><br/>
+                <label for="editLastName">Last Name:</label> <span  id="editLastName"></span><br/>
+                <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
+                <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
+                <label for="editPacketReturnStatus">Packet Return Status:</label>
+                <select class="form-control" id="editPacketReturnStatus"></select>        
+                <div class="edit-group-user">
+                    <label for="editDecision">Decision:</label>
+                    <select class="form-control" id="editDecision"></select>
+                    <label for="editNumChildrenEnrolled">No. of Children Enrolled</label><input id="editNumChildrenEnrolled" type="number" value=""/>
+                    <label for="editPacketReceivedDate">Packet Received Date:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                            <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
                     </div>
+                    <label for="editDecisionDate">Decision Date:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control datepicker" id="editDecisionDate" value="">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                            <i class="fas fa-calendar-alt"></i>
+                            </span>
+                        </div>
+                    </div>               
+                    <input type="hidden" id="editCaseId" name="case_id" value="">
+                    <label for="editNotEnrolledReason">Not Enrolled Reason</label><input id="editNotEnrolledReason" value=""/>    
+                </div>
+                <div class="modal-footer">
+                    <div id="errorBox" class="alert alert-danger" style="display: none;"></div>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 {% block script %}
     <script>
