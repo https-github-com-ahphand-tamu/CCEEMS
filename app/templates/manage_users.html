@@ -3,7 +3,7 @@
 {% block header %}
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <h2>{% block title %}Manage Users{% endblock %}</h2>
-    <button id="addUser" class="btn btn-primary">Add User</button>
+    <button id="addUser" class="btn btn-primary purple-button">Add User</button>
   </div>
 {% endblock %}
 
@@ -60,7 +60,7 @@
               <!-- Options for roles -->
             </select>
           </div>
-          <button type="button" id="saveUser" class="btn btn-primary">Save</button>
+          <button type="button" id="saveUser" class="btn btn-primary purple-button">Save</button>
         </form>
       </div>
     </div>
@@ -74,4 +74,5 @@
     let users = JSON.parse('{{ users | tojson | safe }}');
   </script>
   <script src="{{ url_for('static', filename='js/manage_users.js') }}"></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/manage-users.css') }}"/>
 {% endblock %}
