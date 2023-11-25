@@ -60,13 +60,9 @@
                     <!-- Actual popup form -->
                     <div class="content">
                         <div class="popupContent">
-                            <label>First Name: </label>
+                            <label> Name: </label>
                             <br>
-                            {{ case.first_name }}
-                        <br>
-                            <label>Last Name: </label>
-                            <br>
-                            {{ case.last_name }}
+                            {{ case.first_name }} {{ case.last_name }}
                         <br>
                             <label>Number Of Children: </label>
                             <br>
@@ -143,7 +139,9 @@
                         </div>
                     </div>               
                     <input type="hidden" id="editCaseId" name="case_id" value="">
-                    <label for="editNotEnrolledReason">Not Enrolled Reason</label><input id="editNotEnrolledReason" value=""/>    
+                    <label for="editNotEnrolledReason">Not Enrolled Reason</label>
+                    <br>
+                    <input id="editNotEnrolledReason" value=""/>    
                 </div>
                 <div class="modal-footer">
                     <div id="errorBox" class="alert alert-danger" style="display: none;"></div>
