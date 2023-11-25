@@ -8,6 +8,7 @@ from app import db
 from app.models import Case, User, PacketReturnStatus, Decision
 from flask import jsonify
 from datetime import datetime
+from app.decorators.login_decorator import requires_login
 
 my_req_bp = Blueprint('my-cases', __name__)
 
@@ -28,12 +29,13 @@ class RequestForm(FlaskForm):
     not_enrolled_reason = StringField('Not Enrolled Reason')
     submit = SubmitField('Save Changes')
 
-
+@requires_login
 @my_req_bp.route('/my_cases', methods=['GET'])
 def view_cases():
     cases = User.query.get(current_user.id).user_cases
     return render_template('my_cases.html', cases=cases, user=current_user)
 
+@requires_login
 @my_req_bp.route('/my_cases/edit/', methods=['POST'])
 def edit_case():
     data = request.json
