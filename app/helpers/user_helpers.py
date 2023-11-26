@@ -47,11 +47,12 @@ def is_valid_email(email):
     return bool(re.match(pattern, email))
 
 
-def send_mail(path, mailid):
+def send_mail(path, mailid, verification_code):
     logging.info(f"Sending mail to {mailid}")
     subject = "Set password for you Childcare group account"
+    path = path.replace("admin/users", "user")
     body = "Kindly follow the link to set your password for the Childcare Management System Account " + \
-        path + "/setpassword?email=" + mailid
+        path + "/setPassword?user=" + verification_code
     sender = "chidambaramg.dev@gmail.com"
     password = "baeaqufrwmtosnnr"
     msg = MIMEText(body)

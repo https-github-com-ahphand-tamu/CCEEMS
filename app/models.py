@@ -22,15 +22,18 @@ class User(db.Model, UserMixin):
         DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     verified_on = db.Column(DateTime)
     last_login = db.Column(DateTime)
+    verification_code = db.Column(db.String(128))
 
     role = db.relationship('Role', backref=db.backref('users', lazy=True))
-    user_cases = db.relationship('Case', backref=db.backref('cases', lazy=True))
+    user_cases = db.relationship(
+        'Case', backref=db.backref('cases', lazy=True))
 
-    def __init__(self, name, email, role):
+    def __init__(self, name, email, role, verification_code):
         self.name = name
         self.email = email
         self.role = role
         self.password = ""
+        self.verification_code = verification_code
 
     def __repr__(self):
         return f'<User {self.name}>'
@@ -79,7 +82,8 @@ class Decision(Enum):
 class Case(db.Model):
     __tablename__ = 'cases'
     __table_args__ = (
-        UniqueConstraint('customer_id', name='_customer_id_uc'),  # Add a unique constraint to customer_id
+        # Add a unique constraint to customer_id
+        UniqueConstraint('customer_id', name='_customer_id_uc'),
     )
 
     id = db.Column(db.Integer, primary_key=True)
@@ -88,10 +92,12 @@ class Case(db.Model):
     last_name = db.Column(db.String(80), unique=False, nullable=False)
     num_of_children = db.Column(db.Integer, unique=False, nullable=False)
     outreach_date = db.Column(db.Date, unique=False, nullable=False)
-    packet_return_status = db.Column(db.Enum(PacketReturnStatus), nullable=False, server_default=PacketReturnStatus.WAITING.name)
+    packet_return_status = db.Column(db.Enum(
+        PacketReturnStatus), nullable=False, server_default=PacketReturnStatus.WAITING.name)
     packet_received_date = db.Column(db.Date, unique=False, nullable=True)
     staff_initials = db.Column(db.String(80), unique=False, nullable=True)
-    decision = db.Column(db.Enum(Decision), nullable=False, server_default=Decision.WAITING.name)
+    decision = db.Column(db.Enum(Decision), nullable=False,
+                         server_default=Decision.WAITING.name)
     num_children_enrolled = db.Column(db.Integer, unique=False, nullable=True)
     decision_date = db.Column(db.Date, unique=False, nullable=True)
     not_enrolled_reason = db.Column(db.String(80), unique=False, nullable=True)
