@@ -10,6 +10,8 @@ from app.exceptions.validation import ValidationException
 from app.helpers.user_helpers import validate_add_user_payload, validate_user_email, validate_role, send_mail
 from app.models import User
 
+import uuid
+
 admin_bp = Blueprint('admin', __name__)
 
 
@@ -64,13 +66,15 @@ def add_user():
         if user_exists:
             return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
 
+        verification_code = str(uuid.uuid1())
         new_user = User(name=data.get('name'), email=email, role=role)
         new_user.created_on = datetime.utcnow()
+        new_user.verification_code = verification_code
 
         try:
             db.session.add(new_user)
             db.session.commit()
-            send_mail(request.base_url, email)
+            send_mail(request.base_url, email, verification_code)
 
             user_data = {
                 'id': new_user.id,

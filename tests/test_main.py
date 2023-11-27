@@ -3,6 +3,7 @@ from main import app, db
 from app.models import User, Role
 
 from werkzeug.security import generate_password_hash
+import uuid
 
 
 class TestApp(unittest.TestCase):
@@ -20,6 +21,7 @@ class TestApp(unittest.TestCase):
         test_user = User(name='Test User',
                          email="test@example.com", role=test_role)
         test_user.password = generate_password_hash("test123")
+        test_user.verification_code=str(uuid.uuid1())
         db.session.add(test_role)
         db.session.add(test_user)
         db.session.commit()

@@ -3,6 +3,12 @@
 {% block header %}
     <h2>{% block title %}Home Page{% endblock %}</h2>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <!-- Load c3.css -->
+    <link href="/app/static/css/c3.css" rel="stylesheet">
+
+    <!-- Load d3.js and c3.js -->
+    <script src="https://d3js.org/v5..min.js" charset="utf-8"></script>
+    <script src="/app/static/js/c3.min.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -21,8 +27,10 @@
               <div style="display: none; text-align: left;" id="sentInfo"><img src="../static/images/graph.png" width="250"></div>
               <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
               <script>
-              const xValue = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-              const yValue = [574, 794, 645, 934, 496, 854, 673, 578, 634, 845, 496, 630];
+
+              xValue = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+              yValue = [574, 794, 645, 934, 496, 854, 673, 578, 634, 845, 496, 630];
+
 
               new Chart("myChart", {
                 type: "line",
@@ -33,15 +41,19 @@
                     lineTension: 0,
                     backgroundColor: "rgba(0,0,255,1.0)",
                     borderColor: "rgba(0,0,255,0.1)",
-                    data: yValue
+                    data: [
+                      {% for data in sent_data %}
+                             {{ data }},
+                         {% endfor %}
+                  ]
                   }]
                 },
                 options: {
                   title: {display: true, text: "Family Outreach By Month"},
                   legend: {display: false},
-                  scales: {
-                    yAxes: [{ticks: {min: 0, max:1600}}],
-                  }
+                  // scales: {
+                  //   yAxes: [{ticks: {min: 0, max: {{ max_month_packets_sent }} }}],
+                  // }
                 }
               });
               </script>
@@ -73,7 +85,11 @@
                     labels: xValues,
                     datasets: [{
                       backgroundColor: barColors,
-                      data: yValues
+                      data: [
+                      {% for data in returned_data %}
+                             {{ data }},
+                         {% endfor %}
+                      ]
                     }]
                   },
                   options: {
@@ -91,7 +107,7 @@
         <div class="card">
           <div class="card_container">
             <div class="text" id="enrolled">
-              <h2>Families and Children Enrolled</h2>
+              <h2>Children Enrolled</h2>
               <div style="display: none; text-align: left;" id="enrolledInfo"><img src="../static/images/graph.png" width="250"></div>
               <canvas id="myChart3" style="width:100%;max-width:600px"></canvas>
               <script>
@@ -107,15 +123,19 @@
                     lineTension: 0,
                     backgroundColor: "rgba(0,0,255,1.0)",
                     borderColor: "rgba(0,0,255,0.1)",
-                    data: y
+                    data: [
+                    {% for data in children_enrolled %}
+                             {{ data }},
+                         {% endfor %}
+                    ]
                   }]
                 },
                 options: {
                   title: {display: true, text: "Family and Children Enrolled by Month"},
                   legend: {display: false},
-                  scales: {
-                    yAxes: [{ticks: {min: 0, max:1600}}],
-                  }
+                  // scales: {
+                  //   yAxes: [{ticks: {min: 0, max:{{ max_children_enrolled }} }}],
+                  // }
                 }
               });
               </script>
@@ -126,7 +146,7 @@
         <div class="card">
           <div class="card_container" id="notEnrolled">
             <div class="text">
-              <h2>Families and Children Not Enrolled</h2>
+              <h2>Children Not Enrolled</h2>
               <div style="display: none; text-align: left;" id="notEnrolledInfo"><img src="../static/images/graph.png" width="250"></div>
               <canvas id="myChart4" style="width:100%;max-width:600px"></canvas>
               <script>
@@ -142,15 +162,19 @@
                     lineTension: 0,
                     backgroundColor: "rgba(0,0,255,1.0)",
                     borderColor: "rgba(0,0,255,0.1)",
-                    data: y_axis
+                    data: [
+                    {% for data in children_not_enrolled %}
+                             {{ data }},
+                         {% endfor %}
+                    ]
                   }]
                 },
                 options: {
-                  title: {display: true, text: "Family and Children Not Enrolled by Month"},
+                  title: {display: true, text: "Children Not Enrolled by Month"},
                   legend: {display: false},
-                  scales: {
-                    yAxes: [{ticks: {min: 0, max:1600}}],
-                  }
+                  // scales: {
+                  //   yAxes: [{ticks: {min: 0, max:{{max_children_not_enrolled}} }}],
+                  // }
                 }
               });
               </script>
@@ -166,8 +190,16 @@
                 <canvas id="myChart5" style="width:100%;max-width:6000px"></canvas>
 
                 <script>
-                var xValues = ["Does not meet employment/activity requirement", "Fee too high", "No Child Care Slots", "No longer in Dallas County", "No longer needing services", "No packet received", "No Provider Choice", "Not a Priority", "Not working/training", "On leave/STD", "Over the income guidelines", "Unable to Reach Client", "Under participation requirement", "Verification Docs Needed", "Other"];
-                var yValues = [357, 296, 250, 180, 134, 95, 78, 70, 46, 30, 25, 16, 12, 9, 5];
+                var xValues = ["Does not meet employment/activity requirement", "Fee too high", "No Child Care Slots",
+                              "No longer in Dallas County", "No longer needing services", "No packet received",
+                              "No Provider Choice", "Not a Priority", "Not working/training", "On leave/STD",
+                              "Over the income guidelines", "Unable to Reach Client", "Under participation requirement",
+                              "Verification Docs Needed", "Other"];
+                var yValues = [
+                          {% for data in not_enrolled_reasons %}
+                                      {{ data }},
+                                  {% endfor %}
+                ];
                 var barColors = [
                   "#b91d47",
                   "#00aba9",
@@ -187,10 +219,11 @@
                 ];
 
                 new Chart("myChart5", {
-                  type: "pie",
+                  type: "bar",
                   data: {
                     labels: xValues,
                     datasets: [{
+                      label: 'Number of families not Enrolled',
                       backgroundColor: barColors,
                       data: yValues
                     }]
@@ -199,6 +232,17 @@
                     title: {
                       display: true,
                       text: "Not Enrolled Reasons"
+                    },
+                    scales: {
+                      xAxes: [{
+                        ticks: {
+                          callback: function(t) {
+                              var maxLabelLength = 5;
+                              if (t.length > maxLabelLength) return t.substr(0, maxLabelLength) + '...';
+                              else return t;
+                          }
+                        }
+                    }]
                     }
                   }
                 });
@@ -215,9 +259,9 @@
               <canvas id="myChart6" style="width:100%;max-width:600px"></canvas>
 
               <script>
-              var xValues = ["0-10 days", "11-20 days", "21-30 days", "31+ days"];
-              var yValues = [3754, 850, 210, 96];
-              var barColors = ["red", "green","blue","orange"];
+              var xValues = ["0-10 days", "11-20 days", "21-30 days", "31+ days", "Not Processed Yet"];
+
+              var barColors = ["red", "green","blue","orange","black"];
 
               new Chart("myChart6", {
                 type: "bar",
@@ -225,7 +269,11 @@
                   labels: xValues,
                   datasets: [{
                     backgroundColor: barColors,
-                    data: yValues
+                    data: [
+                            {% for data in processing_time %}
+                                      {{ data }},
+                                  {% endfor %}
+                    ]
                   }]
                 },
                 options: {
@@ -245,7 +293,7 @@
 {% endblock %}
 
 {% block script %}
-  <script>
+  <!-- <script>
     const sent = document.getElementById('sent');
     const sentInfo = document.getElementById('sentInfo');
     const status = document.getElementById('status');
@@ -307,5 +355,5 @@
       }
     });
 
-  </script>
+  </script> -->
 {% endblock %}

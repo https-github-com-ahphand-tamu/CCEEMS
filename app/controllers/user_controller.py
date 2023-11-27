@@ -51,14 +51,20 @@ def logout():
     return redirect('/user/login')
 
 
-@user_bp.route('/users/updatePassword', methods=['POST'])
+@user_bp.route('/user/setPassword')
+def set_password():
+    return render_template('password.html', password_exists=False, incorrect_password=False, mismatch_password=False)
+
+
+@user_bp.route('/user/updatePassword', methods=['POST'])
 def update_password():
     if request.method == 'POST':
-        emailid = request.args.get('email')
+        verification_code = request.args.get('user')
         user_password = request.form['password']
         user_repassword = request.form['re-password']
 
-        user = User.query.filter_by(email=emailid).first()
+        user = User.query.filter_by(
+            verification_code=verification_code).first()
         if user is None:
             return jsonify({'message': 'User not found'}), 404
         if (user.password != ""):

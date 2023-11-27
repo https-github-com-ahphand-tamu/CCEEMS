@@ -64,7 +64,7 @@ def edit_case():
         case_to_edit.decision = data.get('decision')
         case_to_edit.num_children_enrolled = num_children_enrolled
         case_to_edit.decision_date = decision_date
-        case_to_edit.packet_received_date =  packet_received_date
+        case_to_edit.packet_received_date = packet_received_date
         case_to_edit.not_enrolled_reason = data.get('notEnrolledReason')
 
     try:
