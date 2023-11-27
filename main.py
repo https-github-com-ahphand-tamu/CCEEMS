@@ -43,7 +43,6 @@ def home():
             map(lambda i, j: (i, j), not_enrolled_reasons, not_enrolled_reasons_count))
         processing_time = [0] * 5
 
-        engine = create_engine(getUri(os.getenv("DATABASE_URL")))
         query_for_sent_packets = """
         select extract(month from outreach_date) as month, count(id) from cases group by month;
         """
@@ -74,8 +73,8 @@ def home():
                 END Processing_Time, count(id) from cases group by Processing_Time order by processing_time asc
                 ;
         """
-
-        with engine.connect() as connection:
+        
+        with db.engine.connect() as connection:
             result_sent_packets = connection.execute(
                 text(query_for_sent_packets))
             for row in result_sent_packets:
