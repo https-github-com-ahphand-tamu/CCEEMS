@@ -5,6 +5,7 @@ from main import app, db
 from app.models import User, Role
 
 from werkzeug.security import generate_password_hash
+import uuid
 
 
 class TestUserRoutes(unittest.TestCase):
@@ -22,6 +23,7 @@ class TestUserRoutes(unittest.TestCase):
         test_user = User(name='Test User',
                          email="test@example.com", role=test_role)
         test_user.password = generate_password_hash("test123")
+        test_user.verification_code = uuid.uuid1()
         db.session.add(test_role)
         db.session.add(test_user)
         db.session.commit()
@@ -182,7 +184,7 @@ class TestUserRoutes(unittest.TestCase):
     def test_update_password_with_invalid_user(self):
         self.login_user("test@example.com", "test123")
 
-        response = self.client.post("/users/updatePassword?email=test3@tamu.edu", data={
+        response = self.client.post("/user/updatePassword?user=123456", data={
             "email": "test3@tamu.edu",
             "password": "password",
             "re-password": "password"
@@ -191,8 +193,9 @@ class TestUserRoutes(unittest.TestCase):
 
     def test_update_password_with_existing_user(self):
         self.login_user("test@example.com", "test123")
-
-        response = self.client.post("/users/updatePassword?email=test@example.com", data={
+        test_user = db.session.query(User).filter(
+            User.email == "test@example.com").first()
+        response = self.client.post(f"/user/updatePassword?user={test_user.verification_code}", data={
             "email": "test@example.com",
             "password": "password",
             "re-password": "password"
@@ -203,14 +206,19 @@ class TestUserRoutes(unittest.TestCase):
 
     def test_update_password_with_invalid_string_length(self):
         self.login_user("test@example.com", "test123")
-
+        
         response = self.client.post('/admin/users', json={
             "name": "Test User3",
             "email": "test3@tamu.edu",
             "role": "Admin"
         })
 
-        response = self.client.post("/users/updatePassword?email=test3@tamu.edu", data={
+        test_user = db.session.query(User).filter(
+            User.email == "test3@tamu.edu").first()
+        verification_code = uuid.uuid1()
+        test_user.verification_code = verification_code
+        db.session.commit()
+        response = self.client.post(f"/user/updatePassword?user={verification_code}", data={
             "email": "test3@tamu.edu",
             "password": "abcd",
             "re-password": "abcd"
@@ -229,7 +237,13 @@ class TestUserRoutes(unittest.TestCase):
             "role": "Admin"
         })
 
-        response = self.client.post("/users/updatePassword?email=test3@tamu.edu", data={
+        test_user = db.session.query(User).filter(
+            User.email == "test3@tamu.edu").first()
+        verification_code = uuid.uuid1()
+        test_user.verification_code = verification_code
+        db.session.commit()
+
+        response = self.client.post(f"/user/updatePassword?user={verification_code}", data={
             "email": "test3@tamu.edu",
             "password": "abcd1234567",
             "re-password": "abcdsdsdvdsd"

@@ -34,12 +34,13 @@ def home():
         children_not_enrolled_data = [0] * 12
         not_enrolled_reasons_count = [0] * 15
         not_enrolled_reasons = ["Does not meet employment/activity requirement", "Fee too high", "No Child Care Slots",
-                              "No longer in Dallas County", "No longer needing services", "No packet received",
-                              "No Provider Choice", "Not a Priority", "Not working/training", "On leave/STD",
-                              "Over the income guidelines", "Unable to Reach Client", "Under participation requirement",
-                              "Verification Docs Needed", "Other"
-                              ]
-        not_enrolled_reasons_dict = dict(map(lambda i,j : (i,j) , not_enrolled_reasons,not_enrolled_reasons_count))
+                                "No longer in Dallas County", "No longer needing services", "No packet received",
+                                "No Provider Choice", "Not a Priority", "Not working/training", "On leave/STD",
+                                "Over the income guidelines", "Unable to Reach Client", "Under participation requirement",
+                                "Verification Docs Needed", "Other"
+                                ]
+        not_enrolled_reasons_dict = dict(
+            map(lambda i, j: (i, j), not_enrolled_reasons, not_enrolled_reasons_count))
         processing_time = [0] * 5
 
         engine = create_engine(getUri(os.getenv("DATABASE_URL")))
@@ -75,37 +76,44 @@ def home():
         """
 
         with engine.connect() as connection:
-            result_sent_packets = connection.execute(text(query_for_sent_packets))
+            result_sent_packets = connection.execute(
+                text(query_for_sent_packets))
             for row in result_sent_packets:
-                month_data[int(row[0]) - 1 ] = row[1]
+                month_data[int(row[0]) - 1] = row[1]
 
-            result_packet_return_status = connection.execute(text(quey_for_packet_return_status))
+            result_packet_return_status = connection.execute(
+                text(quey_for_packet_return_status))
 
             i = 0
             for row in result_packet_return_status:
                 return_status_data[i] = row[0]
-                i+=1
+                i += 1
 
-            result_children_enrolled = connection.execute(text(query_for_children_enrolled))
+            result_children_enrolled = connection.execute(
+                text(query_for_children_enrolled))
             for row in result_children_enrolled:
-                children_enrolled_data[int(row[0]) - 1 ] = row[1]
+                children_enrolled_data[int(row[0]) - 1] = row[1]
 
-            result_children_not_enrolled = connection.execute(text(query_for_children_not_enrolled))
+            result_children_not_enrolled = connection.execute(
+                text(query_for_children_not_enrolled))
             for row in result_children_not_enrolled:
-                children_not_enrolled_data[int(row[0]) - 1 ] = row[1]
+                children_not_enrolled_data[int(row[0]) - 1] = row[1]
 
-            result_not_enrolled_reason = connection.execute(text(query_for_not_enrolled_reason))
+            result_not_enrolled_reason = connection.execute(
+                text(query_for_not_enrolled_reason))
             for row in result_not_enrolled_reason:
                 not_enrolled_reasons_dict[str(row[0])] = row[1]
 
-            result_processing_time = connection.execute(text(query_for_processing_time))
+            result_processing_time = connection.execute(
+                text(query_for_processing_time))
             for row in result_processing_time:
                 processing_time[int(row[0]) - 1] = row[1]
 
-        return render_template('home.html', user=current_user, sent_data = month_data,
-                               returned_data = return_status_data, children_enrolled = children_enrolled_data,
-                               children_not_enrolled = children_not_enrolled_data, not_enrolled_reasons = list(not_enrolled_reasons_dict.values()),
-                               processing_time = processing_time)
+        return render_template('home.html', user=current_user, sent_data=month_data,
+                               returned_data=return_status_data, children_enrolled=children_enrolled_data,
+                               children_not_enrolled=children_not_enrolled_data, not_enrolled_reasons=list(
+                                   not_enrolled_reasons_dict.values()),
+                               processing_time=processing_time)
     else:
         return redirect('/user/login')
 

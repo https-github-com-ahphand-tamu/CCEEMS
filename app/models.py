@@ -28,12 +28,11 @@ class User(db.Model, UserMixin):
     user_cases = db.relationship(
         'Case', backref=db.backref('cases', lazy=True))
 
-    def __init__(self, name, email, role, verification_code):
+    def __init__(self, name, email, role):
         self.name = name
         self.email = email
         self.role = role
         self.password = ""
-        self.verification_code = verification_code
 
     def __repr__(self):
         return f'<User {self.name}>'

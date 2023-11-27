@@ -66,9 +66,10 @@ def add_user():
         if user_exists:
             return jsonify({'message': f'User already exists with email: {data["email"]}'}), 400
 
-        verification_code= str(uuid.uuid1())
-        new_user = User(name=data.get('name'), email=email, role=role, verification_code=verification_code)
+        verification_code = str(uuid.uuid1())
+        new_user = User(name=data.get('name'), email=email, role=role)
         new_user.created_on = datetime.utcnow()
+        new_user.verification_code = verification_code
 
         try:
             db.session.add(new_user)
