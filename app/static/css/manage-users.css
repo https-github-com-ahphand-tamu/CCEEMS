@@ -1,0 +1,11 @@
+.purple-button{
+    margin: 10px;
+    background-color: #662484;
+    border: none;
+    color: white;
+    text-align: center;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+    border-radius: 4px;
+}
