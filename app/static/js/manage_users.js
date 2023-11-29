@@ -3,7 +3,6 @@ $(document).ready(function() {
     const table = $('#userTable').DataTable();
     function populateTable(users) {
         table.clear().draw(); // Clear the table
-
         users.forEach((user, index) => {
             const rowData = [
                 user.name,
@@ -83,6 +82,7 @@ $(document).ready(function() {
         populateRolesDropdown(role);
 
         dataIndex = $(this).attr("id").split("_")[1];
+        console.log(`Setting to dataIndex to ${dataIndex}`)
 
         // Populate the modal with user details
         $('#userName').val(name);
@@ -146,7 +146,9 @@ $(document).ready(function() {
             role: role
         };
 
-        fetch(`/admin/users/${dataIndex}`, {
+        let userId = users[dataIndex].id;
+        console.log(`Put to /admin/users/${userId}`)
+        fetch(`/admin/users/${userId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
