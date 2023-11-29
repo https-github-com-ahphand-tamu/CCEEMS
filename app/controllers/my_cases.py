@@ -1,14 +1,15 @@
+from datetime import datetime
+
+from flask import jsonify
 from flask import request, Blueprint, render_template
-from flask import redirect, url_for
 from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField
 from wtforms.fields import DateField
+
 from app import db
-from app.models import Case, User, PacketReturnStatus, Decision
-from flask import jsonify
-from datetime import datetime
 from app.decorators.login_decorator import requires_login
+from app.models import Case, User
 
 my_req_bp = Blueprint('my-cases', __name__)
 
@@ -29,11 +30,13 @@ class RequestForm(FlaskForm):
     not_enrolled_reason = StringField('Not Enrolled Reason')
     submit = SubmitField('Save Changes')
 
+
 @requires_login
 @my_req_bp.route('/my_cases', methods=['GET'])
 def view_cases():
     cases = User.query.get(current_user.id).user_cases
     return render_template('my_cases.html', cases=cases, user=current_user)
+
 
 @requires_login
 @my_req_bp.route('/my_cases/edit/', methods=['POST'])
@@ -56,17 +59,19 @@ def edit_case():
             int(num_children_enrolled)
         except:
             return jsonify({"status": "Error", "message": "no. of children enrolled must be integer"}), 400
-    num_children_enrolled = int(num_children_enrolled) if num_children_enrolled != "" else 0
+    num_children_enrolled = int(
+        num_children_enrolled) if num_children_enrolled != "" else 0
 
     try:
         decision_date = datetime.strptime(
-                decision_date_str, '%Y-%m-%d') if decision_date_str and decision_date_str.lower() != 'none' else None
+            decision_date_str, '%Y-%m-%d') if decision_date_str and decision_date_str.lower() != 'none' else None
         packet_received_date = datetime.strptime(
-                packet_received_date_str, '%Y-%m-%d') if packet_received_date_str and packet_received_date_str.lower() != 'none' else None
+            packet_received_date_str,
+            '%Y-%m-%d') if packet_received_date_str and packet_received_date_str.lower() != 'none' else None
     except ValueError as e:
         return jsonify({"status": "Error", "message": "Decision/Package dates must be valid dates"}), 400
     print(decision_date, packet_received_date)
-        # Validate that decision and packet_received_date are not before outreach_date
+    # Validate that decision and packet_received_date are not before outreach_date
     if decision_date and decision_date.date() < outreach_date:
         return jsonify({"status": "Error", "message": "Decision date cannot be before outreach date"}), 400
 
