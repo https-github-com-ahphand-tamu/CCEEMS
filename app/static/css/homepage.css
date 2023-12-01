@@ -187,3 +187,36 @@ tr:nth-child(even) {
     background-color: #e7e7e7;
     padding: 20px 0;
 }
+
+/* for mycases edit button */
+.wrapper2 {
+    z-index:101;
+	margin: 70px auto;
+	padding: 20px;
+	background: #e7e7e7;
+	border-radius: 5px;
+	width: 400px;
+    height: 100%;
+    position: relative;
+    transition: all 5s ease-in-out;
+}
+.wrapper2 h2 {
+    margin-top: 0;
+}
+.wrapper2 .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #662484;
+}
+.wrapper2 .close:hover {
+    color: yellow;
+}
+.wrapper2 .content {
+    height: 70%;
+    overflow-y: scroll;
+}
