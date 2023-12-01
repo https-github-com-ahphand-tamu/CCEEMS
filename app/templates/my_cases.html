@@ -101,53 +101,58 @@
 
     <div class="modal fade" id="editModal">
         <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            <div class="form-group">
+            <div class="overlay">
                 <div class="wrapper">
-                    <h5 id="editIdHeader"></h5>                    
-                    <label for="editFirstName">First Name:</label><span id="editFirstName"></span><br/>
-                    <label for="editLastName">Last Name:</label> <span  id="editLastName"></span><br/>
-                    <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
-                    <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
-                    <label for="editPacketReturnStatus">Packet Return Status:</label>
-                    <select class="form-control" id="editPacketReturnStatus"></select>        
-                    <div class="edit-group-user">
-                        <label for="editDecision">Decision:</label>
-                        <select class="form-control" id="editDecision"></select>
-                        <label for="editNumChildrenEnrolled">No. of Children Enrolled</label><input id="editNumChildrenEnrolled" type="number" value=""/>
-                        <label for="editPacketReceivedDate">Packet Received Date:</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                <i class="fas fa-calendar-alt"></i>
-                                </span>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="assignModalLabel">Edit Case</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="form-group">
+                            <h5 id="editIdHeader"></h5>
+                            <div class="popupContent">               
+                                <label for="editFirstName">First Name:</label><span id="editFirstName"></span><br/>
+                                <label for="editLastName">Last Name:</label> <span  id="editLastName"></span><br/>
+                                <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
+                                <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
+                                <label for="editPacketReturnStatus">Packet Return Status:</label>
+                                <select class="form-control" id="editPacketReturnStatus"></select>        
+                                <div class="edit-group-user">
+                                    <label for="editDecision">Decision:</label>
+                                    <select class="form-control" id="editDecision"></select>
+                                    <label for="editNumChildrenEnrolled">No. of Children Enrolled</label><input id="editNumChildrenEnrolled" type="number" value=""/>
+                                    <label for="editPacketReceivedDate">Packet Received Date:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control datepicker" id="editPacketReceivedDate" value="">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <label for="editDecisionDate">Decision Date:</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control datepicker" id="editDecisionDate" value="">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text">
+                                            <i class="fas fa-calendar-alt"></i>
+                                            </span>
+                                        </div>
+                                    </div>               
+                                    <input type="hidden" id="editCaseId" name="case_id" value="">
+                                    <label for="editNotEnrolledReason">Not Enrolled Reason</label>
+                                    <br>
+                                    <input id="editNotEnrolledReason" value=""/>    
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div id="errorBox" class="alert alert-danger" style="display: none;"></div>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
                             </div>
                         </div>
-                        <label for="editDecisionDate">Decision Date:</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control datepicker" id="editDecisionDate" value="">
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                <i class="fas fa-calendar-alt"></i>
-                                </span>
-                            </div>
-                        </div>               
-                        <input type="hidden" id="editCaseId" name="case_id" value="">
-                        <label for="editNotEnrolledReason">Not Enrolled Reason</label>
-                        <br>
-                        <input id="editNotEnrolledReason" value=""/>    
-                    </div>
-                    <div class="modal-footer">
-                        <div id="errorBox" class="alert alert-danger" style="display: none;"></div>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="editSubmit">Save Case</button>
                     </div>
                 </div>
             </div>
