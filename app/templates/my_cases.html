@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block addhead %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/cases.css') }}"/>
 {% endblock %}
 
@@ -90,11 +90,11 @@
                         <br>
                             <label>Not Enrolled Reason: </label>
                             <br>
-                            {{ case.not_enrolled_reason }}     
+                            {{ case.not_enrolled_reason }}
                         </div>
                     </div>
                 </div>
-            </div>              
+            </div>
         {% endfor %}
         </tbody>
     </table>
@@ -109,14 +109,14 @@
                     </button>
                 </div>
             <div class="form-group">
-                <div class="wrapper">
-                    <h5 id="editIdHeader"></h5>                    
+                <div class="wrapper2">
+                    <h5 id="editIdHeader"></h5>
                     <label for="editFirstName">First Name:</label><span id="editFirstName"></span><br/>
                     <label for="editLastName">Last Name:</label> <span  id="editLastName"></span><br/>
                     <label for="editNumChildren">No. of Children:</label><span id="editNumChildren"></span><br/>
                     <label for="editOutreachDate">Outreach Date:</label><span id="editOutreachDate"></span><br/>
                     <label for="editPacketReturnStatus">Packet Return Status:</label>
-                    <select class="form-control" id="editPacketReturnStatus"></select>        
+                    <select class="form-control" id="editPacketReturnStatus"></select>
                     <div class="edit-group-user">
                         <label for="editDecision">Decision:</label>
                         <select class="form-control" id="editDecision"></select>
@@ -138,11 +138,11 @@
                                 <i class="fas fa-calendar-alt"></i>
                                 </span>
                             </div>
-                        </div>               
+                        </div>
                         <input type="hidden" id="editCaseId" name="case_id" value="">
                         <label for="editNotEnrolledReason">Not Enrolled Reason</label>
                         <br>
-                        <input id="editNotEnrolledReason" value=""/>    
+                        <input id="editNotEnrolledReason" value=""/>
                     </div>
                     <div class="modal-footer">
                         <div id="errorBox" class="alert alert-danger" style="display: none;"></div>
@@ -244,7 +244,7 @@
                 });
             });
 
-            $('#casesTable').on('click', '.edit-button', function() {                
+            $('#casesTable').on('click', '.edit-button', function() {
                 var case_id = this.getAttribute('data-case-id');
                 $('.edit-group-user').show();
                 // Populate the modal with case details
@@ -259,7 +259,7 @@
 
                 var days_since_outreach = calculateDaysSinceOutreach($('#outreachDate_' + case_id).text());
                 console.log(packageReturnStatus, packageReturnStatus !== "RETURNED", days_since_outreach, days_since_outreach > 15);
-                
+
                 if (packageReturnStatus !== "RETURNED" && days_since_outreach > 15) {
                     $('.edit-group-user').hide();
                     $("#editPacketReturnStatus option[value='" + "RETURNED" + "']").hide();
@@ -278,7 +278,7 @@
 
                 $('#editModal').modal('show');
             });
-            
+
             $('#editSubmit').on('click', function() {
                 // Get all input values
                 var caseId = $('#editCaseId').val();
@@ -370,4 +370,3 @@
         });
     </script>
 {% endblock %}
-

@@ -132,15 +132,15 @@ tr:nth-child(even) {
 }
 /* for popup in my_cases */
 .overlay {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: rgba(102, 36, 132, 0.8);
-	transition: opacity 500ms;
-	visibility: hidden;
-	opacity: 0;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(102, 36, 132, 0.8);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
     z-index:100;
 }
 
@@ -151,11 +151,11 @@ tr:nth-child(even) {
 
 .wrapper {
     z-index:100;
-	margin: 70px auto;
-	padding: 20px;
-	background: #e7e7e7;
-	border-radius: 5px;
-	width: 30%;
+    margin: 70px auto;
+    padding: 20px;
+    background: #e7e7e7;
+    border-radius: 5px;
+    width: 30%;
     height: 100%;
     position: relative;
     transition: all 5s ease-in-out;
@@ -186,4 +186,37 @@ tr:nth-child(even) {
     border-radius: 5px;
     background-color: #e7e7e7;
     padding: 20px 0;
+}
+
+/* for mycases edit button */
+.wrapper2 {
+    z-index:101;
+    margin: 70px auto;
+    padding: 20px;
+    background: #e7e7e7;
+    border-radius: 5px;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: all 5s ease-in-out;
+}
+.wrapper2 h2 {
+    margin-top: 0;
+}
+.wrapper2 .close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #662484;
+}
+.wrapper2 .close:hover {
+    color: yellow;
+}
+.wrapper2 .content {
+    height: 70%;
+    overflow-y: scroll;
 }
