@@ -1,3 +1,9 @@
-customer_id,first_name,last_name,num_of_children,outreach_date
-12159122,Emily,Johnson,5,2023-05-03
-35286967631,Ethan,Smith,2,2023-05-11
+customer_id,first_name,last_name,num_of_children,outreach_date,packet_return_status,assigned_to_user
+121159122,Emily,Johnson,5,2023-11-03,RETURNED,1
+3526967631,Ethan,Smith,2,2023-11-11,RETURNED,1
+4526967631,Ethan,Smith,2,2023-11-12,RETURNED,2
+6526967631,Ethan,Smith,2,2023-11-13,RETURNED,2
+526967631,Ethan,Smith,2,2023-11-14,RETURNED,2
+326967631,Ethan,Smith,2,2023-11-15,RETURNED,2
+5967631,Ethan,Smith,2,2023-11-16,RETURNED,2
+526631,Ethan,Smith,2,2023-11-10,RETURNED,2
