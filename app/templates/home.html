@@ -3,19 +3,15 @@
 {% block header %}
     <h2>{% block title %}Home Page{% endblock %}</h2>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-    <!-- Load c3.css -->
-    <link href="/app/static/css/c3.css" rel="stylesheet">
+    
 
-    <!-- Load d3.js and c3.js -->
-    <script src="https://d3js.org/v5..min.js" charset="utf-8"></script>
-    <script src="/app/static/js/c3.min.js"></script>
 {% endblock %}
 
 {% block content %}
   <div class="container">
     <section class="main">
       <div class="main-top">
-        <h1>ChildCare Enrollment Management System</h1>
+        <!-- <h1>ChildCare Enrollment Management System</h1> -->
       </div>
       <div class="main-body">
         <h1>ChildCareGroup Analytics</h1>
@@ -24,39 +20,11 @@
           <div class="card_container" id="sent">
             <div class="text">
               <h2>Packets Sent</h2>
+              <label for="dropdown">Year:</label>
+                <select id="year_dropdown_packets_sent">
+                </select>
               <div style="display: none; text-align: left;" id="sentInfo"><img src="../static/images/graph.png" width="250"></div>
               <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
-              <script>
-
-              xValue = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-              yValue = [574, 794, 645, 934, 496, 854, 673, 578, 634, 845, 496, 630];
-
-
-              new Chart("myChart", {
-                type: "line",
-                data: {
-                  labels: xValue,
-                  datasets: [{
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: "rgba(0,0,255,1.0)",
-                    borderColor: "rgba(0,0,255,0.1)",
-                    data: [
-                      {% for data in sent_data %}
-                             {{ data }},
-                         {% endfor %}
-                  ]
-                  }]
-                },
-                options: {
-                  title: {display: true, text: "Family Outreach By Month"},
-                  legend: {display: false},
-                  // scales: {
-                  //   yAxes: [{ticks: {min: 0, max: {{ max_month_packets_sent }} }}],
-                  // }
-                }
-              });
-              </script>
             </div>
           </div>
         </div>
@@ -65,40 +33,14 @@
           <div class="card_container">
             <div class="text" id="status">
               <h2>Packets Status</h2>
+              <label for="dropdown">Year:</label>
+                <select id="year_dropdown_packets_status">
+                </select>
               <div style="display: none; text-align: left;" id="statusInfo"><img src="../static/images/graph.png" width="250"></div>
                 <canvas id="myChart2" style="width:100%;max-width:600px"></canvas>
 
                 <script>
-                var xValues = ["Returned", "Not Returned", "Waiting"];
-                var yValues = [4758, 2537, 1540];
-                var barColors = [
-                  "#b91d47",
-                  "#00aba9",
-                  "#2b5797",
-                  "#e8c3b9",
-                  "#1e7145"
-                ];
-
-                new Chart("myChart2", {
-                  type: "doughnut",
-                  data: {
-                    labels: xValues,
-                    datasets: [{
-                      backgroundColor: barColors,
-                      data: [
-                      {% for data in returned_data %}
-                             {{ data }},
-                         {% endfor %}
-                      ]
-                    }]
-                  },
-                  options: {
-                    title: {
-                      display: true,
-                      text: "Packets by Status"
-                    }
-                  }
-                });
+               
                 </script>
             </div>
           </div>
@@ -108,37 +50,11 @@
           <div class="card_container">
             <div class="text" id="enrolled">
               <h2>Children Enrolled</h2>
+              <label for="dropdown">Year:</label>
+                <select id="year_dropdown_child_enrolled">
+                </select>
               <div style="display: none; text-align: left;" id="enrolledInfo"><img src="../static/images/graph.png" width="250"></div>
               <canvas id="myChart3" style="width:100%;max-width:600px"></canvas>
-              <script>
-              const x = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-              const y = [674, 894, 445, 744, 936, 684, 863, 978, 850, 575, 786, 530];
-
-              new Chart("myChart3", {
-                type: "line",
-                data: {
-                  labels: x,
-                  datasets: [{
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: "rgba(0,0,255,1.0)",
-                    borderColor: "rgba(0,0,255,0.1)",
-                    data: [
-                    {% for data in children_enrolled %}
-                             {{ data }},
-                         {% endfor %}
-                    ]
-                  }]
-                },
-                options: {
-                  title: {display: true, text: "Family and Children Enrolled by Month"},
-                  legend: {display: false},
-                  // scales: {
-                  //   yAxes: [{ticks: {min: 0, max:{{ max_children_enrolled }} }}],
-                  // }
-                }
-              });
-              </script>
             </div>
           </div>
         </div>
@@ -147,37 +63,11 @@
           <div class="card_container" id="notEnrolled">
             <div class="text">
               <h2>Children Not Enrolled</h2>
+              <label for="dropdown">Year:</label>
+                <select id="year_dropdown_not_enrolled">
+                </select>
               <div style="display: none; text-align: left;" id="notEnrolledInfo"><img src="../static/images/graph.png" width="250"></div>
               <canvas id="myChart4" style="width:100%;max-width:600px"></canvas>
-              <script>
-              const x_axis = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-              const y_axis = [264, 354, 275, 424, 176, 324, 133, 248, 320, 155, 166, 360];
-
-              new Chart("myChart4", {
-                type: "line",
-                data: {
-                  labels: x_axis,
-                  datasets: [{
-                    fill: false,
-                    lineTension: 0,
-                    backgroundColor: "rgba(0,0,255,1.0)",
-                    borderColor: "rgba(0,0,255,0.1)",
-                    data: [
-                    {% for data in children_not_enrolled %}
-                             {{ data }},
-                         {% endfor %}
-                    ]
-                  }]
-                },
-                options: {
-                  title: {display: true, text: "Children Not Enrolled by Month"},
-                  legend: {display: false},
-                  // scales: {
-                  //   yAxes: [{ticks: {min: 0, max:{{max_children_not_enrolled}} }}],
-                  // }
-                }
-              });
-              </script>
             </div>
           </div>
         </div>
@@ -186,67 +76,12 @@
           <div class="card_container" id="reasons">
             <div class="text">
               <h2>Not Enrolled Reasons</h2>
+              <label for="dropdown">Year:</label>
+                <select id="year_dropdown_reasons">
+                </select>
               <div style="display: none; text-align: left;" id="reasonsInfo"><img src="../static/images/graph.png" width="250"></div>
                 <canvas id="myChart5" style="width:100%;max-width:6000px"></canvas>
 
-                <script>
-                var xValues = ["Does not meet employment/activity requirement", "Fee too high", "No Child Care Slots",
-                              "No longer in Dallas County", "No longer needing services", "No packet received",
-                              "No Provider Choice", "Not a Priority", "Not working/training", "On leave/STD",
-                              "Over the income guidelines", "Unable to Reach Client", "Under participation requirement",
-                              "Verification Docs Needed", "Other"];
-                var yValues = [
-                          {% for data in not_enrolled_reasons %}
-                                      {{ data }},
-                                  {% endfor %}
-                ];
-                var barColors = [
-                  "#b91d47",
-                  "#00aba9",
-                  "#2b5797",
-                  "#e8c3b9",
-                  "#1e7145",
-                  "#800000",
-                  "#9A6324",
-                  "#808000",
-                  "#469990",
-                  "#000075",
-                  "#f58231",
-                  "#42d4f4",
-                  "#911eb4",
-                  "#f032e6",
-                  "#fabed4"
-                ];
-
-                new Chart("myChart5", {
-                  type: "bar",
-                  data: {
-                    labels: xValues,
-                    datasets: [{
-                      label: 'Number of families not Enrolled',
-                      backgroundColor: barColors,
-                      data: yValues
-                    }]
-                  },
-                  options: {
-                    title: {
-                      display: true,
-                      text: "Not Enrolled Reasons"
-                    },
-                    scales: {
-                      xAxes: [{
-                        ticks: {
-                          callback: function(t) {
-                              var maxLabelLength = 5;
-                              if (t.length > maxLabelLength) return t.substr(0, maxLabelLength) + '...';
-                              else return t;
-                          }
-                        }
-                    }]
-                    }
-                  }
-                });
-                </script>
             </div>
           </div>
         </div>
@@ -255,37 +90,11 @@
           <div class="card_container" id="start">
             <div class="text">
               <h2>Processing Time</h2>
+              <label for="dropdown">Year:</label>
+                <select id="year_dropdown_processing_time">
+                </select>
               <div style="display: none; text-align: left;" id="startInfo"><img src="../static/images/graph.png" width="250"></div>
               <canvas id="myChart6" style="width:100%;max-width:600px"></canvas>
-
-              <script>
-              var xValues = ["0-10 days", "11-20 days", "21-30 days", "31+ days", "Not Processed Yet"];
-
-              var barColors = ["red", "green","blue","orange","black"];
-
-              new Chart("myChart6", {
-                type: "bar",
-                data: {
-                  labels: xValues,
-                  datasets: [{
-                    backgroundColor: barColors,
-                    data: [
-                            {% for data in processing_time %}
-                                      {{ data }},
-                                  {% endfor %}
-                    ]
-                  }]
-                },
-                options: {
-                  legend: {display: false},
-                  title: {
-                    display: true,
-                    text: "Processing Time"
-                  }
-
-                }
-              });
-              </script>
             </div>
           </div>
         </div>
@@ -293,67 +102,5 @@
 {% endblock %}
 
 {% block script %}
-  <!-- <script>
-    const sent = document.getElementById('sent');
-    const sentInfo = document.getElementById('sentInfo');
-    const status = document.getElementById('status');
-    const statusInfo = document.getElementById('statusInfo');
-    const enrolled = document.getElementById('enrolled');
-    const enrolledInfo = document.getElementById('enrolledInfo');
-    const notEnrolled = document.getElementById('notEnrolled');
-    const notEnrolledInfo = document.getElementById('notEnrolledInfo');
-    const reasons = document.getElementById('reasons');
-    const reasonsInfo = document.getElementById('reasonsInfo');
-    const start = document.getElementById('start');
-    const startInfo = document.getElementById('startInfo');
-
-    sent.addEventListener('click', () => {
-      if (sentInfo.style.display === 'none') {
-        sentInfo.style.display = 'block';
-      } else {
-        sentInfo.style.display = 'none';
-      }
-    });
-
-    status.addEventListener('click', () => {
-      if (statusInfo.style.display === 'none') {
-        statusInfo.style.display = 'block';
-      } else {
-        statusInfo.style.display = 'none';
-      }
-    });
-
-    enrolled.addEventListener('click', () => {
-      if (enrolledInfo.style.display === 'none') {
-        enrolledInfo.style.display = 'block';
-      } else {
-        enrolledInfo.style.display = 'none';
-      }
-    });
-
-    notEnrolled.addEventListener('click', () => {
-      if (notEnrolledInfo.style.display === 'none') {
-        notEnrolledInfo.style.display = 'block';
-      } else {
-        notEnrolledInfo.style.display = 'none';
-      }
-    });
-
-    reasons.addEventListener('click', () => {
-      if (reasonsInfo.style.display === 'none') {
-        reasonsInfo.style.display = 'block';
-      } else {
-        reasonsInfo.style.display = 'none';
-      }
-    });
-
-    start.addEventListener('click', () => {
-      if (startInfo.style.display === 'none') {
-        startInfo.style.display = 'block';
-      } else {
-        startInfo.style.display = 'none';
-      }
-    });
-
-  </script> -->
+  <script src="{{ url_for('static', filename='js/analytics.js') }}"></script>
 {% endblock %}
