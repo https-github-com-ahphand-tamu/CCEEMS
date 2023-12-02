@@ -9,7 +9,7 @@ from wtforms.fields import DateField
 
 from app import db
 from app.decorators.login_decorator import requires_login
-from app.models import Case, User
+from app.models import Case
 
 my_req_bp = Blueprint('my-cases', __name__)
 
@@ -34,7 +34,7 @@ class RequestForm(FlaskForm):
 @requires_login
 @my_req_bp.route('/my_cases', methods=['GET'])
 def view_cases():
-    cases = User.query.get(current_user.id).user_cases
+    cases = current_user.user_cases
     return render_template('my_cases.html', cases=cases, user=current_user)
 
 
