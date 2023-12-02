@@ -65,6 +65,7 @@ def register_blueprints(app):
     from app.controllers.cases_controller import assign
     from app.controllers.my_cases import my_req_bp
     from app.controllers.role_controller import role_bp
+    from app.controllers.analytics_controller import analytics_bp
 
     app.register_blueprint(user_bp)
     app.register_blueprint(admin_bp)
@@ -72,3 +73,4 @@ def register_blueprints(app):
     app.register_blueprint(assign)
     app.register_blueprint(my_req_bp)
     app.register_blueprint(role_bp)
+    app.register_blueprint(analytics_bp)
