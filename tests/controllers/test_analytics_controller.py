@@ -54,35 +54,61 @@ class TestAnalyticsRoutes(unittest.TestCase):
             response_json["data"],
             ['2023'])
         
+        
     def test_get_packets_sent_graph(self):
         response = self.client.get('/analytics/packets_sent?year=2023')
         self.assertEqual(response.status_code, 200)
         response_json = json.loads(response.data.decode('utf-8'))
+        self.assertListEqual(
+            response_json["data"],
+            [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0])
+         
+        
 
     def test_get_packets_return_graph(self):
         response = self.client.get('/analytics/packets_status?year=2023')
         self.assertEqual(response.status_code, 200)
         response_json = json.loads(response.data.decode('utf-8'))
+        self.assertListEqual(
+            response_json["data"],
+            [1, 0, 0])
+        
 
     def test_get_children_enrolled_graph(self):
         response = self.client.get('/analytics/children_enrolled?year=2023')
         self.assertEqual(response.status_code, 200)
         response_json = json.loads(response.data.decode('utf-8'))
+        self.assertListEqual(
+            response_json["data"],
+            [0, 0, 0, 0, None, 0, 0, 0, 0, 0, 0, 0])
+        
 
     def test_get_children_not_enrolled_enrolled(self):
         response = self.client.get('/analytics/children_not_enrolled?year=2023')
         self.assertEqual(response.status_code, 200)
         response_json = json.loads(response.data.decode('utf-8'))
+        self.assertListEqual(
+            response_json["data"],
+            [0, 0, 0, 0, None, 0, 0, 0, 0, 0, 0, 0])
+        
     
     def test_get_not_enrolled_reasons_graph(self):
         response = self.client.get('/analytics/children_not_enrolled_reasons?year=2023')
         self.assertEqual(response.status_code, 200)
         response_json = json.loads(response.data.decode('utf-8'))
+        self.assertListEqual(
+            response_json["data"],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        
 
     def test_get_processing_time_graph(self):
         response = self.client.get('/analytics/processing_time?year=2023')
         self.assertEqual(response.status_code, 200)
         response_json = json.loads(response.data.decode('utf-8'))
+        self.assertListEqual(
+            response_json["data"],
+            [0, 0, 0, 0, 1])
+        
 
 
 if __name__ == '__main__':

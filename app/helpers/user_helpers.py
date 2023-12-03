@@ -53,8 +53,8 @@ def send_mail(path, mailid, verification_code):
     path = path.replace("admin/users", "user")
     body = "Kindly follow the link to set your password for the Childcare Management System Account " + \
         path + "/setPassword?user=" + verification_code
-    sender = "chidambaramg.dev@gmail.com"
-    password = "baeaqufrwmtosnnr"
+    sender = "childcaregroup9@gmail.com"
+    password = "krgbticpsttiyizy"
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = sender
